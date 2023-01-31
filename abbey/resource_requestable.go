@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -14,12 +13,12 @@ import (
 )
 
 type Requestable struct {
-	Id              string       `json:"id"`
-	CreatedAt       time.Time    `json:"created_at"`
-	Name            string       `json:"name"`
-	Manage          string       `json:"manage,omitempty"`
-	Generate        string       `json:"generate"`
-	InputJsonSchema *interface{} `json:"input_json_schema"`
+	Id              string          `json:"id"`
+	CreatedAt       time.Time       `json:"created_at"`
+	Name            string          `json:"name"`
+	Manage          string          `json:"manage,omitempty"`
+	Generate        string          `json:"generate"`
+	InputJsonSchema json.RawMessage `json:"input_json_schema"`
 }
 
 func resourceRequestable() *schema.Resource {
@@ -105,6 +104,10 @@ func resourceRequestableCreate(
 	}
 
 	d.SetId(requestable.Id)
+	d.Set("name", requestable.Name)
+	d.Set("manage", requestable.Manage)
+	d.Set("generate", requestable.Generate)
+	d.Set("input_json_schema_json", requestable.InputJsonSchema)
 
 	return diags
 }
@@ -153,18 +156,10 @@ func resourceRequestableRead(
 		return diags
 	}
 
-	inputJsonSchemaJson := new(strings.Builder)
-
-	err = json.NewEncoder(inputJsonSchemaJson).Encode(requestable.InputJsonSchema)
-	if err != nil {
-		diags = append(diags, diag.FromErr(err)...)
-		return diags
-	}
-
 	d.Set("name", requestable.Name)
 	d.Set("manage", requestable.Manage)
 	d.Set("generate", requestable.Generate)
-	d.Set("input_json_schema_json", inputJsonSchemaJson)
+	d.Set("input_json_schema_json", requestable.InputJsonSchema)
 
 	return diags
 }
