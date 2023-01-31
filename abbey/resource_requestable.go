@@ -143,7 +143,7 @@ func resourceRequestableRead(
 		return diags
 	}
 
-	if response.StatusCode != http.StatusCreated {
+	if response.StatusCode != http.StatusOK {
 		diags = append(diags, diag.FromErr(fmt.Errorf("unexpected status %s", response.Status))...)
 		return diags
 	}
