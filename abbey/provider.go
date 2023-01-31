@@ -30,7 +30,7 @@ func Provider() *schema.Provider {
 		Schema: map[string]*schema.Schema{
 			"host": {
 				Type:     schema.TypeString,
-				Required: false,
+				Optional: true,
 				Default:  "https://api.abbey.so",
 			},
 		},
