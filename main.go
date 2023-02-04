@@ -1,16 +1,27 @@
 package main
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
+	"context"
+	"log"
 
-	"abbey.so/terraform-provider-abbey/abbey"
+	"github.com/hashicorp/terraform-plugin-framework/providerserver"
+
+	"abbey.so/terraform-provider-abbey/internal/abbey"
 )
 
+// GoReleaser sets the version in compiled binaries.
+// https://goreleaser.com/cookbooks/using-main.version/
+var version = "dev"
+
+const defaultHost = "https://api.abbey.so"
+
 func main() {
-	plugin.Serve(&plugin.ServeOpts{
-		ProviderFunc: func() *schema.Provider {
-			return abbey.Provider()
-		},
-	})
+	err := providerserver.Serve(
+		context.Background(),
+		abbey.New(version, defaultHost),
+		providerserver.ServeOpts{},
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
