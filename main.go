@@ -19,7 +19,10 @@ func main() {
 	err := providerserver.Serve(
 		context.Background(),
 		abbey.New(version, defaultHost),
-		providerserver.ServeOpts{},
+		providerserver.ServeOpts{
+			Address:         "registry.terraform.io/abbeylabs/abbey",
+			ProtocolVersion: 6,
+		},
 	)
 	if err != nil {
 		log.Fatal(err)
