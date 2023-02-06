@@ -35,11 +35,11 @@ A sample template looks like this:
 
 ```
 append = <<-EOT
-  {{ $input := .Input | to_map -}}
-  resource "github_repository_collaborator" "${trimprefix(each.value.full_name, "abbeylabs/")}_{{ $.Requester.CanonicalIdentity.Username }}" {
+  {{"{{"}} $input := .Input | to_map -{{"}}"}}
+  resource "github_repository_collaborator" "${trimprefix(each.value.full_name, "abbeylabs/")}_{{"{{"}} $.Requester.CanonicalIdentity.Username {{"}}"}} {
     repository = "${ trimprefix(each.value.full_name, "abbeylabs/") }"
-    username   = "{{ $.Requester.PrimitiveIdentities.Github.Username }}"
-    permission = "{{ $input.permission }}"
+    username   = "{{"{{"}} $.Requester.PrimitiveIdentities.Github.Username {{"}}"}}
+    permission = "{{"{{"}} $input.permission {{"}}"}}
   }
 EOT
 ```
