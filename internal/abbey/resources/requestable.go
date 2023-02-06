@@ -430,10 +430,7 @@ func (r *requestable) Create(
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set(
-		http.CanonicalHeaderKey("Authorization"),
-		fmt.Sprintf("Bearer %s", r.data.Token),
-	)
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", r.data.Token))
 
 	resp, err := r.data.Client.Do(req)
 	if err != nil {
@@ -502,10 +499,7 @@ func (r *requestable) Read(
 		return
 	}
 
-	req.Header.Set(
-		http.CanonicalHeaderKey("Authorization"),
-		fmt.Sprintf("Bearer %s", r.data.Token),
-	)
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", r.data.Token))
 
 	resp, err := r.data.Client.Do(req)
 	if err != nil {
@@ -584,10 +578,7 @@ func (r *requestable) Delete(
 		return
 	}
 
-	req.Header.Set(
-		http.CanonicalHeaderKey("Authorization"),
-		fmt.Sprintf("Bearer %s", r.data.Token),
-	)
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", r.data.Token))
 
 	resp, err := r.data.Client.Do(req)
 	if err != nil {
@@ -607,6 +598,4 @@ func (r *requestable) Delete(
 	}
 
 	response.State.RemoveResource(ctx)
-
-	return
 }
