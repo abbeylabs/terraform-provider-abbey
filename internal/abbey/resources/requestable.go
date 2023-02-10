@@ -58,6 +58,33 @@ func (r *requestable) Schema(
 			"name": schema.StringAttribute{
 				Required: true,
 			},
+			"workflow": schema.SingleNestedAttribute{
+				Required: true,
+				Attributes: map[string]schema.Attribute{
+					"builtin": schema.SingleNestedAttribute{
+						Optional: true,
+						Attributes: map[string]schema.Attribute{
+							"one_of": schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"reviewers": schema.ListNestedAttribute{
+										Required: true,
+										NestedObject: schema.NestedAttributeObject{
+											Attributes: map[string]schema.Attribute{
+												"auth_id": schema.StringAttribute{
+													Optional:            true,
+													Sensitive:           true,
+													MarkdownDescription: "The authentication identifier of the reviewer in Abbey Labs. It may be email, phone number, or username.",
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
 			"grant": schema.SingleNestedAttribute{
 				Required: true,
 				Attributes: map[string]schema.Attribute{
@@ -107,7 +134,7 @@ func (r *requestable) Configure(
 	providerData, ok := request.ProviderData.(*provider.ResourceData)
 	if !ok {
 		response.Diagnostics.AddError(
-			"Unexpected Resource Configure Type",
+			"Unexpected Resource Configure type_",
 			fmt.Sprintf("Got: %T. Please report this issue to the provider developers.", request.ProviderData),
 		)
 		return
@@ -117,15 +144,164 @@ func (r *requestable) Configure(
 }
 
 type requestableModel struct {
-	Id    types.String `tfsdk:"id"`
-	Name  types.String `tfsdk:"name"`
-	Grant types.Object `tfsdk:"grant"`
+	Id       types.String `tfsdk:"id"`
+	Name     types.String `tfsdk:"name"`
+	Workflow types.Object `tfsdk:"workflow"`
+	Grant    types.Object `tfsdk:"grant"`
 }
 
 type requestableView struct {
-	Id    string           `json:"id"`
-	Name  string           `json:"name"`
-	Grant requestableGrant `json:"grant"`
+	Id       string           `json:"id"`
+	Name     string           `json:"name"`
+	Workflow *WorkflowEnum    `json:"workflow,omitempty"`
+	Grant    requestableGrant `json:"grant"`
+}
+
+func (w *WorkflowEnum) ToObjectValue(ctx context.Context) (basetypes.ObjectValue, diag.Diagnostics) {
+	var (
+		key   string
+		val   attr.Value
+		diags diag.Diagnostics
+	)
+
+	switch v := w.Value.(type) {
+	case *BuiltinWorkflowEnum:
+		key = "builtin"
+		val, diags = v.ToObjectValue(ctx)
+		if diags.HasError() {
+			return basetypes.ObjectValue{}, diags
+		}
+	case nil:
+		return types.ObjectNull(map[string]attr.Type{
+			"builtin": types.ObjectType{
+				AttrTypes: map[string]attr.Type{
+					"one_of": types.ObjectType{
+						AttrTypes: map[string]attr.Type{
+							"reviewers": types.ListType{
+								ElemType: types.ObjectType{
+									AttrTypes: map[string]attr.Type{
+										"auth_id": types.StringType,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}), diags
+	default:
+		return basetypes.ObjectValue{}, diag.Diagnostics{
+			diag.NewAttributeErrorDiagnostic(
+				path.Root("workflow"),
+				fmt.Sprintf("%T", v), "",
+			),
+		}
+	}
+
+	return types.ObjectValue(
+		map[string]attr.Type{
+			key: val.Type(ctx),
+		},
+		map[string]attr.Value{
+			key: val,
+		},
+	)
+}
+
+func (u *UserQueryEnum) ToObjectValue(ctx context.Context) (basetypes.ObjectValue, diag.Diagnostics) {
+	var (
+		key   string
+		val   attr.Value
+		diags diag.Diagnostics
+	)
+
+	switch v := u.Value.(type) {
+	case *UserQueryAuthId:
+		key = "auth_id"
+		val = types.StringValue(v.String())
+		if diags.HasError() {
+			return basetypes.ObjectValue{}, diags
+		}
+	default:
+		return basetypes.ObjectValue{}, diag.Diagnostics{
+			diag.NewAttributeErrorDiagnostic(path.Root("user_query"), "", ""),
+		}
+	}
+
+	return types.ObjectValue(
+		map[string]attr.Type{
+			key: val.Type(ctx),
+		},
+		map[string]attr.Value{
+			key: val,
+		},
+	)
+}
+
+func (b *BuiltinWorkflowEnum) ToObjectValue(ctx context.Context) (basetypes.ObjectValue, diag.Diagnostics) {
+	var (
+		key    string
+		objVal attr.Value
+		val    attr.Value
+		diags  diag.Diagnostics
+	)
+
+	switch v := b.Value.(type) {
+	case *BuiltinWorkflowOneOf:
+		var reviewers attr.Value
+
+		key = "one_of"
+
+		reviewersVal := make([]attr.Value, 0, len(v.Reviewers))
+		for _, re := range v.Reviewers {
+			objVal, diags = re.ToObjectValue(ctx)
+			if diags.HasError() {
+				return basetypes.ObjectValue{}, diags
+			}
+
+			reviewersVal = append(reviewersVal, objVal)
+		}
+
+		reviewers, diags = basetypes.NewListValue(
+			types.ObjectType{
+				AttrTypes: map[string]attr.Type{
+					"auth_id": types.StringType,
+				},
+			},
+			reviewersVal,
+		)
+		if diags.HasError() {
+			return basetypes.ObjectValue{}, diags
+		}
+
+		val, diags = types.ObjectValue(
+			map[string]attr.Type{
+				"reviewers": reviewers.Type(ctx),
+			},
+			map[string]attr.Value{
+				"reviewers": reviewers,
+			},
+		)
+		if diags.HasError() {
+			return basetypes.ObjectValue{}, diags
+		}
+	default:
+		return basetypes.ObjectValue{}, diag.Diagnostics{
+			diag.NewAttributeErrorDiagnostic(
+				path.Root("workflow"),
+				"", "",
+			),
+		}
+	}
+
+	return types.ObjectValue(
+		map[string]attr.Type{
+			key: val.Type(ctx),
+		},
+		map[string]attr.Value{
+			key: val,
+		},
+	)
 }
 
 type requestableGrant struct {
@@ -353,6 +529,93 @@ func (r *requestable) Create(
 
 		return bs
 	}
+	processUserQuery := func(val attr.Value) *UserQueryEnum {
+		attrs := val.(types.Object).Attributes()
+		if len(attrs) != 1 {
+			response.Diagnostics.AddError(
+				"InvalidInput",
+				fmt.Sprintf("Expected 1 builtin workflow type, got %d.", len(attrs)),
+			)
+			return nil
+		}
+
+		var userQuery UserQueryEnum
+
+		for type_, value := range attrs {
+			switch type_ {
+			case "auth_id":
+				x := UserQueryAuthId(value.(basetypes.StringValue).ValueString())
+				userQuery.Type = UserQueryTypeAuthId
+				userQuery.Value = &x
+				if response.Diagnostics.HasError() {
+					return nil
+				}
+			default:
+				response.Diagnostics.AddError(
+					"InvalidInput",
+					fmt.Sprintf("Unknown user query type: %s.", type_),
+				)
+				return nil
+			}
+		}
+
+		return &userQuery
+	}
+	processBuiltinWorkflowOneOf := func(val attr.Value) *BuiltinWorkflowOneOf {
+		attrs := val.(types.Object).Attributes()
+		if len(attrs) != 1 {
+			response.Diagnostics.AddError(
+				"InvalidInput",
+				fmt.Sprintf("Expected 1 builtin workflow type, got %d.", len(attrs)),
+			)
+			return nil
+		}
+
+		var workflow BuiltinWorkflowOneOf
+
+		reviewerValues := attrs["reviewers"].(basetypes.ListValue).Elements()
+		for _, reviewerValue := range reviewerValues {
+			reviewer := processUserQuery(reviewerValue)
+			if response.Diagnostics.HasError() {
+				return nil
+			}
+
+			workflow.Reviewers = append(workflow.Reviewers, *reviewer)
+		}
+
+		return &workflow
+	}
+	processBuiltin := func(val attr.Value) *BuiltinWorkflowEnum {
+		attrs := val.(types.Object).Attributes()
+		if len(attrs) != 1 {
+			response.Diagnostics.AddError(
+				"InvalidInput",
+				fmt.Sprintf("Expected 1 builtin workflow type, got %d.", len(attrs)),
+			)
+			return nil
+		}
+
+		var builtinWorkflow BuiltinWorkflowEnum
+
+		for type_, value := range attrs {
+			switch type_ {
+			case "one_of":
+				builtinWorkflow.Type = BuiltinWorkflowTypeOneOf
+				builtinWorkflow.Value = processBuiltinWorkflowOneOf(value)
+				if response.Diagnostics.HasError() {
+					return nil
+				}
+			default:
+				response.Diagnostics.AddError(
+					"InvalidInput",
+					fmt.Sprintf("Unknown builtin workflow type: %s.", type_),
+				)
+				return nil
+			}
+		}
+
+		return &builtinWorkflow
+	}
 
 	var model requestableModel
 
@@ -361,8 +624,37 @@ func (r *requestable) Create(
 		return
 	}
 
-	attrs := model.Grant.Attributes()
+	workflowAttrs := model.Grant.Attributes()
+	if len(workflowAttrs) != 1 {
+		response.Diagnostics.AddError(
+			"InvalidInput",
+			fmt.Sprintf("Expected 1 workflow type, got %d.", len(workflowAttrs)),
+		)
+		return
+	}
 
+	var workflow WorkflowEnum
+
+	for type_, value := range model.Workflow.Attributes() {
+		switch type_ {
+		case "builtin":
+			workflow.Type = WorkflowTypeBuiltin
+			workflow.Value = processBuiltin(value)
+			if response.Diagnostics.HasError() {
+				return
+			}
+		default:
+			response.Diagnostics.AddError(
+				"InvalidInput",
+				fmt.Sprintf("Unknown workflow type: %s.", type_),
+			)
+			return
+		}
+
+		break
+	}
+
+	attrs := model.Grant.Attributes()
 	if len(attrs) != 1 {
 		response.Diagnostics.AddError(
 			"InvalidInput",
@@ -399,11 +691,13 @@ func (r *requestable) Create(
 
 	body := new(bytes.Buffer)
 	requestBody := struct {
-		Name  string `json:"name"`
-		Grant Grant  `json:"grant"`
+		Name     string       `json:"name"`
+		Workflow WorkflowEnum `json:"workflow"`
+		Grant    Grant        `json:"grant"`
 	}{
-		Name:  model.Name.ValueString(),
-		Grant: grant,
+		Name:     model.Name.ValueString(),
+		Workflow: workflow,
+		Grant:    grant,
 	}
 
 	err := json.NewEncoder(body).Encode(requestBody)
@@ -460,7 +754,20 @@ func (r *requestable) Create(
 		return
 	}
 
-	objValue, diags := view.Grant.ToObjectValue(ctx)
+	var (
+		workflowObjValue basetypes.ObjectValue
+		diags            diag.Diagnostics
+	)
+
+	if view.Workflow != nil {
+		workflowObjValue, diags = view.Workflow.ToObjectValue(ctx)
+		response.Diagnostics.Append(diags...)
+		if response.Diagnostics.HasError() {
+			return
+		}
+	}
+
+	grantObjValue, diags := view.Grant.ToObjectValue(ctx)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -468,7 +775,8 @@ func (r *requestable) Create(
 
 	model.Id = types.StringValue(view.Id)
 	model.Name = types.StringValue(view.Name)
-	model.Grant = objValue
+	model.Workflow = workflowObjValue
+	model.Grant = grantObjValue
 
 	response.Diagnostics.Append(response.State.Set(ctx, &model)...)
 }
@@ -534,6 +842,12 @@ func (r *requestable) Read(
 		return
 	}
 
+	workflowObjValue, diags := view.Workflow.ToObjectValue(ctx)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
 	objValue, diags := view.Grant.ToObjectValue(ctx)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -542,6 +856,7 @@ func (r *requestable) Read(
 
 	model.Id = types.StringValue(view.Id)
 	model.Name = types.StringValue(view.Name)
+	model.Workflow = workflowObjValue
 	model.Grant = objValue
 
 	response.Diagnostics.Append(response.State.Set(ctx, &model)...)
