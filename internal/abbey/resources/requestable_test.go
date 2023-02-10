@@ -33,7 +33,14 @@ func TestAccRequestable(t *testing.T) {
 					Config: fmt.Sprintf(
 						`
 						resource "abbey_requestable" "test" {
-							name  = "%s"
+							name     = "%s"
+							workflow = {
+								builtin = {
+									one_of = {
+										reviewers = []
+									}
+								}
+							}
 							grant = {
 								generate = {
 									github = {

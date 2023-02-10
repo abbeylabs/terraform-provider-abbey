@@ -19,6 +19,7 @@ description: |-
 
 - `grant` (Attributes) (see [below for nested schema](#nestedatt--grant))
 - `name` (String)
+- `workflow` (Attributes) (see [below for nested schema](#nestedatt--workflow))
 
 ### Read-Only
 
@@ -96,5 +97,36 @@ EOT
 
 [1]: https://developer.hashicorp.com/terraform/language/expressions/strings#string-templates
 [2]: https://pkg.go.dev/text/template
+
+
+
+
+<a id="nestedatt--workflow"></a>
+### Nested Schema for `workflow`
+
+Optional:
+
+- `builtin` (Attributes) (see [below for nested schema](#nestedatt--workflow--builtin))
+
+<a id="nestedatt--workflow--builtin"></a>
+### Nested Schema for `workflow.builtin`
+
+Optional:
+
+- `one_of` (Attributes) (see [below for nested schema](#nestedatt--workflow--builtin--one_of))
+
+<a id="nestedatt--workflow--builtin--one_of"></a>
+### Nested Schema for `workflow.builtin.one_of`
+
+Required:
+
+- `reviewers` (Attributes List) (see [below for nested schema](#nestedatt--workflow--builtin--one_of--reviewers))
+
+<a id="nestedatt--workflow--builtin--one_of--reviewers"></a>
+### Nested Schema for `workflow.builtin.one_of.reviewers`
+
+Optional:
+
+- `auth_id` (String, Sensitive) The authentication identifier of the reviewer in Abbey Labs. It may be email, phone number, or username.
 
 
