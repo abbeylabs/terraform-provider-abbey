@@ -59,10 +59,10 @@ type plan struct {
 }
 
 type view struct {
-	Id        string          `json:"id"`
-	CreatedAt time.Time       `json:"created_at"`
-	Name      string          `json:"name"`
-	Linked    json.RawMessage `json:"linked"`
+	Id        string          `json:"id" tfsdk:"id"`
+	CreatedAt time.Time       `json:"created_at" tfsdk:"created_at"`
+	Name      string          `json:"name" tfsdk:"name"`
+	Linked    json.RawMessage `json:"linked" tfsdk:"linked"`
 }
 
 func (r *resource) Create(
