@@ -11,6 +11,7 @@ import (
 	. "github.com/hashicorp/terraform-plugin-framework/resource"
 	. "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	"abbey.so/terraform-provider-abbey/internal/abbey/provider"
 )
@@ -51,18 +52,27 @@ func (r *resource) Schema(
 	}
 }
 
-type plan struct {
+type model struct {
 	Id        types.String `tfsdk:"id"`
 	CreatedAt types.String `tfsdk:"created_at"`
 	Name      types.String `tfsdk:"name"`
 	Linked    types.String `tfsdk:"linked"`
 }
 
+func modelFromView(v view) model {
+	return model{
+		Id:        basetypes.NewStringValue(v.Id),
+		CreatedAt: basetypes.NewStringValue(v.CreatedAt.Format(time.RFC3339)),
+		Name:      basetypes.NewStringValue(v.Name),
+		Linked:    basetypes.NewStringValue(string(v.Linked)),
+	}
+}
+
 type view struct {
-	Id        string          `json:"id" tfsdk:"id"`
-	CreatedAt time.Time       `json:"created_at" tfsdk:"created_at"`
-	Name      string          `json:"name" tfsdk:"name"`
-	Linked    json.RawMessage `json:"linked" tfsdk:"linked"`
+	Id        string          `json:"id"`
+	CreatedAt time.Time       `json:"created_at"`
+	Name      string          `json:"name"`
+	Linked    json.RawMessage `json:"linked"`
 }
 
 func (r *resource) Create(
@@ -70,9 +80,9 @@ func (r *resource) Create(
 	request CreateRequest,
 	response *CreateResponse,
 ) {
-	var p plan
+	var m model
 
-	response.Diagnostics.Append(request.Plan.Get(ctx, &p)...)
+	response.Diagnostics.Append(request.Plan.Get(ctx, &m)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -82,8 +92,8 @@ func (r *resource) Create(
 		Name   string          `json:"name"`
 		Linked json.RawMessage `json:"linked"`
 	}{
-		Name:   p.Name.ValueString(),
-		Linked: []byte(p.Linked.ValueString()),
+		Name:   m.Name.ValueString(),
+		Linked: []byte(m.Linked.ValueString()),
 	}
 
 	err := json.NewEncoder(body).Encode(requestBody)
@@ -140,7 +150,7 @@ func (r *resource) Create(
 		return
 	}
 
-	response.Diagnostics.Append(response.State.Set(ctx, v)...)
+	response.Diagnostics.Append(response.State.Set(ctx, modelFromView(v))...)
 }
 
 func (r *resource) Read(
@@ -202,7 +212,7 @@ func (r *resource) Read(
 		return
 	}
 
-	response.Diagnostics.Append(response.State.Set(ctx, v)...)
+	response.Diagnostics.Append(response.State.Set(ctx, modelFromView(v))...)
 }
 
 func (r *resource) Update(
