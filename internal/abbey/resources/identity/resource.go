@@ -158,9 +158,8 @@ func (r *resource) Read(
 	request ReadRequest,
 	response *ReadResponse,
 ) {
-	var v view
-
-	response.Diagnostics.Append(request.State.Get(ctx, &v)...)
+	var m model
+	response.Diagnostics.Append(request.State.Get(ctx, &m)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -168,7 +167,7 @@ func (r *resource) Read(
 	req, err := http.NewRequestWithContext(
 		ctx,
 		http.MethodGet,
-		fmt.Sprintf("%s/v1/identities/%s", r.data.Host, v.Id),
+		fmt.Sprintf("%s/v1/identities/%s", r.data.Host, m.Id.ValueString()),
 		nil,
 	)
 	if err != nil {
@@ -203,6 +202,7 @@ func (r *resource) Read(
 		return
 	}
 
+	var v view
 	err = json.NewDecoder(resp.Body).Decode(&v)
 	if err != nil {
 		response.Diagnostics.AddError(
