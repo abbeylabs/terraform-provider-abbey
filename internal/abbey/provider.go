@@ -13,6 +13,7 @@ import (
 
 	abbeyprovider "abbey.so/terraform-provider-abbey/internal/abbey/provider"
 	"abbey.so/terraform-provider-abbey/internal/abbey/resources"
+	identityresource "abbey.so/terraform-provider-abbey/internal/abbey/resources/identity"
 )
 
 const (
@@ -98,5 +99,6 @@ func (p *provider_) DataSources(context.Context) []func() datasource.DataSource 
 func (p *provider_) Resources(context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		resources.Requestable,
+		identityresource.New,
 	}
 }
