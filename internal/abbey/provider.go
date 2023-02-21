@@ -1,6 +1,7 @@
 package abbey
 
 import (
+	grantkitresource "abbey.so/terraform-provider-abbey/internal/abbey/resources/grantkit"
 	"context"
 	"net/http"
 	"os"
@@ -99,6 +100,7 @@ func (p *provider_) DataSources(context.Context) []func() datasource.DataSource 
 func (p *provider_) Resources(context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		resources.Requestable,
+		grantkitresource.New,
 		identityresource.New,
 	}
 }
