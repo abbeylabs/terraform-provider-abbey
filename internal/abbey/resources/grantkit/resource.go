@@ -108,6 +108,9 @@ func (r resource) Schema(ctx context.Context, request SchemaRequest, response *S
 								"require_if": schema.ListNestedAttribute{
 									Optional:    true,
 									Description: "The condition that determines whether this step should be run.",
+									Validators: []validator.List{
+										listvalidator.SizeAtLeast(1),
+									},
 									NestedObject: schema.NestedAttributeObject{
 										Attributes: map[string]schema.Attribute{
 											"bundle": schema.StringAttribute{

@@ -28,7 +28,7 @@ func TestAccIdentity(t *testing.T) {
 					ResourceName: "abbey_identity.test",
 					Config: fmt.Sprintf(
 						`
-						resources "abbey_identity" "test" {
+						resource "abbey_identity" "test" {
 							name   = "%s"
 							linked = jsonencode({
 								abbey = [

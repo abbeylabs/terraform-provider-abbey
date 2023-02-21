@@ -32,7 +32,7 @@ func TestAccRequestable(t *testing.T) {
 					ResourceName: "abbey_requestable.test",
 					Config: fmt.Sprintf(
 						`
-						resources "abbey_requestable" "test" {
+						resource "abbey_requestable" "test" {
 							name     = "%s"
 							workflow = {
 								builtin = {
