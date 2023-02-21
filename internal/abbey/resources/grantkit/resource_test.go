@@ -38,7 +38,7 @@ func TestAccGrantKit(t *testing.T) {
 								reviewers = {
 								  one_of = ["primary-id-1"]
 								}
-								require_if = [
+								skip_if = [
 								  { bundle = "github://organization/repository/path/to/bundle.tar.gz" }
 								]
 							  }

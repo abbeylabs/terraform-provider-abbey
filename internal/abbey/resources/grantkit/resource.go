@@ -105,7 +105,7 @@ func (r resource) Schema(ctx context.Context, request SchemaRequest, response *S
 										},
 									},
 								},
-								"require_if": schema.ListNestedAttribute{
+								"skip_if": schema.ListNestedAttribute{
 									Optional:    true,
 									Description: "The condition that determines whether this step should be run.",
 									Validators: []validator.List{
