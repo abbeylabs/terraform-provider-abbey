@@ -152,6 +152,7 @@ func (r resource) Schema(ctx context.Context, request SchemaRequest, response *S
 							listvalidator.AtLeastOneOf(path.Expressions{
 								path.MatchRelative().AtParent().AtName("revoke_if"),
 							}...),
+							listvalidator.SizeAtLeast(1),
 						},
 						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
@@ -181,6 +182,9 @@ func (r resource) Schema(ctx context.Context, request SchemaRequest, response *S
 					"revoke_if": schema.ListNestedAttribute{
 						Optional:    true,
 						Description: "Determines the conditions for which access to this resource should be revoked from the requester.",
+						Validators: []validator.List{
+							listvalidator.SizeAtLeast(1),
+						},
 						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
 								"bundle": schema.StringAttribute{
