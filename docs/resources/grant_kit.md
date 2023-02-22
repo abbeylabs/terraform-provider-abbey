@@ -37,7 +37,7 @@ This resource can be used to create access request workflows to help you with se
 
 Required:
 
-- `location` (String) An RFC 3986 URI. Supports `github:// only. Schemes such as `https://`, `file://`, and `s3://` to come in future releases.
+- `location` (String) An RFC 3986 URI. Supports `github://` only. Schemes such as `https://`, `file://`, and `s3://` to come in future releases.
 
 Optional:
 

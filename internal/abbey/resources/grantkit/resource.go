@@ -219,7 +219,7 @@ func (r resource) Schema(ctx context.Context, request SchemaRequest, response *S
 				Attributes: map[string]schema.Attribute{
 					"location": schema.StringAttribute{
 						Required: true,
-						Description: "An RFC 3986 URI. Supports `github:// only. Schemes " +
+						Description: "An RFC 3986 URI. Supports `github://` only. Schemes " +
 							"such as `https://`, `file://`, and `s3://` to come in future releases.",
 						Validators: []validator.String{
 							abbeyvalidator.IsRFC3986(),
