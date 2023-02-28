@@ -1,7 +1,6 @@
 package abbey
 
 import (
-	grantkitresource "abbey.so/terraform-provider-abbey/internal/abbey/resources/grantkit"
 	"context"
 	"net/http"
 	"os"
@@ -13,8 +12,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	abbeyprovider "abbey.so/terraform-provider-abbey/internal/abbey/provider"
-	"abbey.so/terraform-provider-abbey/internal/abbey/resources"
+	grantkitresource "abbey.so/terraform-provider-abbey/internal/abbey/resources/grantkit"
 	identityresource "abbey.so/terraform-provider-abbey/internal/abbey/resources/identity"
+	requestableresource "abbey.so/terraform-provider-abbey/internal/abbey/resources/requestable"
 )
 
 const (
@@ -57,9 +57,20 @@ func (p *provider_) Schema(
 	response.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"host": schema.StringAttribute{
-				Optional: true,
+				CustomType:          nil,
+				Required:            false,
+				Optional:            true,
+				Sensitive:           false,
+				Description:         "",
+				MarkdownDescription: "The Abbey API host. Defaults to `https://api.abbey.so`.",
+				DeprecationMessage:  "",
+				Validators:          nil,
 			},
 		},
+		Blocks:              nil,
+		Description:         "",
+		MarkdownDescription: "",
+		DeprecationMessage:  "",
 	}
 }
 
@@ -99,8 +110,8 @@ func (p *provider_) DataSources(context.Context) []func() datasource.DataSource 
 
 func (p *provider_) Resources(context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-		resources.Requestable,
 		grantkitresource.New,
+		requestableresource.New,
 		identityresource.New,
 	}
 }

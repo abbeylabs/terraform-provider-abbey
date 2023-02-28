@@ -5,7 +5,10 @@ import (
 	"net/http"
 )
 
-const TypePrefix = "abbey"
+const (
+	DefaultHost = "https://api.abbey.so"
+	TypePrefix  = "abbey"
+)
 
 func NewTypeName(name string) string {
 	return fmt.Sprintf("%s_%s", TypePrefix, name)

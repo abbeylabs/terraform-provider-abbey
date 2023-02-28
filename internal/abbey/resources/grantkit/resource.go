@@ -3,6 +3,7 @@ package grantkit
 import (
 	"context"
 	"fmt"
+
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -10,9 +11,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"abbey.so/terraform-provider-abbey/internal/abbey/provider"
+	abbeyvalidator "abbey.so/terraform-provider-abbey/validator"
 )
-import "abbey.so/terraform-provider-abbey/internal/abbey/provider"
-import abbeyvalidator "abbey.so/terraform-provider-abbey/validator"
 
 var (
 	_ Resource              = (*resource)(nil)
@@ -20,14 +22,14 @@ var (
 )
 
 func New() Resource {
-	return &resource{}
+	return &resource{data: nil}
 }
 
 type resource struct {
 	data *provider.ResourceData
 }
 
-func (r resource) Configure(ctx context.Context, request ConfigureRequest, response *ConfigureResponse) {
+func (r *resource) Configure(ctx context.Context, request ConfigureRequest, response *ConfigureResponse) {
 	if request.ProviderData == nil {
 		return
 	}
