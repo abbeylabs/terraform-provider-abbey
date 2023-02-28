@@ -102,15 +102,7 @@ func (g GrantTf) Equal(value attr.Value) bool {
 }
 
 func (g GrantTf) IsNull() bool {
-	defined := false
-
-	g.value.VisitGrant(GrantVisitor{
-		Generate: func(GenerateGrant) {
-			defined = true
-		},
-	})
-
-	return !defined
+	return !g.valid
 }
 
 func (g GrantTf) IsUnknown() bool {

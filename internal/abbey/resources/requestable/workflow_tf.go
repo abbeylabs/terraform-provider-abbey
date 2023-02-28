@@ -200,13 +200,7 @@ func (w WorkflowTf) Equal(value attr.Value) bool {
 }
 
 func (w WorkflowTf) IsNull() (defined bool) {
-	w.value.VisitWorkflow(WorkflowVisitor{
-		Builtin: func(workflow BuiltinWorkflow) {
-			defined = true
-		},
-	})
-
-	return !defined
+	return !w.valid
 }
 
 func (w WorkflowTf) IsUnknown() (defined bool) {
