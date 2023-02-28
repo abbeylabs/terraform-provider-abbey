@@ -23,12 +23,16 @@ func (t GrantType) TerraformType(context.Context) tftypes.Type {
 }
 
 func (t GrantType) ValueFromTerraform(ctx context.Context, value tftypes.Value) (value_ attr.Value, err error) {
+	var g Grant
+
+	if !value.IsFullyKnown() {
+		return types.ObjectNull(g.AttrTypes(ctx)), nil
+	}
+
 	var m map[string]tftypes.Value
 	if err := value.As(&m); err != nil {
 		return nil, err
 	}
-
-	var g Grant
 
 	if len(m) == 0 {
 		return types.ObjectNull(g.AttrTypes(ctx)), nil

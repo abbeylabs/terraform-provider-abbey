@@ -24,12 +24,16 @@ func (w WorkflowType) TerraformType(context.Context) tftypes.Type {
 }
 
 func (t WorkflowType) ValueFromTerraform(ctx context.Context, value tftypes.Value) (value_ attr.Value, err error) {
+	var w Workflow
+
+	if !value.IsFullyKnown() {
+		return types.ObjectNull(w.AttrTypes(ctx)), nil
+	}
+
 	var m map[string]tftypes.Value
 	if err := value.As(&m); err != nil {
 		return nil, err
 	}
-
-	var w Workflow
 
 	if len(m) == 0 {
 		return types.ObjectNull(w.AttrTypes(ctx)), nil
