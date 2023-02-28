@@ -10,10 +10,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 
 	"abbey.so/terraform-provider-abbey/internal/abbey"
+	"abbey.so/terraform-provider-abbey/internal/abbey/provider"
 )
 
 var testAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
-	"abbey": providerserver.NewProtocol6WithError(abbey.New("test", "http://localhost:8080")()),
+	"abbey": providerserver.NewProtocol6WithError(abbey.New("test", provider.DefaultHost)()),
 }
 
 func TestAccIdentity(t *testing.T) {

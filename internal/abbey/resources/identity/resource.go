@@ -17,7 +17,7 @@ import (
 )
 
 func New() Resource {
-	return &resource{}
+	return &resource{data: nil}
 }
 
 type resource struct {
