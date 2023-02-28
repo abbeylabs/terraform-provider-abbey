@@ -113,7 +113,24 @@ Optional:
 
 Optional:
 
+- `all_of` (Attributes) (see [below for nested schema](#nestedatt--workflow--builtin--all_of))
 - `one_of` (Attributes) (see [below for nested schema](#nestedatt--workflow--builtin--one_of))
+
+<a id="nestedatt--workflow--builtin--all_of"></a>
+### Nested Schema for `workflow.builtin.all_of`
+
+Required:
+
+- `reviewers` (Attributes List) (see [below for nested schema](#nestedatt--workflow--builtin--all_of--reviewers))
+
+<a id="nestedatt--workflow--builtin--all_of--reviewers"></a>
+### Nested Schema for `workflow.builtin.all_of.reviewers`
+
+Optional:
+
+- `auth_id` (String, Sensitive) The authentication identifier of the reviewer in Abbey Labs. It may be email, phone number, or username.
+
+
 
 <a id="nestedatt--workflow--builtin--one_of"></a>
 ### Nested Schema for `workflow.builtin.one_of`
