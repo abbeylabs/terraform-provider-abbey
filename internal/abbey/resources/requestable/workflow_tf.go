@@ -23,11 +23,14 @@ func (w WorkflowType) TerraformType(context.Context) tftypes.Type {
 	}
 }
 
-func (t WorkflowType) ValueFromTerraform(ctx context.Context, value tftypes.Value) (value_ attr.Value, err error) {
+func (t WorkflowType) ValueFromTerraform(_ context.Context, value tftypes.Value) (value_ attr.Value, err error) {
 	var w Workflow
 
 	if !value.IsFullyKnown() {
-		return types.ObjectNull(w.AttrTypes(ctx)), nil
+		return WorkflowTf{
+			Workflow: w,
+			valid:    false,
+		}, nil
 	}
 
 	var m map[string]tftypes.Value
@@ -36,7 +39,10 @@ func (t WorkflowType) ValueFromTerraform(ctx context.Context, value tftypes.Valu
 	}
 
 	if len(m) == 0 {
-		return types.ObjectNull(w.AttrTypes(ctx)), nil
+		return WorkflowTf{
+			Workflow: w,
+			valid:    false,
+		}, nil
 	}
 
 	var inner WorkflowEnum
@@ -44,7 +50,15 @@ func (t WorkflowType) ValueFromTerraform(ctx context.Context, value tftypes.Valu
 	for key, val := range m {
 		switch key {
 		case workflowTypeBuiltinTf:
-			inner, err = BuiltinWorkflowFromTfTypesValue(val)
+			inner_, err := BuiltinWorkflowFromTfTypesValue(val)
+			if err != nil {
+				return nil, err
+			}
+			if inner_ == nil {
+				continue
+			}
+
+			inner = inner_
 		default:
 			return value_, fmt.Errorf("unknown key: %s", key)
 		}
@@ -53,12 +67,12 @@ func (t WorkflowType) ValueFromTerraform(ctx context.Context, value tftypes.Valu
 		return value_, err
 	}
 
-	return &Workflow{value: inner}, nil
+	return WorkflowTf{Workflow: Workflow{value: inner}, valid: true}, nil
 }
 
 func (t WorkflowType) ValueType(context.Context) attr.Value {
-	var w Workflow
-	return &w
+	var wtf WorkflowTf
+	return wtf
 }
 
 func (t WorkflowType) Equal(ty attr.Type) bool {
@@ -88,7 +102,7 @@ func (t WorkflowType) ValueFromObject(
 	ctx context.Context,
 	value basetypes.ObjectValue,
 ) (basetypes.ObjectValuable, Diagnostics) {
-	var w Workflow
+	var w WorkflowTf
 
 	diags := value.As(ctx, &w, basetypes.ObjectAsOptions{
 		UnhandledNullAsEmpty:    false,
@@ -101,11 +115,21 @@ func (t WorkflowType) ValueFromObject(
 	return &w, diags
 }
 
-func (w Workflow) ToObjectValue(ctx context.Context) (object basetypes.ObjectValue, diags Diagnostics) {
+type WorkflowTf struct {
+	Workflow
+
+	valid bool
+}
+
+func (w WorkflowTf) ToObjectValue(ctx context.Context) (object basetypes.ObjectValue, diags Diagnostics) {
 	var (
 		builtin      BuiltinWorkflow
 		builtinValue attr.Value
 	)
+
+	if !w.valid {
+		return types.ObjectNull(w.AttrTypes(ctx)), nil
+	}
 
 	w.value.VisitWorkflow(WorkflowVisitor{
 		Builtin: func(workflow BuiltinWorkflow) {
@@ -126,7 +150,7 @@ func (w Workflow) ToObjectValue(ctx context.Context) (object basetypes.ObjectVal
 	)
 }
 
-func (w Workflow) AttrTypes(ctx context.Context) map[string]attr.Type {
+func (w WorkflowTf) AttrTypes(ctx context.Context) map[string]attr.Type {
 	var builtin BuiltinWorkflow
 
 	return map[string]attr.Type{
@@ -134,11 +158,11 @@ func (w Workflow) AttrTypes(ctx context.Context) map[string]attr.Type {
 	}
 }
 
-func (w Workflow) Type(ctx context.Context) attr.Type {
+func (w WorkflowTf) Type(context.Context) attr.Type {
 	return WorkflowType{}
 }
 
-func (w Workflow) ToTerraformValue(ctx context.Context) (value tftypes.Value, err error) {
+func (w WorkflowTf) ToTerraformValue(ctx context.Context) (value tftypes.Value, err error) {
 	var (
 		builtinValue tftypes.Value
 		type_        WorkflowType
@@ -161,7 +185,7 @@ func (w Workflow) ToTerraformValue(ctx context.Context) (value tftypes.Value, er
 	), nil
 }
 
-func (w Workflow) Equal(value attr.Value) bool {
+func (w WorkflowTf) Equal(value attr.Value) bool {
 	rhs, err := value.ToTerraformValue(context.Background())
 	if err != nil {
 		return false
@@ -175,7 +199,7 @@ func (w Workflow) Equal(value attr.Value) bool {
 	return lhs.Equal(rhs)
 }
 
-func (w Workflow) IsNull() (defined bool) {
+func (w WorkflowTf) IsNull() (defined bool) {
 	w.value.VisitWorkflow(WorkflowVisitor{
 		Builtin: func(workflow BuiltinWorkflow) {
 			defined = true
@@ -185,7 +209,7 @@ func (w Workflow) IsNull() (defined bool) {
 	return !defined
 }
 
-func (w Workflow) IsUnknown() (defined bool) {
+func (w WorkflowTf) IsUnknown() (defined bool) {
 	w.value.VisitWorkflow(WorkflowVisitor{
 		Builtin: func(workflow BuiltinWorkflow) {
 			defined = true
@@ -195,7 +219,7 @@ func (w Workflow) IsUnknown() (defined bool) {
 	return !defined
 }
 
-func (w Workflow) String() string {
+func (w WorkflowTf) String() string {
 	var inner string
 
 	w.value.VisitWorkflow(WorkflowVisitor{

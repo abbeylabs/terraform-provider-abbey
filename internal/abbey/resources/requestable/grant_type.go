@@ -6,7 +6,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	. "github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
@@ -22,11 +21,11 @@ func (t GrantType) TerraformType(context.Context) tftypes.Type {
 	}
 }
 
-func (t GrantType) ValueFromTerraform(ctx context.Context, value tftypes.Value) (value_ attr.Value, err error) {
+func (t GrantType) ValueFromTerraform(_ context.Context, value tftypes.Value) (value_ attr.Value, err error) {
 	var g Grant
 
 	if !value.IsFullyKnown() {
-		return types.ObjectNull(g.AttrTypes(ctx)), nil
+		return GrantTf{Grant: g, valid: false}, nil
 	}
 
 	var m map[string]tftypes.Value
@@ -35,7 +34,7 @@ func (t GrantType) ValueFromTerraform(ctx context.Context, value tftypes.Value) 
 	}
 
 	if len(m) == 0 {
-		return types.ObjectNull(g.AttrTypes(ctx)), nil
+		return GrantTf{Grant: g, valid: false}, nil
 	}
 
 	var inner GrantEnum
@@ -57,12 +56,12 @@ func (t GrantType) ValueFromTerraform(ctx context.Context, value tftypes.Value) 
 		}
 	}
 
-	return &Grant{value: inner}, nil
+	return GrantTf{Grant: Grant{value: inner}, valid: true}, nil
 }
 
 func (t GrantType) ValueType(context.Context) attr.Value {
-	var w Grant
-	return &w
+	var g GrantTf
+	return g
 }
 
 func (t GrantType) Equal(ty attr.Type) bool {
@@ -92,7 +91,7 @@ func (t GrantType) ValueFromObject(
 	ctx context.Context,
 	value basetypes.ObjectValue,
 ) (basetypes.ObjectValuable, Diagnostics) {
-	var g Grant
+	var g GrantTf
 
 	diags := value.As(ctx, &g, basetypes.ObjectAsOptions{
 		UnhandledNullAsEmpty:    false,

@@ -20,6 +20,10 @@ func BuiltinWorkflowFromTfTypesValue(value tftypes.Value) (ret *BuiltinWorkflow,
 		return nil, err
 	}
 
+	if len(m) == 0 {
+		return nil, nil
+	}
+
 	var inner BuiltinWorkflowEnum
 
 	for key, val := range m {

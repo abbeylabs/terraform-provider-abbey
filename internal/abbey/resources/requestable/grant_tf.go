@@ -11,11 +11,21 @@ import (
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
-func (g Grant) ToObjectValue(ctx context.Context) (object basetypes.ObjectValue, diags Diagnostics) {
+type GrantTf struct {
+	Grant
+
+	valid bool
+}
+
+func (g GrantTf) ToObjectValue(ctx context.Context) (object basetypes.ObjectValue, diags Diagnostics) {
 	var (
 		generate      GenerateGrant
 		generateValue attr.Value = types.ObjectNull(generate.AttrTypes(ctx))
 	)
+
+	if !g.valid {
+		return types.ObjectNull(g.AttrTypes(ctx)), nil
+	}
 
 	g.value.VisitGrant(GrantVisitor{
 		Generate: func(grant GenerateGrant) {
@@ -36,7 +46,7 @@ func (g Grant) ToObjectValue(ctx context.Context) (object basetypes.ObjectValue,
 	)
 }
 
-func (g Grant) AttrTypes(ctx context.Context) map[string]attr.Type {
+func (g GrantTf) AttrTypes(ctx context.Context) map[string]attr.Type {
 	var generate GenerateGrant
 
 	return map[string]attr.Type{
@@ -44,7 +54,7 @@ func (g Grant) AttrTypes(ctx context.Context) map[string]attr.Type {
 	}
 }
 
-func GrantTfTypesType() tftypes.Type {
+func GrantTfTfTypesType() tftypes.Type {
 	return tftypes.Object{
 		AttributeTypes: map[string]tftypes.Type{
 			grantTypeGenerateTf: GenerateGrantTfTypesType(),
@@ -53,11 +63,11 @@ func GrantTfTypesType() tftypes.Type {
 	}
 }
 
-func (g Grant) Type(ctx context.Context) attr.Type {
+func (g GrantTf) Type(context.Context) attr.Type {
 	return GrantType{}
 }
 
-func (g Grant) ToTerraformValue(ctx context.Context) (value tftypes.Value, err error) {
+func (g GrantTf) ToTerraformValue(ctx context.Context) (value tftypes.Value, err error) {
 	var generateValue tftypes.Value
 
 	g.value.VisitGrant(GrantVisitor{
@@ -70,14 +80,14 @@ func (g Grant) ToTerraformValue(ctx context.Context) (value tftypes.Value, err e
 	}
 
 	return tftypes.NewValue(
-		GrantTfTypesType(),
+		GrantTfTfTypesType(),
 		map[string]tftypes.Value{
 			grantTypeGenerateTf: generateValue,
 		},
 	), nil
 }
 
-func (g Grant) Equal(value attr.Value) bool {
+func (g GrantTf) Equal(value attr.Value) bool {
 	rhs, err := value.ToTerraformValue(context.Background())
 	if err != nil {
 		return false
@@ -91,7 +101,7 @@ func (g Grant) Equal(value attr.Value) bool {
 	return lhs.Equal(rhs)
 }
 
-func (g Grant) IsNull() bool {
+func (g GrantTf) IsNull() bool {
 	defined := false
 
 	g.value.VisitGrant(GrantVisitor{
@@ -103,7 +113,7 @@ func (g Grant) IsNull() bool {
 	return !defined
 }
 
-func (g Grant) IsUnknown() bool {
+func (g GrantTf) IsUnknown() bool {
 	defined := false
 
 	g.value.VisitGrant(GrantVisitor{
@@ -115,7 +125,7 @@ func (g Grant) IsUnknown() bool {
 	return !defined
 }
 
-func (g Grant) String() string {
+func (g GrantTf) String() string {
 	var inner string
 
 	g.value.VisitGrant(GrantVisitor{

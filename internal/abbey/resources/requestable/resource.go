@@ -164,16 +164,29 @@ func (r *resource) Configure(
 type Model struct {
 	Id       types.String `tfsdk:"id"`
 	Name     types.String `tfsdk:"name"`
-	Workflow *Workflow    `tfsdk:"workflow"`
-	Grant    *Grant       `tfsdk:"grant"`
+	Workflow WorkflowTf   `tfsdk:"workflow"`
+	Grant    GrantTf      `tfsdk:"grant"`
 }
 
 func (m Model) ToView() *View {
+	var (
+		workflow *Workflow
+		grant    *Grant
+	)
+
+	if m.Workflow.valid {
+		workflow = &m.Workflow.Workflow
+	}
+
+	if m.Grant.valid {
+		grant = &m.Grant.Grant
+	}
+
 	return &View{
 		Id:       m.Id.ValueString(),
 		Name:     m.Name.ValueString(),
-		Workflow: m.Workflow,
-		Grant:    m.Grant,
+		Workflow: workflow,
+		Grant:    grant,
 	}
 }
 
@@ -185,11 +198,30 @@ type View struct {
 }
 
 func (v View) ToModel() *Model {
+	var (
+		workflow WorkflowTf
+		grant    GrantTf
+	)
+
+	if v.Workflow != nil {
+		workflow = WorkflowTf{
+			Workflow: *v.Workflow,
+			valid:    true,
+		}
+	}
+
+	if v.Grant != nil {
+		grant = GrantTf{
+			Grant: *v.Grant,
+			valid: true,
+		}
+	}
+
 	return &Model{
 		Id:       types.StringValue(v.Id),
 		Name:     types.StringValue(v.Name),
-		Workflow: v.Workflow,
-		Grant:    v.Grant,
+		Workflow: workflow,
+		Grant:    grant,
 	}
 }
 
