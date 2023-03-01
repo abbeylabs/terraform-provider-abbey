@@ -1,6 +1,7 @@
 package requestable
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
@@ -12,7 +13,7 @@ const (
 	generateGrantTypeGithubTf = "github"
 )
 
-func GenerateGrantFromTfTypesValue(value tftypes.Value) (ret *GenerateGrant, err error) {
+func GenerateGrantFromTfTypesValue(ctx context.Context, value tftypes.Value) (ret *GenerateGrant, err error) {
 	var m map[string]tftypes.Value
 	if err := value.As(&m); err != nil {
 		return nil, err
@@ -27,7 +28,7 @@ func GenerateGrantFromTfTypesValue(value tftypes.Value) (ret *GenerateGrant, err
 	for key, val := range m {
 		switch key {
 		case generateGrantTypeGithubTf:
-			inner_, err := GithubGenerateDestinationFromTfTypesValue(val)
+			inner_, err := GithubGenerateDestinationFromTfTypesValue(ctx, val)
 			if err != nil {
 				return nil, err
 			}
@@ -47,13 +48,13 @@ func GenerateGrantFromTfTypesValue(value tftypes.Value) (ret *GenerateGrant, err
 	return &GenerateGrant{value: inner}, nil
 }
 
-func GithubGenerateDestinationFromTfTypesValue(value tftypes.Value) (ret *GithubGenerateDestination, err error) {
-	var m map[string]tftypes.Value
+func GithubGenerateDestinationFromTfTypesValue(ctx context.Context, value tftypes.Value) (ret *GithubGenerateDestination, err error) {
+	var m *map[string]tftypes.Value
 	if err := value.As(&m); err != nil {
 		return nil, err
 	}
 
-	if len(m) == 0 {
+	if m == nil {
 		return nil, nil
 	}
 
@@ -63,14 +64,17 @@ func GithubGenerateDestinationFromTfTypesValue(value tftypes.Value) (ret *Github
 		append_ string
 	)
 
-	if err := m["repo"].As(&repo); err != nil {
+	if err := (*m)["repo"].As(&repo); err != nil {
 		return nil, err
 	}
-	if err := m["path"].As(&path); err != nil {
+	if err := (*m)["path"].As(&path); err != nil {
 		return nil, err
 	}
-	if err := m["append"].As(&append_); err != nil {
-		return nil, err
+
+	if (*m)["append"].IsKnown() {
+		if err := (*m)["append"].As(&append_); err != nil {
+			return nil, err
+		}
 	}
 
 	return &GithubGenerateDestination{

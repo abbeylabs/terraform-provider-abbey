@@ -21,28 +21,26 @@ func (t GrantType) TerraformType(context.Context) tftypes.Type {
 	}
 }
 
-func (t GrantType) ValueFromTerraform(_ context.Context, value tftypes.Value) (value_ attr.Value, err error) {
-	var g Grant
-
-	if !value.IsFullyKnown() {
-		return GrantTf{Grant: g, valid: false}, nil
+func (t GrantType) ValueFromTerraform(ctx context.Context, value tftypes.Value) (value_ attr.Value, err error) {
+	if !value.IsKnown() {
+		return NewUnknownGrant(), nil
 	}
 
-	var m map[string]tftypes.Value
+	var m *map[string]tftypes.Value
 	if err := value.As(&m); err != nil {
 		return nil, err
 	}
 
-	if len(m) == 0 {
-		return GrantTf{Grant: g, valid: false}, nil
+	if m == nil {
+		return NewNullGrant(), nil
 	}
 
 	var inner GrantEnum
 
-	for key, val := range m {
+	for key, val := range *m {
 		switch key {
 		case grantTypeGenerateTf:
-			inner_, err := GenerateGrantFromTfTypesValue(val)
+			inner_, err := GenerateGrantFromTfTypesValue(ctx, val)
 			if err != nil {
 				return value_, err
 			}
@@ -56,7 +54,7 @@ func (t GrantType) ValueFromTerraform(_ context.Context, value tftypes.Value) (v
 		}
 	}
 
-	return GrantTf{Grant: Grant{value: inner}, valid: true}, nil
+	return NewGrant(Grant{value: inner}), nil
 }
 
 func (t GrantType) ValueType(context.Context) attr.Value {

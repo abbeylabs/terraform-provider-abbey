@@ -9,41 +9,78 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
+
+	"abbey.so/terraform-provider-abbey/internal/abbey/value"
 )
 
 type GrantTf struct {
 	Grant
 
-	valid bool
+	state value.State
+}
+
+func NewGrant(g Grant) GrantTf {
+	return GrantTf{
+		Grant: g,
+		state: value.NewValidState(),
+	}
+}
+
+func NewNullGrant() GrantTf {
+	var g Grant
+
+	return GrantTf{
+		Grant: g,
+		state: value.NewNullState(),
+	}
+}
+
+func NewUnknownGrant() GrantTf {
+	var g Grant
+
+	return GrantTf{
+		Grant: g,
+		state: value.NewUnknownState(),
+	}
 }
 
 func (g GrantTf) ToObjectValue(ctx context.Context) (object basetypes.ObjectValue, diags Diagnostics) {
-	var (
-		generate      GenerateGrant
-		generateValue attr.Value = types.ObjectNull(generate.AttrTypes(ctx))
-	)
+	g.state.Visit(value.StateVisitor{
+		Null: func() {
+			object = types.ObjectNull(g.AttrTypes(ctx))
+		},
+		Unknown: func() {
+			object = types.ObjectUnknown(g.AttrTypes(ctx))
+		},
+		Valid: func() {
+			var (
+				generate      GenerateGrant
+				generateValue attr.Value = types.ObjectNull(generate.AttrTypes(ctx))
+				diags_        Diagnostics
+			)
 
-	if !g.valid {
-		return types.ObjectNull(g.AttrTypes(ctx)), nil
-	}
+			g.value.VisitGrant(GrantVisitor{
+				Generate: func(grant GenerateGrant) {
+					generateValue, diags = grant.ToObjectValue(ctx)
+				},
+			})
+			if diags.HasError() {
+				return
+			}
 
-	g.value.VisitGrant(GrantVisitor{
-		Generate: func(grant GenerateGrant) {
-			generateValue, diags = grant.ToObjectValue(ctx)
+			object, diags_ = types.ObjectValue(
+				map[string]attr.Type{
+					grantTypeGenerateTf: generate.Type(ctx),
+				},
+				map[string]attr.Value{
+					grantTypeGenerateTf: generateValue,
+				},
+			)
+			diags.Append(diags_...)
 		},
 	})
-	if diags.HasError() {
-		return object, diags
-	}
 
-	return types.ObjectValue(
-		map[string]attr.Type{
-			grantTypeGenerateTf: generate.Type(ctx),
-		},
-		map[string]attr.Value{
-			grantTypeGenerateTf: generateValue,
-		},
-	)
+	return object, diags
 }
 
 func (g GrantTf) AttrTypes(ctx context.Context) map[string]attr.Type {
@@ -67,24 +104,44 @@ func (g GrantTf) Type(context.Context) attr.Type {
 	return GrantType{}
 }
 
-func (g GrantTf) ToTerraformValue(ctx context.Context) (value tftypes.Value, err error) {
-	var generateValue tftypes.Value
+func (g GrantTf) ToTerraformValue(ctx context.Context) (tftypes.Value, error) {
+	var (
+		val tftypes.Value
+		err error
+	)
 
-	g.value.VisitGrant(GrantVisitor{
-		Generate: func(grant GenerateGrant) {
-			generateValue, err = grant.ToTerraformValue(ctx)
+	g.state.Visit(value.StateVisitor{
+		Null: func() {
+			val = tftypes.NewValue(GrantTfTfTypesType(), nil)
+		},
+		Unknown: func() {
+			val = tftypes.NewValue(GrantTfTfTypesType(), tftypes.UnknownValue)
+		},
+		Valid: func() {
+			var generateValue tftypes.Value
+
+			g.value.VisitGrant(GrantVisitor{
+				Generate: func(grant GenerateGrant) {
+					generateValue, err = grant.ToTerraformValue(ctx)
+				},
+			})
+			if err != nil {
+				return
+			}
+
+			val = tftypes.NewValue(
+				GrantTfTfTypesType(),
+				map[string]tftypes.Value{
+					grantTypeGenerateTf: generateValue,
+				},
+			)
 		},
 	})
 	if err != nil {
-		return value, err
+		return val, err
 	}
 
-	return tftypes.NewValue(
-		GrantTfTfTypesType(),
-		map[string]tftypes.Value{
-			grantTypeGenerateTf: generateValue,
-		},
-	), nil
+	return val, nil
 }
 
 func (g GrantTf) Equal(value attr.Value) bool {
@@ -101,20 +158,28 @@ func (g GrantTf) Equal(value attr.Value) bool {
 	return lhs.Equal(rhs)
 }
 
-func (g GrantTf) IsNull() bool {
-	return !g.valid
-}
-
-func (g GrantTf) IsUnknown() bool {
-	defined := false
-
-	g.value.VisitGrant(GrantVisitor{
-		Generate: func(GenerateGrant) {
-			defined = true
+func (g GrantTf) IsNull() (isNull bool) {
+	g.state.Visit(value.StateVisitor{
+		Null: func() {
+			isNull = true
 		},
+		Unknown: func() {},
+		Valid:   func() {},
 	})
 
-	return !defined
+	return isNull
+}
+
+func (g GrantTf) IsUnknown() (unknown bool) {
+	g.state.Visit(value.StateVisitor{
+		Null: func() {},
+		Unknown: func() {
+			unknown = true
+		},
+		Valid: func() {},
+	})
+
+	return unknown
 }
 
 func (g GrantTf) String() string {

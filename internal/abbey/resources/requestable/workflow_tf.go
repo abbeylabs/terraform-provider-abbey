@@ -10,144 +10,63 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
+
+	"abbey.so/terraform-provider-abbey/internal/abbey/value"
 )
 
-type WorkflowType struct{}
-
-func (w WorkflowType) TerraformType(context.Context) tftypes.Type {
-	return tftypes.Object{
-		AttributeTypes: map[string]tftypes.Type{
-			workflowTypeBuiltinTf: BuiltinWorkflowTfTypesType(),
-		},
-		OptionalAttributes: nil,
-	}
-}
-
-func (t WorkflowType) ValueFromTerraform(_ context.Context, value tftypes.Value) (value_ attr.Value, err error) {
-	var w Workflow
-
-	if !value.IsFullyKnown() {
-		return WorkflowTf{
-			Workflow: w,
-			valid:    false,
-		}, nil
-	}
-
-	var m map[string]tftypes.Value
-	if err := value.As(&m); err != nil {
-		return nil, err
-	}
-
-	if len(m) == 0 {
-		return WorkflowTf{
-			Workflow: w,
-			valid:    false,
-		}, nil
-	}
-
-	var inner WorkflowEnum
-
-	for key, val := range m {
-		switch key {
-		case workflowTypeBuiltinTf:
-			inner_, err := BuiltinWorkflowFromTfTypesValue(val)
-			if err != nil {
-				return nil, err
-			}
-			if inner_ == nil {
-				continue
-			}
-
-			inner = inner_
-		default:
-			return value_, fmt.Errorf("unknown key: %s", key)
-		}
-	}
-	if err != nil {
-		return value_, err
-	}
-
-	return WorkflowTf{Workflow: Workflow{value: inner}, valid: true}, nil
-}
-
-func (t WorkflowType) ValueType(context.Context) attr.Value {
-	var wtf WorkflowTf
-	return wtf
-}
-
-func (t WorkflowType) Equal(ty attr.Type) bool {
-	_, ok := ty.(WorkflowType)
-	return ok
-}
-
-func (WorkflowType) String() string {
-	return "Workflow"
-}
-
-func (w WorkflowType) ApplyTerraform5AttributePathStep(step tftypes.AttributePathStep) (interface{}, error) {
-	attrName, ok := step.(tftypes.AttributeName)
-	if !ok {
-		return nil, fmt.Errorf("cannot apply step %T to WorkflowType", step)
-	}
-
-	switch string(attrName) {
-	case workflowTypeBuiltinTf:
-		return BuiltinWorkflowTfTypesType(), nil
-	default:
-		return nil, fmt.Errorf("undefined attribute name %s in WorkflowType", attrName)
-	}
-}
-
-func (t WorkflowType) ValueFromObject(
-	ctx context.Context,
-	value basetypes.ObjectValue,
-) (basetypes.ObjectValuable, Diagnostics) {
-	var w WorkflowTf
-
-	diags := value.As(ctx, &w, basetypes.ObjectAsOptions{
-		UnhandledNullAsEmpty:    false,
-		UnhandledUnknownAsEmpty: false,
-	})
-	if diags.HasError() {
-		return nil, diags
-	}
-
-	return &w, diags
-}
+var invalidWorkflow Workflow
 
 type WorkflowTf struct {
 	Workflow
 
-	valid bool
+	state value.State
+}
+
+func NewWorkflow(w Workflow) WorkflowTf {
+	return WorkflowTf{Workflow: w, state: value.NewValidState()}
+}
+
+func NewNullWorkflow() WorkflowTf {
+	return WorkflowTf{Workflow: invalidWorkflow, state: value.NewNullState()}
+}
+
+func NewUnknownWorkflow() WorkflowTf {
+	return WorkflowTf{Workflow: invalidWorkflow, state: value.NewUnknownState()}
 }
 
 func (w WorkflowTf) ToObjectValue(ctx context.Context) (object basetypes.ObjectValue, diags Diagnostics) {
-	var (
-		builtin      BuiltinWorkflow
-		builtinValue attr.Value
-	)
+	w.state.Visit(value.StateVisitor{
+		Null:    func() { object = types.ObjectNull(w.AttrTypes(ctx)) },
+		Unknown: func() { object = types.ObjectUnknown(w.AttrTypes(ctx)) },
+		Valid: func() {
+			w.value.VisitWorkflow(WorkflowVisitor{
+				Builtin: func(workflow BuiltinWorkflow) {
+					var (
+						diags_       Diagnostics
+						builtin      BuiltinWorkflow
+						builtinValue attr.Value
+					)
 
-	if !w.valid {
-		return types.ObjectNull(w.AttrTypes(ctx)), nil
-	}
+					builtinValue, diags = workflow.ToObjectValue(ctx)
+					if diags.HasError() {
+						return
+					}
 
-	w.value.VisitWorkflow(WorkflowVisitor{
-		Builtin: func(workflow BuiltinWorkflow) {
-			builtinValue, diags = workflow.ToObjectValue(ctx)
+					object, diags_ = types.ObjectValue(
+						map[string]attr.Type{
+							workflowTypeBuiltinTf: builtin.Type(ctx),
+						},
+						map[string]attr.Value{
+							workflowTypeBuiltinTf: builtinValue,
+						},
+					)
+					diags.Append(diags_...)
+				},
+			})
 		},
 	})
-	if diags.HasError() {
-		return object, diags
-	}
 
-	return types.ObjectValue(
-		map[string]attr.Type{
-			workflowTypeBuiltinTf: builtin.Type(ctx),
-		},
-		map[string]attr.Value{
-			workflowTypeBuiltinTf: builtinValue,
-		},
-	)
+	return object, diags
 }
 
 func (w WorkflowTf) AttrTypes(ctx context.Context) map[string]attr.Type {
@@ -199,18 +118,24 @@ func (w WorkflowTf) Equal(value attr.Value) bool {
 	return lhs.Equal(rhs)
 }
 
-func (w WorkflowTf) IsNull() (defined bool) {
-	return !w.valid
-}
-
-func (w WorkflowTf) IsUnknown() (defined bool) {
-	w.value.VisitWorkflow(WorkflowVisitor{
-		Builtin: func(workflow BuiltinWorkflow) {
-			defined = true
-		},
+func (w WorkflowTf) IsNull() (null bool) {
+	w.state.Visit(value.StateVisitor{
+		Null:    func() { null = true },
+		Unknown: func() {},
+		Valid:   func() {},
 	})
 
-	return !defined
+	return null
+}
+
+func (w WorkflowTf) IsUnknown() (unknown bool) {
+	w.state.Visit(value.StateVisitor{
+		Null:    func() {},
+		Unknown: func() { unknown = true },
+		Valid:   func() {},
+	})
+
+	return unknown
 }
 
 func (w WorkflowTf) String() string {

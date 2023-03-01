@@ -174,11 +174,11 @@ func (m Model) ToView() *View {
 		grant    *Grant
 	)
 
-	if m.Workflow.valid {
+	if !m.Workflow.IsNull() && !m.Grant.IsUnknown() {
 		workflow = &m.Workflow.Workflow
 	}
 
-	if m.Grant.valid {
+	if !m.Grant.IsNull() && !m.Grant.IsUnknown() {
 		grant = &m.Grant.Grant
 	}
 
@@ -204,17 +204,11 @@ func (v View) ToModel() *Model {
 	)
 
 	if v.Workflow != nil {
-		workflow = WorkflowTf{
-			Workflow: *v.Workflow,
-			valid:    true,
-		}
+		workflow = NewWorkflow(*v.Workflow)
 	}
 
 	if v.Grant != nil {
-		grant = GrantTf{
-			Grant: *v.Grant,
-			valid: true,
-		}
+		grant = NewGrant(*v.Grant)
 	}
 
 	return &Model{

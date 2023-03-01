@@ -34,6 +34,8 @@ func TestAccRequestable(t *testing.T) {
 					Config: fmt.Sprintf(
 						`
 						resource "abbey_requestable" "test" {
+							for_each = local.names
+
 							name     = "%s"
 							workflow = {
 								builtin = {
@@ -47,7 +49,7 @@ func TestAccRequestable(t *testing.T) {
 									github = {
 										repo   = "owner/repo"
 										path   = "file.tf"
-										append = "abc"
+										append = tolist(toset(["a", "a", "b"])).0
 									}
 								}
 							}
