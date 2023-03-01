@@ -34,8 +34,6 @@ func TestAccRequestable(t *testing.T) {
 					Config: fmt.Sprintf(
 						`
 						resource "abbey_requestable" "test" {
-							for_each = local.names
-
 							name     = "%s"
 							workflow = {
 								builtin = {
