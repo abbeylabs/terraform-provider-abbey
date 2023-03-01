@@ -9,13 +9,10 @@ import (
 	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
-	"github.com/hashicorp/terraform-plugin-framework/attr"
-	. "github.com/hashicorp/terraform-plugin-framework/diag"
 	. "github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	"abbey.so/terraform-provider-abbey/internal/abbey/provider"
 )
@@ -152,7 +149,7 @@ func (r *resource) Configure(
 	providerData, ok := request.ProviderData.(*provider.ResourceData)
 	if !ok {
 		response.Diagnostics.AddError(
-			"Unexpected Resource Configure type_",
+			"Unexpected Resource Configure Type",
 			fmt.Sprintf("Got: %T. Please report this issue to the provider developers.", request.ProviderData),
 		)
 		return
@@ -217,37 +214,6 @@ func (v View) ToModel() *Model {
 		Workflow: workflow,
 		Grant:    grant,
 	}
-}
-
-func (u *UserQuery) ToObjectValue(
-	ctx context.Context,
-) (
-	basetypes.ObjectValue,
-	map[string]attr.Type,
-	Diagnostics,
-) {
-	var (
-		key string
-		val attr.Value
-	)
-
-	u.VisitUserQuery(UserQueryVisitor{
-		AuthId: func(authId AuthId) {
-			key = "auth_id"
-			val = types.StringValue(authId.value)
-		},
-	})
-
-	attrTypes := map[string]attr.Type{key: val.Type(ctx)}
-
-	objVal, diags := types.ObjectValue(
-		attrTypes,
-		map[string]attr.Value{
-			key: val,
-		},
-	)
-
-	return objVal, attrTypes, diags
 }
 
 func (r *resource) Create(

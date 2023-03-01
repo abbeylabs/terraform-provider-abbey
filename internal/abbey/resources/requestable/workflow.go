@@ -39,11 +39,11 @@ type (
 	}
 
 	BuiltinWorkflowAllOf struct {
-		Reviewers []UserQuery `json:"reviewers" tfsdk:"reviewers"`
+		Reviewers []UserQuery `json:"reviewers"`
 	}
 
 	BuiltinWorkflowOneOf struct {
-		Reviewers []UserQuery `json:"reviewers" tfsdk:"reviewers"`
+		Reviewers []UserQuery `json:"reviewers"`
 	}
 )
 

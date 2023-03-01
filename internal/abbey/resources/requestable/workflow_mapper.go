@@ -42,8 +42,8 @@ func BuiltinWorkflowFromTfTypesValue(value tftypes.Value) (ret *BuiltinWorkflow,
 		case builtinWorkflowTypeOneOfTf:
 			var inner_ *BuiltinWorkflowOneOf
 			inner_, err = OneOfFromGoValue(val)
-			if inner_ == nil {
-				continue
+			if err != nil {
+				return nil, err
 			}
 			if inner_ == nil {
 				continue
@@ -85,16 +85,16 @@ func AllOfFromGoValue(value tftypes.Value) (*BuiltinWorkflowAllOf, error) {
 }
 
 func OneOfFromGoValue(value tftypes.Value) (*BuiltinWorkflowOneOf, error) {
-	var m map[string]tftypes.Value
+	var m *map[string]tftypes.Value
 	if err := value.As(&m); err != nil {
 		return nil, err
 	}
 
-	if len(m) == 0 {
+	if m == nil {
 		return nil, nil
 	}
 
-	reviewersValue, ok := m["reviewers"]
+	reviewersValue, ok := (*m)["reviewers"]
 	if !ok {
 		return nil, errors.New("missing reviewers field")
 	}
@@ -116,7 +116,7 @@ func UserQueriesFromGoValue(value tftypes.Value) ([]UserQuery, error) {
 	userQueries := make([]UserQuery, 0, len(list))
 
 	for _, v := range list {
-		var m map[string]tftypes.Value
+		var m *map[string]tftypes.Value
 		if err := v.As(&m); err != nil {
 			return nil, err
 		}
@@ -127,7 +127,7 @@ func UserQueriesFromGoValue(value tftypes.Value) ([]UserQuery, error) {
 
 		var inner UserQueryEnum
 
-		for key, val := range m {
+		for key, val := range *m {
 			switch key {
 			case userQueryTypeAuthIdTf:
 				var s string

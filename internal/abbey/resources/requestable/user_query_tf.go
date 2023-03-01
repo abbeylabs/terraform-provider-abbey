@@ -5,7 +5,9 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	. "github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
@@ -24,6 +26,25 @@ func UserQueryTfTypesType() tftypes.Type {
 		},
 		OptionalAttributes: nil,
 	}
+}
+
+func (q UserQuery) ToObjectValue(context.Context) (object basetypes.ObjectValue, diags Diagnostics) {
+	var authIdValue attr.Value = types.StringNull()
+
+	q.value.VisitUserQuery(UserQueryVisitor{
+		AuthId: func(a AuthId) {
+			authIdValue = types.StringValue(a.value)
+		},
+	})
+
+	return types.ObjectValue(
+		map[string]attr.Type{
+			userQueryTypeAuthIdTf: types.StringType,
+		},
+		map[string]attr.Value{
+			userQueryTypeAuthIdTf: authIdValue,
+		},
+	)
 }
 
 func (q UserQuery) Type(ctx context.Context) attr.Type {

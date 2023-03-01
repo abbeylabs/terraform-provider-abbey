@@ -31,6 +31,29 @@ func (u UserQuery) VisitUserQuery(visitor UserQueryVisitor) {
 	u.value.VisitUserQuery(visitor)
 }
 
+func (u UserQuery) MarshalJSON() ([]byte, error) {
+	var (
+		err   error
+		type_ string
+		value json.RawMessage
+	)
+
+	u.value.VisitUserQuery(UserQueryVisitor{
+		AuthId: func(authId AuthId) {
+			type_ = userQueryTypeAuthId
+			value, err = json.Marshal(authId)
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(enum{
+		Type:  type_,
+		Value: value,
+	})
+}
+
 func (u *UserQuery) UnmarshalJSON(b []byte) error {
 	var (
 		e     enum

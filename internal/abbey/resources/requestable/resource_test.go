@@ -17,16 +17,12 @@ var testAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServe
 	"abbey": providerserver.NewProtocol6WithError(abbey.New("test", provider.DefaultHost)()),
 }
 
-func testAccPreCheck(*testing.T) {
-}
-
 func TestAccRequestable(t *testing.T) {
 	randomPostfix := acctest.RandStringFromCharSet(5, acctest.CharSetAlphaNum)
 	name := fmt.Sprintf("acc-test-%s", randomPostfix)
 
 	t.Run("Ok", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
-			PreCheck:                 func() { testAccPreCheck(t) },
 			ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 			Steps: []resource.TestStep{
 				{
@@ -34,23 +30,26 @@ func TestAccRequestable(t *testing.T) {
 					Config: fmt.Sprintf(
 						`
 						resource "abbey_requestable" "test" {
-							name     = "%s"
-							workflow = {
-								builtin = {
-									one_of = {
-										reviewers = []
-									}
-								}
-							}
-							grant = {
-								generate = {
-									github = {
-										repo   = "owner/repo"
-										path   = "file.tf"
-										append = tolist(toset(["a", "a", "b"])).0
-									}
-								}
-							}
+						  name     = "%s"
+						  workflow = {
+						    builtin = {
+						      one_of = {
+						        reviewers = [
+						          { auth_id = "email@example.com" },
+						        ]
+						      }
+						    }
+						  }
+						  
+						  grant = {
+						    generate = {
+						      github = {
+						        repo   = "owner/repo"
+						        path   = "file.tf"
+						        append = tolist(toset(["a", "a", "b"])).0
+						      }
+						    }
+						  }
 						}
 						`,
 						name,
