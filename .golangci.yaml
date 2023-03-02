@@ -6,4 +6,4 @@ linters-settings:
   exhaustruct:
     exclude:
       - 'terraform-plugin-framework/resource/schema\..+'
-      - 'terraform-plugin-sdk/v2/helper/resource\..+'
+      - 'terraform-plugin-testing/helper/resource\..+'
