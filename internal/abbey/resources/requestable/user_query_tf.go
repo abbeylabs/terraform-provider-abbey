@@ -31,9 +31,9 @@ func UserQueryTfTypesType() tftypes.Type {
 func (q UserQuery) ToObjectValue(context.Context) (object basetypes.ObjectValue, diags Diagnostics) {
 	var authIdValue attr.Value = types.StringNull()
 
-	q.value.VisitUserQuery(UserQueryVisitor{
+	q.Value.VisitUserQuery(UserQueryVisitor{
 		AuthId: func(a AuthId) {
-			authIdValue = types.StringValue(a.value)
+			authIdValue = types.StringValue(a.Value)
 		},
 	})
 
@@ -58,7 +58,7 @@ func (q UserQuery) Type(ctx context.Context) attr.Type {
 func (q UserQuery) ToTerraformValue(ctx context.Context) (value tftypes.Value, err error) {
 	var authIdValue tftypes.Value
 
-	q.value.VisitUserQuery(UserQueryVisitor{
+	q.Value.VisitUserQuery(UserQueryVisitor{
 		AuthId: func(authId AuthId) {
 			authIdValue, err = authId.ToTerraformValue(ctx)
 		},
@@ -100,7 +100,7 @@ func (q UserQuery) IsUnknown() (defined bool) {
 func (q UserQuery) String() string {
 	var inner string
 
-	q.value.VisitUserQuery(UserQueryVisitor{
+	q.Value.VisitUserQuery(UserQueryVisitor{
 		func(authId AuthId) {
 			inner = authId.String()
 		},
@@ -122,7 +122,7 @@ func (a AuthId) Type(context.Context) attr.Type {
 }
 
 func (a AuthId) ToTerraformValue(context.Context) (value tftypes.Value, err error) {
-	return tftypes.NewValue(tftypes.String, a.value), nil
+	return tftypes.NewValue(tftypes.String, a.Value), nil
 }
 
 func (a AuthId) Equal(value attr.Value) bool {
@@ -148,5 +148,5 @@ func (a AuthId) IsUnknown() (defined bool) {
 }
 
 func (a AuthId) String() string {
-	return a.value
+	return a.Value
 }

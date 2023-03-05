@@ -14,7 +14,7 @@ const (
 
 type (
 	Workflow struct {
-		value WorkflowEnum
+		Value WorkflowEnum
 	}
 
 	WorkflowEnum interface {
@@ -26,7 +26,7 @@ type (
 	}
 
 	BuiltinWorkflow struct {
-		value BuiltinWorkflowEnum
+		Value BuiltinWorkflowEnum
 	}
 
 	BuiltinWorkflowEnum interface {
@@ -60,7 +60,7 @@ func (w Workflow) MarshalJSON() ([]byte, error) {
 		value json.RawMessage
 	)
 
-	w.value.VisitWorkflow(WorkflowVisitor{
+	w.Value.VisitWorkflow(WorkflowVisitor{
 		Builtin: func(workflow BuiltinWorkflow) {
 			type_ = workflowTypeBuiltin
 			value, err = json.Marshal(workflow)
@@ -96,13 +96,13 @@ func (w *Workflow) UnmarshalJSON(b []byte) error {
 		return fmt.Errorf("unknown workflow type: %s", e.Type)
 	}
 
-	*w = Workflow{value: value}
+	*w = Workflow{Value: value}
 
 	return nil
 }
 
-func (b *BuiltinWorkflow) VisitWorkflow(visitor WorkflowVisitor) {
-	visitor.Builtin(*b)
+func (b BuiltinWorkflow) VisitWorkflow(visitor WorkflowVisitor) {
+	visitor.Builtin(b)
 }
 
 func (w BuiltinWorkflow) MarshalJSON() ([]byte, error) {
@@ -112,7 +112,7 @@ func (w BuiltinWorkflow) MarshalJSON() ([]byte, error) {
 		value json.RawMessage
 	)
 
-	w.value.VisitBuiltinWorkflow(BuiltinWorkflowVisitor{
+	w.Value.VisitBuiltinWorkflow(BuiltinWorkflowVisitor{
 		AllOf: func(allOf BuiltinWorkflowAllOf) {
 			type_ = builtinWorkflowTypeAllOf
 			value, err = json.Marshal(allOf)
@@ -159,15 +159,15 @@ func (b *BuiltinWorkflow) UnmarshalJSON(bs []byte) error {
 		return fmt.Errorf("unknown builtin workflow type: %s", e.Type)
 	}
 
-	*b = BuiltinWorkflow{value: value}
+	*b = BuiltinWorkflow{Value: value}
 
 	return nil
 }
 
-func (b *BuiltinWorkflowAllOf) VisitBuiltinWorkflow(visitor BuiltinWorkflowVisitor) {
-	visitor.AllOf(*b)
+func (b BuiltinWorkflowAllOf) VisitBuiltinWorkflow(visitor BuiltinWorkflowVisitor) {
+	visitor.AllOf(b)
 }
 
-func (b *BuiltinWorkflowOneOf) VisitBuiltinWorkflow(visitor BuiltinWorkflowVisitor) {
-	visitor.OneOf(*b)
+func (b BuiltinWorkflowOneOf) VisitBuiltinWorkflow(visitor BuiltinWorkflowVisitor) {
+	visitor.OneOf(b)
 }

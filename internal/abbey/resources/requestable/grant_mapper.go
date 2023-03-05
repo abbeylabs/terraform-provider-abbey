@@ -45,7 +45,7 @@ func GenerateGrantFromTfTypesValue(ctx context.Context, value tftypes.Value) (re
 		}
 	}
 
-	return &GenerateGrant{value: inner}, nil
+	return &GenerateGrant{Value: inner}, nil
 }
 
 func GithubGenerateDestinationFromTfTypesValue(_ context.Context, value tftypes.Value) (ret *GithubGenerateDestination, err error) {

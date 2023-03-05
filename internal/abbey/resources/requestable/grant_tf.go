@@ -59,7 +59,7 @@ func (g GrantTf) ToObjectValue(ctx context.Context) (object basetypes.ObjectValu
 				diags_        Diagnostics
 			)
 
-			g.value.VisitGrant(GrantVisitor{
+			g.Value.VisitGrant(GrantVisitor{
 				Generate: func(grant GenerateGrant) {
 					generateValue, diags = grant.ToObjectValue(ctx)
 				},
@@ -120,7 +120,7 @@ func (g GrantTf) ToTerraformValue(ctx context.Context) (tftypes.Value, error) {
 		Valid: func() {
 			var generateValue tftypes.Value
 
-			g.value.VisitGrant(GrantVisitor{
+			g.Value.VisitGrant(GrantVisitor{
 				Generate: func(grant GenerateGrant) {
 					generateValue, err = grant.ToTerraformValue(ctx)
 				},
@@ -185,7 +185,7 @@ func (g GrantTf) IsUnknown() (unknown bool) {
 func (g GrantTf) String() string {
 	var inner string
 
-	g.value.VisitGrant(GrantVisitor{
+	g.Value.VisitGrant(GrantVisitor{
 		Generate: func(grant GenerateGrant) {
 			inner = grant.String()
 		},
@@ -221,7 +221,7 @@ func (g GenerateGrant) ToObjectValue(ctx context.Context) (object basetypes.Obje
 		githubValue attr.Value = types.ObjectNull(github.AttrTypes())
 	)
 
-	g.value.VisitGenerateGrant(GenerateGrantVisitor{
+	g.Value.VisitGenerateGrant(GenerateGrantVisitor{
 		Github: func(dest GithubGenerateDestination) {
 			githubValue, diags = dest.ToObjectValue(ctx)
 		},
@@ -243,7 +243,7 @@ func (g GenerateGrant) ToObjectValue(ctx context.Context) (object basetypes.Obje
 func (g GenerateGrant) ToTerraformValue(ctx context.Context) (value tftypes.Value, err error) {
 	var githubValue tftypes.Value
 
-	g.value.VisitGenerateGrant(GenerateGrantVisitor{
+	g.Value.VisitGenerateGrant(GenerateGrantVisitor{
 		Github: func(github GithubGenerateDestination) {
 			githubValue, err = github.ToTerraformValue(ctx)
 		},
@@ -277,7 +277,7 @@ func (g GenerateGrant) Equal(value attr.Value) bool {
 func (g GenerateGrant) IsNull() bool {
 	defined := false
 
-	g.value.VisitGenerateGrant(GenerateGrantVisitor{
+	g.Value.VisitGenerateGrant(GenerateGrantVisitor{
 		Github: func(GithubGenerateDestination) {
 			defined = true
 		},
@@ -289,7 +289,7 @@ func (g GenerateGrant) IsNull() bool {
 func (g GenerateGrant) IsUnknown() bool {
 	defined := false
 
-	g.value.VisitGenerateGrant(GenerateGrantVisitor{
+	g.Value.VisitGenerateGrant(GenerateGrantVisitor{
 		Github: func(GithubGenerateDestination) {
 			defined = true
 		},
@@ -301,7 +301,7 @@ func (g GenerateGrant) IsUnknown() bool {
 func (g GenerateGrant) String() string {
 	var inner string
 
-	g.value.VisitGenerateGrant(GenerateGrantVisitor{
+	g.Value.VisitGenerateGrant(GenerateGrantVisitor{
 		Github: func(github GithubGenerateDestination) {
 			inner = github.String()
 		},

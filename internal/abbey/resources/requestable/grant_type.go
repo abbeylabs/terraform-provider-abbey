@@ -54,7 +54,7 @@ func (t GrantType) ValueFromTerraform(ctx context.Context, value tftypes.Value) 
 		}
 	}
 
-	return NewGrant(Grant{value: inner}), nil
+	return NewGrant(Grant{Value: inner}), nil
 }
 
 func (t GrantType) ValueType(context.Context) attr.Value {

@@ -57,7 +57,7 @@ func (t WorkflowType) ValueFromTerraform(_ context.Context, value tftypes.Value)
 		return value_, err
 	}
 
-	return NewWorkflow(Workflow{value: inner}), nil
+	return NewWorkflow(Workflow{Value: inner}), nil
 }
 
 func (t WorkflowType) ValueType(context.Context) attr.Value {
