@@ -39,7 +39,7 @@ func (w WorkflowTf) ToObjectValue(ctx context.Context) (object basetypes.ObjectV
 		Null:    func() { object = types.ObjectNull(w.AttrTypes(ctx)) },
 		Unknown: func() { object = types.ObjectUnknown(w.AttrTypes(ctx)) },
 		Valid: func() {
-			w.value.VisitWorkflow(WorkflowVisitor{
+			w.Value.VisitWorkflow(WorkflowVisitor{
 				Builtin: func(workflow BuiltinWorkflow) {
 					var (
 						diags_       Diagnostics
@@ -87,7 +87,7 @@ func (w WorkflowTf) ToTerraformValue(ctx context.Context) (value tftypes.Value, 
 		type_        WorkflowType
 	)
 
-	w.value.VisitWorkflow(WorkflowVisitor{
+	w.Value.VisitWorkflow(WorkflowVisitor{
 		Builtin: func(workflow BuiltinWorkflow) {
 			builtinValue, err = workflow.ToTerraformValue(ctx)
 		},
@@ -141,7 +141,7 @@ func (w WorkflowTf) IsUnknown() (unknown bool) {
 func (w WorkflowTf) String() string {
 	var inner string
 
-	w.value.VisitWorkflow(WorkflowVisitor{
+	w.Value.VisitWorkflow(WorkflowVisitor{
 		Builtin: func(workflow BuiltinWorkflow) {
 			inner = workflow.String()
 		},
@@ -168,7 +168,7 @@ func (w BuiltinWorkflow) ToObjectValue(ctx context.Context) (object basetypes.Ob
 		oneOfValue attr.Value = types.ObjectNull(oneOf.AttrTypes(ctx))
 	)
 
-	w.value.VisitBuiltinWorkflow(BuiltinWorkflowVisitor{
+	w.Value.VisitBuiltinWorkflow(BuiltinWorkflowVisitor{
 		AllOf: func(allOf BuiltinWorkflowAllOf) {
 			allOfValue, diags = allOf.ToObjectValue(ctx)
 		},
@@ -210,7 +210,7 @@ func (w BuiltinWorkflow) ToTerraformValue(ctx context.Context) (value tftypes.Va
 		oneOfValue = tftypes.NewValue(BuiltinWorkflowOneOfTfTypesType(), nil)
 	)
 
-	w.value.VisitBuiltinWorkflow(BuiltinWorkflowVisitor{
+	w.Value.VisitBuiltinWorkflow(BuiltinWorkflowVisitor{
 		AllOf: func(allOf BuiltinWorkflowAllOf) {
 			allOfValue, err = allOf.ToTerraformValue(ctx)
 		},
@@ -246,7 +246,7 @@ func (w BuiltinWorkflow) Equal(value attr.Value) bool {
 }
 
 func (w BuiltinWorkflow) IsNull() (defined bool) {
-	w.value.VisitBuiltinWorkflow(BuiltinWorkflowVisitor{
+	w.Value.VisitBuiltinWorkflow(BuiltinWorkflowVisitor{
 		AllOf: func(BuiltinWorkflowAllOf) {
 			defined = true
 		},
@@ -259,7 +259,7 @@ func (w BuiltinWorkflow) IsNull() (defined bool) {
 }
 
 func (w BuiltinWorkflow) IsUnknown() (defined bool) {
-	w.value.VisitBuiltinWorkflow(BuiltinWorkflowVisitor{
+	w.Value.VisitBuiltinWorkflow(BuiltinWorkflowVisitor{
 		AllOf: func(BuiltinWorkflowAllOf) {
 			defined = true
 		},
@@ -274,7 +274,7 @@ func (w BuiltinWorkflow) IsUnknown() (defined bool) {
 func (w BuiltinWorkflow) String() string {
 	var inner string
 
-	w.value.VisitBuiltinWorkflow(BuiltinWorkflowVisitor{
+	w.Value.VisitBuiltinWorkflow(BuiltinWorkflowVisitor{
 		AllOf: func(allOf BuiltinWorkflowAllOf) {
 			inner = allOf.String()
 		},

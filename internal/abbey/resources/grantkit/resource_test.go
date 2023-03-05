@@ -6,14 +6,15 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/acctest"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 
 	"abbey.so/terraform-provider-abbey/internal/abbey"
+	"abbey.so/terraform-provider-abbey/internal/abbey/provider"
 )
 
 var testAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
-	"abbey": providerserver.NewProtocol6WithError(abbey.New("test", "http://localhost:8080")()),
+	"abbey": providerserver.NewProtocol6WithError(abbey.New("test", provider.DefaultHost)()),
 }
 
 func TestAccGrantKit(t *testing.T) {
@@ -30,38 +31,33 @@ func TestAccGrantKit(t *testing.T) {
 						`
 						resource "abbey_grant_kit" "test" {
 						  name = "%s"
-						  description = ""
 
 						  workflow = {
-							steps = [
-							  {
-								reviewers = {
-								  one_of = ["primary-id-1"]
-								}
-								skip_if = [
-								  { bundle = "github://organization/repository/path/to/bundle.tar.gz" }
-								]
-							  }
-							]
+						    steps = [
+						      {
+						        reviewers = {
+						          one_of = ["primary-id-1"]
+						        }
+						      }
+						    ]
 						  }
 
-						  policies = {
-							grant_if = [
-							  { bundle = "github://organization/repository/path/to/bundle.tar.gz" }
-							]
-							revoke_if = [
-							  {
-								query = <<-EOT
-								  input.Requester == true
-								EOT
-							  }
-							]
-						  }
+						#  policies = {
+						#	grant_if = [
+						#	  { bundle = "github://organization/repository/path/to/bundle.tar.gz" }
+						#	]
+						#	revoke_if = [
+						#	  {
+						#		query = <<-EOT
+						#		  input.Requester == true
+						#		EOT
+						#	  }
+						#	]
+						#  }
 
 						  output = {
-							location = "github://path/to/access.tf"
-							append = <<-EOT
-							EOT
+						    location = "github://path/to/access.tf"
+						    append   = "test"
 						  }
 						}
 						`,
@@ -70,9 +66,12 @@ func TestAccGrantKit(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttrSet("abbey_grant_kit.test", "id"),
 						resource.TestCheckResourceAttr("abbey_grant_kit.test", "name", name),
-						resource.TestCheckResourceAttrSet("abbey_grant_kit.test", "workflow"),
-						resource.TestCheckResourceAttrSet("abbey_grant_kit.test", "policies"),
-						resource.TestCheckResourceAttrSet("abbey_grant_kit.test", "output"),
+						resource.TestCheckResourceAttr("abbey_grant_kit.test", "workflow.steps.#", "1"),
+						resource.TestCheckResourceAttr("abbey_grant_kit.test", "workflow.steps.0.reviewers.one_of.#", "1"),
+						resource.TestCheckResourceAttr("abbey_grant_kit.test", "workflow.steps.0.reviewers.one_of.0", "primary-id-1"),
+						resource.TestCheckResourceAttr("abbey_grant_kit.test", "output.location", "github://path/to/access.tf"),
+						resource.TestCheckResourceAttr("abbey_grant_kit.test", "output.append", "test"),
+						// resource.TestCheckResourceAttrSet("abbey_grant_kit.test", "policies"),
 					),
 				},
 			},

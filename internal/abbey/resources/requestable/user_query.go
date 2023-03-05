@@ -9,7 +9,7 @@ const userQueryTypeAuthId = "AuthId"
 
 type (
 	UserQuery struct {
-		value UserQueryEnum
+		Value UserQueryEnum
 	}
 
 	UserQueryEnum interface {
@@ -21,14 +21,14 @@ type (
 	}
 
 	AuthId struct {
-		value string
+		Value string
 	}
 )
 
 var _ UserQueryEnum = (*AuthId)(nil)
 
 func (u UserQuery) VisitUserQuery(visitor UserQueryVisitor) {
-	u.value.VisitUserQuery(visitor)
+	u.Value.VisitUserQuery(visitor)
 }
 
 func (u UserQuery) MarshalJSON() ([]byte, error) {
@@ -38,7 +38,7 @@ func (u UserQuery) MarshalJSON() ([]byte, error) {
 		value json.RawMessage
 	)
 
-	u.value.VisitUserQuery(UserQueryVisitor{
+	u.Value.VisitUserQuery(UserQueryVisitor{
 		AuthId: func(authId AuthId) {
 			type_ = userQueryTypeAuthId
 			value, err = json.Marshal(authId)
@@ -76,13 +76,9 @@ func (u *UserQuery) UnmarshalJSON(b []byte) error {
 		return fmt.Errorf("unknown user query type: %s", e.Type)
 	}
 
-	*u = UserQuery{value: value}
+	*u = UserQuery{Value: value}
 
 	return nil
-}
-
-func (a AuthId) Value() string {
-	return a.value
 }
 
 func (a AuthId) VisitUserQuery(visitor UserQueryVisitor) {
@@ -90,7 +86,7 @@ func (a AuthId) VisitUserQuery(visitor UserQueryVisitor) {
 }
 
 func (a AuthId) MarshalJSON() ([]byte, error) {
-	return json.Marshal(a.value)
+	return json.Marshal(a.Value)
 }
 
 func (a *AuthId) UnmarshalJSON(data []byte) error {
@@ -99,7 +95,7 @@ func (a *AuthId) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	*a = AuthId{value: s}
+	*a = AuthId{Value: s}
 
 	return nil
 }

@@ -58,7 +58,7 @@ func BuiltinWorkflowFromTfTypesValue(value tftypes.Value) (ret *BuiltinWorkflow,
 		}
 	}
 
-	return &BuiltinWorkflow{value: inner}, nil
+	return &BuiltinWorkflow{Value: inner}, nil
 }
 
 func AllOfFromGoValue(value tftypes.Value) (*BuiltinWorkflowAllOf, error) {
@@ -135,13 +135,13 @@ func UserQueriesFromGoValue(value tftypes.Value) ([]UserQuery, error) {
 					return nil, err
 				}
 
-				inner = &AuthId{value: s}
+				inner = &AuthId{Value: s}
 			default:
 				return nil, fmt.Errorf("unknowon key: %s", key)
 			}
 		}
 
-		userQueries = append(userQueries, UserQuery{value: inner})
+		userQueries = append(userQueries, UserQuery{Value: inner})
 	}
 
 	return userQueries, nil

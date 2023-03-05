@@ -13,7 +13,7 @@ const (
 
 type (
 	Grant struct {
-		value GrantEnum
+		Value GrantEnum
 	}
 
 	GrantEnum interface {
@@ -38,7 +38,7 @@ func (g Grant) MarshalJSON() ([]byte, error) {
 		value json.RawMessage
 	)
 
-	g.value.VisitGrant(GrantVisitor{
+	g.Value.VisitGrant(GrantVisitor{
 		Generate: func(grant GenerateGrant) {
 			type_ = grantTypeGenerate
 			value, err = json.Marshal(grant)
@@ -76,14 +76,14 @@ func (g *Grant) UnmarshalJSON(b []byte) error {
 		return fmt.Errorf("unknown grant type: %s", e.Type)
 	}
 
-	*g = Grant{value: value}
+	*g = Grant{Value: value}
 
 	return nil
 }
 
 type (
 	GenerateGrant struct {
-		value GenerateGrantEnum
+		Value GenerateGrantEnum
 	}
 
 	GenerateGrantEnum interface {
@@ -114,7 +114,7 @@ func (g GenerateGrant) MarshalJSON() ([]byte, error) {
 		value json.RawMessage
 	)
 
-	g.value.VisitGenerateGrant(GenerateGrantVisitor{
+	g.Value.VisitGenerateGrant(GenerateGrantVisitor{
 		Github: func(destination GithubGenerateDestination) {
 			type_ = generateGrantTypeGithub
 			value, err = json.Marshal(destination)
@@ -152,7 +152,7 @@ func (g *GenerateGrant) UnmarshalJSON(b []byte) error {
 		return fmt.Errorf("unknown generate type: %s", e.Type)
 	}
 
-	g.value = value
+	g.Value = value
 
 	return nil
 }
