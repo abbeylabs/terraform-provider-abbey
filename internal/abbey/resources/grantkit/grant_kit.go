@@ -45,11 +45,12 @@ func (self Model) ToRequestableView(ctx context.Context) (*requestable.View, dia
 	}
 
 	return &requestable.View{
-		Id:       self.Id.ValueString(),
-		Name:     self.Name.ValueString(),
-		Workflow: workflow,
-		Grant:    grant,
-		Policies: Some(policies),
+		Id:          self.Id.ValueString(),
+		Name:        self.Name.ValueString(),
+		Description: self.Description.ValueString(),
+		Workflow:    workflow,
+		Grant:       grant,
+		Policies:    Some(policies),
 	}, nil
 }
 
@@ -124,7 +125,7 @@ func ModelFromRequestableView(view requestable.View) (*Model, diag.Diagnostics) 
 	return &Model{
 		Id:          types.StringValue(view.Id),
 		Name:        types.StringValue(view.Name),
-		Description: types.StringNull(),
+		Description: types.StringValue(view.Description),
 		Workflow:    workflowObject,
 		Output:      outputObject,
 		Policies:    policiesObject,
