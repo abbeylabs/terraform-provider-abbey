@@ -19,12 +19,12 @@ This resource can be used to create access request workflows to help you with se
 
 ### Required
 
+- `description` (String) The text describing what this Grant Kit is used for and what it can do.
 - `name` (String) The human-readable name of this resource.
 - `output` (Attributes) The output represents how and where access changes should be made. This generates HCL code in a Terraform file at the `location` with either `append` or `overwrite` behavior. (see [below for nested schema](#nestedatt--output))
 
 ### Optional
 
-- `description` (String) The text describing what this Grant Kit is used for and what it can do.
 - `policies` (Attributes) The access policies that determine if the resource requester get access to this resource. (see [below for nested schema](#nestedatt--policies))
 - `workflow` (Attributes) The workflow for _how_ someone gets access to a resource. A workflow contains a list `steps` to be run sequentially. (see [below for nested schema](#nestedatt--workflow))
 

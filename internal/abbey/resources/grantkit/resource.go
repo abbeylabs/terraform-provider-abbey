@@ -70,7 +70,7 @@ func (r resource) Schema(_ context.Context, _ SchemaRequest, response *SchemaRes
 				Description: "The human-readable name of this resource.",
 			},
 			"description": schema.StringAttribute{
-				Optional:    true,
+				Required:    true,
 				Description: "The text describing what this Grant Kit is used for and what it can do.",
 			},
 			"workflow": schema.SingleNestedAttribute{

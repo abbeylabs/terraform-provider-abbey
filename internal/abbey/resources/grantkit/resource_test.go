@@ -30,7 +30,8 @@ func TestAccGrantKit(t *testing.T) {
 					Config: fmt.Sprintf(
 						`
 						resource "abbey_grant_kit" "test" {
-						  name = "%s"
+						  name        = "%s"
+						  description = "test description"
 
 						  workflow = {
 						    steps = [
@@ -62,6 +63,7 @@ func TestAccGrantKit(t *testing.T) {
 					Check: resource.ComposeAggregateTestCheckFunc(
 						resource.TestCheckResourceAttrSet("abbey_grant_kit.test", "id"),
 						resource.TestCheckResourceAttr("abbey_grant_kit.test", "name", name),
+						resource.TestCheckResourceAttr("abbey_grant_kit.test", "description", "test description"),
 						resource.TestCheckResourceAttr("abbey_grant_kit.test", "workflow.steps.#", "1"),
 						resource.TestCheckResourceAttr("abbey_grant_kit.test", "workflow.steps.0.reviewers.one_of.#", "1"),
 						resource.TestCheckResourceAttr("abbey_grant_kit.test", "workflow.steps.0.reviewers.one_of.0", "primary-id-1"),

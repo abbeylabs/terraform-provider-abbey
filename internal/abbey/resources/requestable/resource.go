@@ -182,20 +182,22 @@ func (m Model) ToView() *View {
 	}
 
 	return &View{
-		Id:       m.Id.ValueString(),
-		Name:     m.Name.ValueString(),
-		Workflow: workflow,
-		Grant:    grant,
-		Policies: nil,
+		Id:          m.Id.ValueString(),
+		Name:        m.Name.ValueString(),
+		Description: "",
+		Workflow:    workflow,
+		Grant:       grant,
+		Policies:    nil,
 	}
 }
 
 type View struct {
-	Id       string            `json:"id,omitempty"`
-	Name     string            `json:"name,omitempty"`
-	Workflow *Workflow         `json:"workflow,omitempty"`
-	Grant    *Grant            `json:"grant,omitempty"`
-	Policies Option[PolicySet] `json:"policies,omitempty"`
+	Id          string            `json:"id,omitempty"`
+	Name        string            `json:"name,omitempty"`
+	Description string            `json:"description"`
+	Workflow    *Workflow         `json:"workflow,omitempty"`
+	Grant       *Grant            `json:"grant,omitempty"`
+	Policies    Option[PolicySet] `json:"policies,omitempty"`
 }
 
 func (v View) ToModel() *Model {
