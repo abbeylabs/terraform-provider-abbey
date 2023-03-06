@@ -147,77 +147,77 @@ func (r resource) Schema(_ context.Context, _ SchemaRequest, response *SchemaRes
 					},
 				},
 			},
-			// "policies": schema.SingleNestedAttribute{
-			// 	Optional:    true,
-			// 	Description: "The access policies that determine if the resource requester get access to this resource.",
-			// 	Attributes: map[string]schema.Attribute{
-			// 		"grant_if": schema.ListNestedAttribute{
-			// 			Optional:    true,
-			// 			Description: "Determines the conditions for which this resource should be granted access to the requester.",
-			// 			Validators: []validator.List{
-			// 				listvalidator.AtLeastOneOf(path.Expressions{
-			// 					path.MatchRelative().AtParent().AtName("revoke_if"),
-			// 				}...),
-			// 				listvalidator.SizeAtLeast(1),
-			// 			},
-			// 			NestedObject: schema.NestedAttributeObject{
-			// 				Attributes: map[string]schema.Attribute{
-			// 					"bundle": schema.StringAttribute{
-			// 						Optional: true,
-			// 						Description: "An RFC 3986 URI. Supports `github://` only. Schemes " +
-			// 							"such as `https://`, `file://`, and `s3://` to come in future releases. " +
-			// 							"You should use either `bundle` to contain your OPA Policies or supply them " +
-			// 							"directly in the `query` field.",
-			// 						Validators: []validator.String{
-			// 							stringvalidator.ExactlyOneOf(path.Expressions{
-			// 								path.MatchRelative().AtParent().AtName("query"),
-			// 							}...),
-			// 							abbeyvalidator.IsRFC3986(),
-			// 						},
-			// 					},
-			// 					"query": schema.StringAttribute{
-			// 						Optional: true,
-			// 						Description: "The UTF-8 text string containing Rego rules using the " +
-			// 							"Abbey OPA Framework." +
-			// 							"Rules should be written using `deny[msg] { ... }` for mandatory enforcement " +
-			// 							"and `warn[msg] { ... }` for advisory enforcement.",
-			// 					},
-			// 				},
-			// 			},
-			// 		},
-			// 		"revoke_if": schema.ListNestedAttribute{
-			// 			Optional:    true,
-			// 			Description: "Determines the conditions for which access to this resource should be revoked from the requester.",
-			// 			Validators: []validator.List{
-			// 				listvalidator.SizeAtLeast(1),
-			// 			},
-			// 			NestedObject: schema.NestedAttributeObject{
-			// 				Attributes: map[string]schema.Attribute{
-			// 					"bundle": schema.StringAttribute{
-			// 						Optional: true,
-			// 						Description: "An RFC 3986 URI. Supports `github://` only. Schemes " +
-			// 							"such as `https://`, `file://`, and `s3://` to come in future releases. " +
-			// 							"You should use either `bundle` to contain your OPA Policies or supply them " +
-			// 							"directly in the `query` field.",
-			// 						Validators: []validator.String{
-			// 							stringvalidator.ExactlyOneOf(path.Expressions{
-			// 								path.MatchRelative().AtParent().AtName("query"),
-			// 							}...),
-			// 							abbeyvalidator.IsRFC3986(),
-			// 						},
-			// 					},
-			// 					"query": schema.StringAttribute{
-			// 						Optional: true,
-			// 						Description: "The UTF-8 text string containing Rego rules using the " +
-			// 							"Abbey OPA Framework." +
-			// 							"Rules should be written using `deny[msg] { ... }` for mandatory enforcement " +
-			// 							"and `warn[msg] { ... }` for advisory enforcement.",
-			// 					},
-			// 				},
-			// 			},
-			// 		},
-			// 	},
-			// },
+			"policies": schema.SingleNestedAttribute{
+				Optional:    true,
+				Description: "The access policies that determine if the resource requester get access to this resource.",
+				Attributes: map[string]schema.Attribute{
+					"grant_if": schema.ListNestedAttribute{
+						Optional:    true,
+						Description: "Determines the conditions for which this resource should be granted access to the requester.",
+						Validators: []validator.List{
+							listvalidator.AtLeastOneOf(path.Expressions{
+								path.MatchRelative().AtParent().AtName("revoke_if"),
+							}...),
+							listvalidator.SizeAtLeast(1),
+						},
+						NestedObject: schema.NestedAttributeObject{
+							Attributes: map[string]schema.Attribute{
+								"bundle": schema.StringAttribute{
+									Optional: true,
+									Description: "An RFC 3986 URI. Supports `github://` only. Schemes " +
+										"such as `https://`, `file://`, and `s3://` to come in future releases. " +
+										"You should use either `bundle` to contain your OPA Policies or supply them " +
+										"directly in the `query` field.",
+									Validators: []validator.String{
+										stringvalidator.ExactlyOneOf(path.Expressions{
+											path.MatchRelative().AtParent().AtName("query"),
+										}...),
+										abbeyvalidator.IsRFC3986(),
+									},
+								},
+								"query": schema.StringAttribute{
+									Optional: true,
+									Description: "The UTF-8 text string containing Rego rules using the " +
+										"Abbey OPA Framework." +
+										"Rules should be written using `deny[msg] { ... }` for mandatory enforcement " +
+										"and `warn[msg] { ... }` for advisory enforcement.",
+								},
+							},
+						},
+					},
+					"revoke_if": schema.ListNestedAttribute{
+						Optional:    true,
+						Description: "Determines the conditions for which access to this resource should be revoked from the requester.",
+						Validators: []validator.List{
+							listvalidator.SizeAtLeast(1),
+						},
+						NestedObject: schema.NestedAttributeObject{
+							Attributes: map[string]schema.Attribute{
+								"bundle": schema.StringAttribute{
+									Optional: true,
+									Description: "An RFC 3986 URI. Supports `github://` only. Schemes " +
+										"such as `https://`, `file://`, and `s3://` to come in future releases. " +
+										"You should use either `bundle` to contain your OPA Policies or supply them " +
+										"directly in the `query` field.",
+									Validators: []validator.String{
+										stringvalidator.ExactlyOneOf(path.Expressions{
+											path.MatchRelative().AtParent().AtName("query"),
+										}...),
+										abbeyvalidator.IsRFC3986(),
+									},
+								},
+								"query": schema.StringAttribute{
+									Optional: true,
+									Description: "The UTF-8 text string containing Rego rules using the " +
+										"Abbey OPA Framework." +
+										"Rules should be written using `deny[msg] { ... }` for mandatory enforcement " +
+										"and `warn[msg] { ... }` for advisory enforcement.",
+								},
+							},
+						},
+					},
+				},
+			},
 			"output": schema.SingleNestedAttribute{
 				Required: true,
 				Description: "The output represents how and where access changes should be made. " +

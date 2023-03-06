@@ -13,7 +13,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	. "github.com/moznion/go-optional"
 
+	. "abbey.so/terraform-provider-abbey/internal/abbey/entity"
 	"abbey.so/terraform-provider-abbey/internal/abbey/provider"
 )
 
@@ -184,14 +186,16 @@ func (m Model) ToView() *View {
 		Name:     m.Name.ValueString(),
 		Workflow: workflow,
 		Grant:    grant,
+		Policies: nil,
 	}
 }
 
 type View struct {
-	Id       string    `json:"id,omitempty"`
-	Name     string    `json:"name,omitempty"`
-	Workflow *Workflow `json:"workflow,omitempty"`
-	Grant    *Grant    `json:"grant,omitempty"`
+	Id       string            `json:"id,omitempty"`
+	Name     string            `json:"name,omitempty"`
+	Workflow *Workflow         `json:"workflow,omitempty"`
+	Grant    *Grant            `json:"grant,omitempty"`
+	Policies Option[PolicySet] `json:"policies,omitempty"`
 }
 
 func (v View) ToModel() *Model {
