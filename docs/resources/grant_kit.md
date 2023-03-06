@@ -25,6 +25,7 @@ This resource can be used to create access request workflows to help you with se
 ### Optional
 
 - `description` (String) The text describing what this Grant Kit is used for and what it can do.
+- `policies` (Attributes) The access policies that determine if the resource requester get access to this resource. (see [below for nested schema](#nestedatt--policies))
 - `workflow` (Attributes) The workflow for _how_ someone gets access to a resource. A workflow contains a list `steps` to be run sequentially. (see [below for nested schema](#nestedatt--workflow))
 
 ### Read-Only
@@ -42,6 +43,33 @@ Optional:
 
 - `append` (String) Appends this UTF-8 text string to the file at `location`.
 - `overwrite` (String) Overwrites the file at `location` with this UTF-8 text string.
+
+
+<a id="nestedatt--policies"></a>
+### Nested Schema for `policies`
+
+Optional:
+
+- `grant_if` (Attributes List) Determines the conditions for which this resource should be granted access to the requester. (see [below for nested schema](#nestedatt--policies--grant_if))
+- `revoke_if` (Attributes List) Determines the conditions for which access to this resource should be revoked from the requester. (see [below for nested schema](#nestedatt--policies--revoke_if))
+
+<a id="nestedatt--policies--grant_if"></a>
+### Nested Schema for `policies.grant_if`
+
+Optional:
+
+- `bundle` (String) An RFC 3986 URI. Supports `github://` only. Schemes such as `https://`, `file://`, and `s3://` to come in future releases. You should use either `bundle` to contain your OPA Policies or supply them directly in the `query` field.
+- `query` (String) The UTF-8 text string containing Rego rules using the Abbey OPA Framework.Rules should be written using `deny[msg] { ... }` for mandatory enforcement and `warn[msg] { ... }` for advisory enforcement.
+
+
+<a id="nestedatt--policies--revoke_if"></a>
+### Nested Schema for `policies.revoke_if`
+
+Optional:
+
+- `bundle` (String) An RFC 3986 URI. Supports `github://` only. Schemes such as `https://`, `file://`, and `s3://` to come in future releases. You should use either `bundle` to contain your OPA Policies or supply them directly in the `query` field.
+- `query` (String) The UTF-8 text string containing Rego rules using the Abbey OPA Framework.Rules should be written using `deny[msg] { ... }` for mandatory enforcement and `warn[msg] { ... }` for advisory enforcement.
+
 
 
 <a id="nestedatt--workflow"></a>

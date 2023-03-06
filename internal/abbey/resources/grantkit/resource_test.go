@@ -42,18 +42,14 @@ func TestAccGrantKit(t *testing.T) {
 						    ]
 						  }
 
-						#  policies = {
-						#	grant_if = [
-						#	  { bundle = "github://organization/repository/path/to/bundle.tar.gz" }
-						#	]
-						#	revoke_if = [
-						#	  {
-						#		query = <<-EOT
-						#		  input.Requester == true
-						#		EOT
-						#	  }
-						#	]
-						#  }
+						  policies = {
+						    grant_if = [
+						      { bundle = "github://organization/repository/path/to/bundle.tar.gz" },
+						    ]
+						    revoke_if = [
+						      { query = "input.Requester == true" },
+						    ]
+						  }
 
 						  output = {
 						    location = "github://path/to/access.tf"
@@ -71,7 +67,9 @@ func TestAccGrantKit(t *testing.T) {
 						resource.TestCheckResourceAttr("abbey_grant_kit.test", "workflow.steps.0.reviewers.one_of.0", "primary-id-1"),
 						resource.TestCheckResourceAttr("abbey_grant_kit.test", "output.location", "github://path/to/access.tf"),
 						resource.TestCheckResourceAttr("abbey_grant_kit.test", "output.append", "test"),
-						// resource.TestCheckResourceAttrSet("abbey_grant_kit.test", "policies"),
+						resource.TestCheckResourceAttr("abbey_grant_kit.test", "policies.grant_if.#", "1"),
+						resource.TestCheckResourceAttr("abbey_grant_kit.test", "policies.grant_if.0.bundle", "github://organization/repository/path/to/bundle.tar.gz"),
+						resource.TestCheckResourceAttr("abbey_grant_kit.test", "policies.revoke_if.0.query", "input.Requester == true"),
 					),
 				},
 			},
