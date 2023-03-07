@@ -32,16 +32,22 @@ func (self Model) ToRequestableView(ctx context.Context) (*requestable.View, dia
 		return nil, diags
 	}
 
-	policySet, diags_ := PolicySetFromObject(ctx, self.Policies)
-	diags.Append(diags_...)
-	if diags.HasError() {
-		return nil, diags
-	}
+	var policies Option[entity.PolicySet]
 
-	policies, diags_ := policySet.ToView(ctx)
-	diags.Append(diags_...)
-	if diags.HasError() {
-		return nil, diags
+	if !self.Policies.IsNull() {
+		policySet, diags_ := PolicySetFromObject(ctx, self.Policies)
+		diags.Append(diags_...)
+		if diags.HasError() {
+			return nil, diags
+		}
+
+		policies_, diags_ := policySet.ToView(ctx)
+		diags.Append(diags_...)
+		if diags.HasError() {
+			return nil, diags
+		}
+
+		policies = Some(policies_)
 	}
 
 	return &requestable.View{
@@ -50,7 +56,7 @@ func (self Model) ToRequestableView(ctx context.Context) (*requestable.View, dia
 		Description: self.Description.ValueString(),
 		Workflow:    workflow,
 		Grant:       grant,
-		Policies:    Some(policies),
+		Policies:    policies,
 	}, nil
 }
 
@@ -113,7 +119,6 @@ func ModelFromRequestableView(view requestable.View) (*Model, diag.Diagnostics) 
 
 		policiesObject, diags_ = policySet.ToObject()
 		diags.Append(diags_...)
-
 		if diags.HasError() {
 			return
 		}

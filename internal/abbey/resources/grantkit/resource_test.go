@@ -32,6 +32,48 @@ func TestAccGrantKit(t *testing.T) {
 						resource "abbey_grant_kit" "test" {
 						  name        = "%s"
 						  description = "test description"
+						
+						  workflow = {
+						    steps = [
+						      {
+						        reviewers = {
+						          one_of = ["primary-id-1"]
+						        }
+						      }
+						    ]
+						  }
+						
+						  output = {
+						    location = "github://path/to/access.tf"
+						    append   = "test"
+						  }
+						}
+						`,
+						name,
+					),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttrSet("abbey_grant_kit.test", "id"),
+						resource.TestCheckResourceAttr("abbey_grant_kit.test", "name", name),
+						resource.TestCheckResourceAttr("abbey_grant_kit.test", "description", "test description"),
+						resource.TestCheckResourceAttr("abbey_grant_kit.test", "workflow.steps.#", "1"),
+						resource.TestCheckResourceAttr("abbey_grant_kit.test", "workflow.steps.0.reviewers.one_of.#", "1"),
+						resource.TestCheckResourceAttr("abbey_grant_kit.test", "workflow.steps.0.reviewers.one_of.0", "primary-id-1"),
+						resource.TestCheckResourceAttr("abbey_grant_kit.test", "output.location", "github://path/to/access.tf"),
+						resource.TestCheckResourceAttr("abbey_grant_kit.test", "output.append", "test"),
+					),
+				},
+			},
+		})
+		resource.Test(t, resource.TestCase{
+			ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+			Steps: []resource.TestStep{
+				{
+					ResourceName: "abbey_grant_kit.test",
+					Config: fmt.Sprintf(
+						`
+						resource "abbey_grant_kit" "test" {
+						  name        = "%s"
+						  description = "test description"
 
 						  workflow = {
 						    steps = [
