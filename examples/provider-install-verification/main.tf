@@ -39,7 +39,7 @@ resource "abbey_grant_kit" "example" {
   }
 
   output = {
-    location = "github://path/to/access.tf"
+    location = "github://organization/repo/path/to/access.tf"
     append = <<-EOT
     EOT
   }

@@ -14,7 +14,6 @@ import (
 	abbeyprovider "abbey.so/terraform-provider-abbey/internal/abbey/provider"
 	grantkitresource "abbey.so/terraform-provider-abbey/internal/abbey/resources/grantkit"
 	identityresource "abbey.so/terraform-provider-abbey/internal/abbey/resources/identity"
-	requestableresource "abbey.so/terraform-provider-abbey/internal/abbey/resources/requestable"
 )
 
 const (
@@ -111,7 +110,6 @@ func (p *provider_) DataSources(context.Context) []func() datasource.DataSource 
 func (p *provider_) Resources(context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		grantkitresource.New,
-		requestableresource.New,
 		identityresource.New,
 	}
 }

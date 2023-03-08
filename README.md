@@ -1,3 +1,3 @@
 # Terraform Abbey Provider
 
-The Terraform provider for the Abbey Data Access Control Platform.
+The Terraform provider for Abbey, the Access Management as Code Platform.
