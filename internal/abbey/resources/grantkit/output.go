@@ -83,7 +83,7 @@ func RequestableGrantFromOutputObject(
 		Value: requestable.GenerateGrant{
 			Value: requestable.GithubGenerateDestination{
 				Repo:   strings.Join([]string{owner, repo}, "/"),
-				Path:   fmt.Sprintf("/%s", path),
+				Path:   path,
 				Append: output.Append.ValueString(),
 			},
 		},
