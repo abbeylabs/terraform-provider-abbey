@@ -229,9 +229,9 @@ func (r *resource) Delete(
 	request DeleteRequest,
 	response *DeleteResponse,
 ) {
-	var v view
+	var state model
 
-	response.Diagnostics.Append(request.State.Get(ctx, &v)...)
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -239,7 +239,7 @@ func (r *resource) Delete(
 	req, err := http.NewRequestWithContext(
 		ctx,
 		http.MethodDelete,
-		fmt.Sprintf("%s/v1/identities/%s", r.data.Host, v.Id),
+		fmt.Sprintf("%s/v1/identities/%s", r.data.Host, state.Id.ValueString()),
 		nil,
 	)
 	if err != nil {
