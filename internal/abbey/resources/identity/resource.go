@@ -216,12 +216,13 @@ func (r *resource) Read(
 }
 
 func (r *resource) Update(
-	context.Context,
-	UpdateRequest,
-	*UpdateResponse,
+	ctx context.Context,
+	request UpdateRequest,
+	response *UpdateResponse,
 ) {
-	// TODO implement me
-	panic("implement me")
+	response.Diagnostics.AddWarning(
+		"Update Operation Not Implemented Yet",
+		"You can workaround this by destroying your target and re-applying your configuration.\nTo destroy this resource, run:\n\n\t```\nterraform destroy -target <your resource id>```")
 }
 
 func (r *resource) Delete(
