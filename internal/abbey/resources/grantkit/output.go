@@ -32,7 +32,7 @@ func (self Output) ToObject() (types.Object, diag.Diagnostics) {
 
 func OutputFromRequestableGithubDestination(github requestable.GithubGenerateDestination) Output {
 	return Output{
-		Location:  types.StringValue(fmt.Sprintf("github://%s%s", github.Repo, github.Path)),
+		Location:  types.StringValue(fmt.Sprintf("github://%s/%s", github.Repo, github.Path)),
 		Append:    types.StringValue(github.Append),
 		Overwrite: types.StringNull(),
 	}
