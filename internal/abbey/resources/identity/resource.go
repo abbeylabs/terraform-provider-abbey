@@ -10,6 +10,8 @@ import (
 
 	. "github.com/hashicorp/terraform-plugin-framework/resource"
 	. "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
@@ -44,10 +46,22 @@ func (r *resource) Schema(
 ) {
 	response.Schema = Schema{
 		Attributes: map[string]Attribute{
-			"id":         StringAttribute{Computed: true},
-			"name":       StringAttribute{Required: true},
+			"id": StringAttribute{
+				Computed: true,
+			},
+			"name": StringAttribute{
+				Required: true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
 			"created_at": StringAttribute{Computed: true},
-			"linked":     StringAttribute{Optional: true},
+			"linked": StringAttribute{
+				Optional: true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
 		},
 	}
 }
