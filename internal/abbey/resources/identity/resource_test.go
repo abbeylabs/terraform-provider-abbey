@@ -20,13 +20,13 @@ var testAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServe
 func TestAccIdentity(t *testing.T) {
 	randomPostfix := acctest.RandStringFromCharSet(5, acctest.CharSetAlphaNum)
 	name := fmt.Sprintf("acc-test-%s", randomPostfix)
+	newName := fmt.Sprintf("%s-updated", name)
 
 	t.Run("Ok", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
 			ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 			Steps: []resource.TestStep{
 				{
-					ResourceName: "abbey_identity.test",
 					Config: fmt.Sprintf(
 						`
 						resource "abbey_identity" "test" {
@@ -52,6 +52,59 @@ func TestAccIdentity(t *testing.T) {
 						resource.TestCheckResourceAttrSet("abbey_identity.test", "id"),
 						resource.TestCheckResourceAttr("abbey_identity.test", "name", name),
 						resource.TestCheckResourceAttrSet("abbey_identity.test", "linked"),
+					),
+				},
+				{
+					Config: fmt.Sprintf(
+						`
+						resource "abbey_identity" "test" {
+							name   = "%s"
+							linked = jsonencode({
+								abbey = [
+									{
+										type  = "AuthId"
+										value = "email@example.com"
+									},
+								]
+								a = [1]
+								b = [
+									{ prop = true },
+									{ prop = false },
+								]
+							})
+						}
+						`,
+						newName,
+					),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttrSet("abbey_identity.test", "id"),
+						resource.TestCheckResourceAttr("abbey_identity.test", "name", newName),
+						resource.TestCheckResourceAttrSet("abbey_identity.test", "linked"),
+					),
+				},
+				// Mutating `linked` should work.
+				{
+					Config: fmt.Sprintf(
+						`
+						resource "abbey_identity" "test" {
+							name   = "%s"
+							linked = jsonencode({
+								abbey = [
+									{
+										type  = "AuthId"
+										value = "email@example.com"
+									},
+								]
+								a = [1]
+							})
+						}
+						`,
+						newName,
+					),
+					Check: resource.ComposeAggregateTestCheckFunc(
+						resource.TestCheckResourceAttrSet("abbey_identity.test", "id"),
+						resource.TestCheckResourceAttr("abbey_identity.test", "name", newName),
+						resource.TestCheckNoResourceAttr("abbey_identity.test", "linked.b"),
 					),
 				},
 			},
