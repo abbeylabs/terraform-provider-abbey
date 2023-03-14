@@ -12,6 +12,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	. "github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -68,10 +71,16 @@ func (r resource) Schema(_ context.Context, _ SchemaRequest, response *SchemaRes
 			"name": schema.StringAttribute{
 				Required:    true,
 				Description: "The human-readable name of this resource.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"description": schema.StringAttribute{
 				Required:    true,
 				Description: "The text describing what this Grant Kit is used for and what it can do.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"workflow": schema.SingleNestedAttribute{
 				Optional: true,
@@ -146,6 +155,9 @@ func (r resource) Schema(_ context.Context, _ SchemaRequest, response *SchemaRes
 						},
 					},
 				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
+				},
 			},
 			"policies": schema.SingleNestedAttribute{
 				Optional:    true,
@@ -217,6 +229,9 @@ func (r resource) Schema(_ context.Context, _ SchemaRequest, response *SchemaRes
 						},
 					},
 				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
+				},
 			},
 			"output": schema.SingleNestedAttribute{
 				Required: true,
@@ -244,6 +259,9 @@ func (r resource) Schema(_ context.Context, _ SchemaRequest, response *SchemaRes
 						Optional:    true,
 						Description: "Overwrites the file at `location` with this UTF-8 text string.",
 					},
+				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 			},
 		},
