@@ -2,28 +2,63 @@ package grantkit_test
 
 import (
 	"fmt"
+	"net/http"
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	. "github.com/onsi/gomega"
 
 	"abbey.so/terraform-provider-abbey/internal/abbey"
-	"abbey.so/terraform-provider-abbey/internal/abbey/provider"
+	abbeyprovider "abbey.so/terraform-provider-abbey/internal/abbey/provider"
 )
 
-var testAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
-	"abbey": providerserver.NewProtocol6WithError(abbey.New("test", provider.DefaultHost)()),
+// var testAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
+// 	"abbey": providerserver.NewProtocol6WithError(abbey.New("test", abbeyprovider.DefaultHost)()),
+// }
+
+var (
+	providerFactories map[string]func() (tfprotov6.ProviderServer, error)
+)
+
+func init() {
+	providerFactories = map[string]func() (tfprotov6.ProviderServer, error){
+		"abbey": providerserver.NewProtocol6WithError(
+			abbey.New("test", abbeyprovider.DefaultHost)(),
+		),
+	}
 }
 
 func TestAccGrantKit(t *testing.T) {
+	g := NewGomegaWithT(t)
 	randomPostfix := acctest.RandStringFromCharSet(5, acctest.CharSetAlphaNum)
 	name := fmt.Sprintf("acc-test-%s", randomPostfix)
 
 	t.Run("Ok", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
-			ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+			ProtoV6ProviderFactories: providerFactories,
+			CheckDestroy: func(state *terraform.State) error {
+				var res = state.RootModule().Resources["abbey_grant_kit.test"]
+
+				request, err := http.NewRequest(
+					http.MethodGet,
+					fmt.Sprintf("%s/v1/requestables/%s", abbeyprovider.DefaultHost, res.Primary.ID),
+					nil,
+				)
+				g.Expect(err).NotTo(HaveOccurred())
+
+				request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("ABBEY_TOKEN")))
+
+				response, err := http.DefaultClient.Do(request)
+				g.Expect(err).NotTo(HaveOccurred())
+				g.Expect(response.StatusCode).To(Equal(http.StatusNotFound))
+
+				return nil
+			},
 			Steps: []resource.TestStep{
 				{
 					Config: fmt.Sprintf(
@@ -138,7 +173,7 @@ func TestAccGrantKit(t *testing.T) {
 			},
 		})
 		resource.Test(t, resource.TestCase{
-			ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+			ProtoV6ProviderFactories: providerFactories,
 			Steps: []resource.TestStep{
 				{
 					Config: fmt.Sprintf(

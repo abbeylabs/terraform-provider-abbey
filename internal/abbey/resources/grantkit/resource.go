@@ -358,4 +358,49 @@ func (r resource) Update(ctx context.Context, request UpdateRequest, response *U
 }
 
 func (r resource) Delete(ctx context.Context, request DeleteRequest, response *DeleteResponse) {
+	var state Model
+
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	view, diags := state.ToRequestableView(ctx)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	req, err := http.NewRequestWithContext(
+		ctx, http.MethodDelete,
+		fmt.Sprintf("%s/v1/requestables/%s", r.data.Host, view.Id),
+		nil,
+	)
+	if err != nil {
+		response.Diagnostics.
+			AddError("Unknown", fmt.Sprintf("Failed to build request: %v.", err))
+		return
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", r.data.Token))
+
+	resp, err := r.data.Client.Do(req)
+	if err != nil {
+		response.Diagnostics.
+			AddError("Unknown", fmt.Sprintf("Failed to execute request: %v", err))
+		return
+	}
+
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			response.Diagnostics.AddWarning("Unknown", fmt.Sprintf("Failed to close response body: %v", err))
+		}
+	}()
+
+	if resp.StatusCode != http.StatusNoContent {
+		response.Diagnostics.
+			AddError("Unknown", fmt.Sprintf("Expected status %d, got %s.", http.StatusNoContent, resp.Status))
+		return
+	}
 }
