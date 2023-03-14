@@ -230,8 +230,8 @@ func (r *resource) Read(
 }
 
 func (r *resource) Update(
-	ctx context.Context,
-	request UpdateRequest,
+	_ context.Context,
+	_ UpdateRequest,
 	response *UpdateResponse,
 ) {
 	response.Diagnostics.AddWarning(
