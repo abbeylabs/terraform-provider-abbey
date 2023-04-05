@@ -6,8 +6,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
+	"abbey.so/terraform-provider-abbey/internal/abbey/entity"
 	"abbey.so/terraform-provider-abbey/internal/abbey/resources/requestable"
 )
 
@@ -94,28 +94,40 @@ func StepFromRequestableBuiltinWorkflow(
 	}, nil
 }
 
-func (self Step) ToBuiltinWorkflowView(ctx context.Context) (*requestable.BuiltinWorkflow, diag.Diagnostics) {
+func (self Step) ToReviewStep(ctx context.Context) (*requestable.ReviewStep, diag.Diagnostics) {
 	var (
-		diags     diag.Diagnostics
-		reviewers ReviewerSpec
+		diags              diag.Diagnostics
+		skipIf             []entity.Policy
+		reviewerQuantifier requestable.ReviewerQuantifier
 	)
 
-	if !self.SkipIf.IsNull() {
-		diags.AddWarning("Future Behavior May Change", "`skip_if` is unimplemented in review workflow. Coming soon!")
-	}
+	attrs := self.Reviewers.Attributes()
+	var value []string
 
-	diags.Append(self.Reviewers.As(ctx, &reviewers, basetypes.ObjectAsOptions{
-		UnhandledNullAsEmpty:    false,
-		UnhandledUnknownAsEmpty: false,
-	})...)
+	if x, ok := attrs["one_of"]; ok {
+		diags.Append(x.(types.List).ElementsAs(ctx, &value, false)...)
+		reviewerQuantifier = requestable.ReviewerQuantifierOneOf(value)
+	} else if x, ok := attrs["all_of"]; ok {
+		diags.Append(x.(types.List).ElementsAs(ctx, &value, false)...)
+		reviewerQuantifier = requestable.ReviewerQuantifierAllOf(value)
+	} else {
+		diags.AddError("Unknown reviewer quantifier", attrs["type"].(types.String).ValueString())
+	}
 	if diags.HasError() {
 		return nil, diags
 	}
 
-	builtinWorkflow, diags_ := reviewers.ToBuiltinWorkflowView()
-	diags.Append(diags_...)
+	diags.Append(self.SkipIf.ElementsAs(ctx, &skipIf, false)...)
+	if diags.HasError() {
+		return nil, diags
+	}
 
-	return builtinWorkflow, diags
+	return &requestable.ReviewStep{
+		Reviewers: requestable.ReviewerQuantifierEnvelope{
+			Value: reviewerQuantifier,
+		},
+		SkipIf: skipIf,
+	}, diags
 }
 
 func (self Step) ToObject() (types.Object, diag.Diagnostics) {

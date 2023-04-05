@@ -75,21 +75,26 @@ func WorkflowFromObject(ctx context.Context, object types.Object) (*requestable.
 		return nil, diags
 	}
 
-	var step Step
+	var steps []Step
 
-	diags.Append(elements[0].(types.Object).As(ctx, &step, basetypes.ObjectAsOptions{
-		UnhandledNullAsEmpty:    false,
-		UnhandledUnknownAsEmpty: false,
-	})...)
+	diags.Append(workflow.Steps.ElementsAs(ctx, &steps, false)...)
 	if diags.HasError() {
 		return nil, diags
 	}
 
-	builtinWorkflow, diags_ := step.ToBuiltinWorkflowView(ctx)
-	diags.Append(diags_...)
-	if diags.HasError() {
-		return nil, diags
+	reviewSteps := make([]requestable.ReviewStep, 0, len(steps))
+
+	for _, step := range steps {
+		reviewStep, diags_ := step.ToReviewStep(ctx)
+		diags.Append(diags_...)
+		if diags.HasError() {
+			return nil, diags
+		}
+
+		reviewSteps = append(reviewSteps, *reviewStep)
 	}
 
-	return &requestable.Workflow{Value: *builtinWorkflow}, nil
+	return &requestable.Workflow{Value: requestable.ReviewWorkflow{
+		Steps: reviewSteps,
+	}}, nil
 }

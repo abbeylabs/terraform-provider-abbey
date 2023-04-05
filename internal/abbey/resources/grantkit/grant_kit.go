@@ -71,6 +71,13 @@ func ModelFromRequestableView(view requestable.View) (*Model, diag.Diagnostics) 
 
 	if view.Workflow != nil {
 		view.Workflow.Value.VisitWorkflow(requestable.WorkflowVisitor{
+			GrantKit: func(reviewWorkflow requestable.ReviewWorkflow) {
+				workflowObject, diags_ = reviewWorkflow.ToObject()
+				diags.Append(diags_...)
+				if diags.HasError() {
+					return
+				}
+			},
 			Builtin: func(builtinWorkflow requestable.BuiltinWorkflow) {
 				workflow, diags_ := WorkflowFromRequestableBuiltinWorkflow(builtinWorkflow)
 				diags.Append(diags_...)
