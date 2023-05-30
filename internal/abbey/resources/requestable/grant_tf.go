@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 
-	"abbey.so/terraform-provider-abbey/internal/abbey/value"
+	"abbey.io/terraform-provider-abbey/internal/abbey/value"
 )
 
 type GrantTf struct {

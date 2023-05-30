@@ -5,7 +5,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	. "github.com/moznion/go-optional"
 
-	. "abbey.so/terraform-provider-abbey/internal/abbey/entity"
+	. "abbey.io/terraform-provider-abbey/internal/abbey/entity"
 )
 
 type Model struct {

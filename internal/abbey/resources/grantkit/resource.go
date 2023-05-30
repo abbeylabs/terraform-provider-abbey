@@ -18,9 +18,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	"abbey.so/terraform-provider-abbey/internal/abbey/provider"
-	"abbey.so/terraform-provider-abbey/internal/abbey/resources/requestable"
-	abbeyvalidator "abbey.so/terraform-provider-abbey/validator"
+	"abbey.io/terraform-provider-abbey/internal/abbey/provider"
+	"abbey.io/terraform-provider-abbey/internal/abbey/resources/requestable"
+	abbeyvalidator "abbey.io/terraform-provider-abbey/validator"
 )
 
 var (

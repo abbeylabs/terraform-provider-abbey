@@ -1,4 +1,4 @@
-module abbey.so/terraform-provider-abbey
+module abbey.io/terraform-provider-abbey
 
 go 1.20
 

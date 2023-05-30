@@ -11,9 +11,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	abbeyprovider "abbey.so/terraform-provider-abbey/internal/abbey/provider"
-	grantkitresource "abbey.so/terraform-provider-abbey/internal/abbey/resources/grantkit"
-	identityresource "abbey.so/terraform-provider-abbey/internal/abbey/resources/identity"
+	abbeyprovider "abbey.io/terraform-provider-abbey/internal/abbey/provider"
+	grantkitresource "abbey.io/terraform-provider-abbey/internal/abbey/resources/grantkit"
+	identityresource "abbey.io/terraform-provider-abbey/internal/abbey/resources/identity"
 )
 
 const (
@@ -61,7 +61,7 @@ func (p *provider_) Schema(
 				Optional:            true,
 				Sensitive:           false,
 				Description:         "",
-				MarkdownDescription: "The Abbey API host. Defaults to `https://api.abbey.so`.",
+				MarkdownDescription: "The Abbey API host. Defaults to `https://api.abbey.io`.",
 				DeprecationMessage:  "",
 				Validators:          nil,
 			},

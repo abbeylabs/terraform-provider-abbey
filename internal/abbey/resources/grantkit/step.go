@@ -7,8 +7,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	"abbey.so/terraform-provider-abbey/internal/abbey/entity"
-	"abbey.so/terraform-provider-abbey/internal/abbey/resources/requestable"
+	"abbey.io/terraform-provider-abbey/internal/abbey/entity"
+	"abbey.io/terraform-provider-abbey/internal/abbey/resources/requestable"
 )
 
 type Step struct {

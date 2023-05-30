@@ -9,8 +9,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 
-	"abbey.so/terraform-provider-abbey/internal/abbey"
-	"abbey.so/terraform-provider-abbey/internal/abbey/provider"
+	"abbey.io/terraform-provider-abbey/internal/abbey"
+	"abbey.io/terraform-provider-abbey/internal/abbey/provider"
 )
 
 var testAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
