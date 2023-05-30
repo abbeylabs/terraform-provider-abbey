@@ -6,15 +6,15 @@ import (
 	"os"
 	"testing"
 
+	"abbey.io/terraform-provider-abbey/internal/abbey"
+	abbeyprovider "abbey.io/terraform-provider-abbey/internal/abbey/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	. "github.com/onsi/gomega"
-
-	"abbey.so/terraform-provider-abbey/internal/abbey"
-	abbeyprovider "abbey.so/terraform-provider-abbey/internal/abbey/provider"
 )
 
 // var testAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){

@@ -7,8 +7,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	. "github.com/moznion/go-optional"
 
-	"abbey.so/terraform-provider-abbey/internal/abbey/entity"
-	"abbey.so/terraform-provider-abbey/internal/abbey/resources/requestable"
+	"abbey.io/terraform-provider-abbey/internal/abbey/entity"
+	"abbey.io/terraform-provider-abbey/internal/abbey/resources/requestable"
 )
 
 type Model struct {

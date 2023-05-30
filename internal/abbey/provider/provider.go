@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	DefaultHost = "https://api.abbey.so"
+	DefaultHost = "https://api.abbey.io"
 	TypePrefix  = "abbey"
 )
 

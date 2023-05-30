@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
-	"abbey.so/terraform-provider-abbey/internal/abbey/resources/requestable"
+	"abbey.io/terraform-provider-abbey/internal/abbey/resources/requestable"
 )
 
 type Workflow struct {

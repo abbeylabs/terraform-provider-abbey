@@ -8,8 +8,8 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 
-	"abbey.so/terraform-provider-abbey/internal/abbey"
-	"abbey.so/terraform-provider-abbey/internal/abbey/provider"
+	"abbey.io/terraform-provider-abbey/internal/abbey"
+	"abbey.io/terraform-provider-abbey/internal/abbey/provider"
 )
 
 // GoReleaser sets the version in compiled binaries.
