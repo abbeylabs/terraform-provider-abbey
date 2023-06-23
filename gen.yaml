@@ -9,5 +9,5 @@ generation:
   singleTagPerOp: false
 terraform:
   version: 1.0.0
-  author: speakeasy
-  packageName: terraform
+  author: abbeylabs
+  packageName: abbey
