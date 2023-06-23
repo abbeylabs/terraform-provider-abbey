@@ -19,7 +19,7 @@ jobs:
       speakeasy_version: latest
       openapi_doc_auth_header: Authorization
       openapi_docs: |
-        - https://raw.githubusercontent.com/alramech/speakeasy-test/openapi/openapi.yaml
+        - https://raw.githubusercontent.com/Alramech/speakeasy-test/main/openapi/openapi.yaml
       languages: |
         - terraform
       create_release: true
