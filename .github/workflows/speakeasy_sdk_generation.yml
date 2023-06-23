@@ -22,16 +22,17 @@ jobs:
       sparse-checkout-cone-mode: false
       ssh-key: ${{ secrets.DEPLOY_KEY }}
       path: "./oas"
-    uses: speakeasy-api/sdk-generation-action/.github/workflows/sdk-generation.yaml@v14
-    with:
-      speakeasy_version: latest
-      openapi_docs: |
-        - ./oas/openapi/openapi.yaml
-      languages: |
-        - terraform
-      create_release: true
-      force: ${{ github.event.inputs.force }}
-    secrets:
-      github_access_token: ${{ secrets.GITHUB_TOKEN }}
-      speakeasy_api_key: ${{ secrets.SPEAKEASY_API_KEY }}
+    - name: Speakeasy
+      uses: speakeasy-api/sdk-generation-action/.github/workflows/sdk-generation.yaml@v14
+      with:
+        speakeasy_version: latest
+        openapi_docs: |
+          - ./oas/openapi/openapi.yaml
+        languages: |
+          - terraform
+        create_release: true
+        force: ${{ github.event.inputs.force }}
+      secrets:
+        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+        speakeasy_api_key: ${{ secrets.SPEAKEASY_API_KEY }}
 
