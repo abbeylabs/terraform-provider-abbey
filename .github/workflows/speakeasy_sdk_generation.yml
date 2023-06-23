@@ -1,37 +1,25 @@
 name: Generate
 
 on:
-  workflow_dispatch: # Allows manual triggering of the workflow to generate SDK
+  workflow_dispatch:
     inputs:
       force:
-        description: "Force generation of SDKs"
+        description: "Force the generation of the SDKs"
         type: boolean
         default: false
   schedule:
     - cron: 0 0 * * * # Runs every day at midnight
-jobs:
-  oas:
-    steps:
-      - name: Get OAS 
-        uses: actions/checkout@v3
-        with:
-          repository: alramech/speakeasy-test
-          sparse-checkout: |
-            api/openapi.yaml
-          sparse-checkout-cone-mode: false
-          ssh-key: ${{ secrets.DEPLOY_KEY }}
-          path: "./oas"
-  generate:
-    uses: speakeasy-api/sdk-generation-action/.github/workflows/sdk-generation.yaml@v14
-    with:
-      speakeasy_version: latest
-      openapi_docs: |
-        - ./oas/api/openapi.yaml
-      languages: |
-        - terraform
-      create_release: true
-      force: ${{ github.event.inputs.force }}
-    secrets:
-      github_access_token: ${{ secrets.GITHUB_TOKEN }}
-      speakeasy_api_key: ${{ secrets.SPEAKEASY_API_KEY }}
 
+jobs:
+  generate:
+    uses: speakeasy-api/sdk-generation-action/.github/workflows/sdk-generation.yaml@v14 # Import the sdk generation workflow which will handle the generation of the SDKs and publishing to the package managers
+    with:
+      force: ${{ github.event.inputs.force }}
+      speakeasy_version: latest
+      openapi_doc_location: https://example.com/my/openapi/spec.yaml
+      languages: |-
+        - terraform
+      mode: direct
+    secrets:
+      speakeasy_api_key: ${{ secrets.SPEAKEASY_API_KEY }}
+      github_access_token: ${{ secrets.GITHUB_TOKEN }}
