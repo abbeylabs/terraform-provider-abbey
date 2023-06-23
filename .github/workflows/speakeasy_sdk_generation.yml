@@ -1,0 +1,34 @@
+name: Generate
+
+on:
+  workflow_dispatch: # Allows manual triggering of the workflow to generate SDK
+    inputs:
+      force:
+        description: "Force generation of SDKs"
+        type: boolean
+        default: false
+  schedule:
+    - cron: 0 0 * * * # Runs every day at midnight
+
+jobs:
+  generate:
+    - name: Get OAS 
+      uses: mobiledevops/secret-to-file-action@v1
+      with:
+        base64-encoded-secret: ${{ secrets.OAS }}
+        filename: "openapi.yaml"
+        is-executable: false
+        working-directory: "./api/openapi"
+    uses: speakeasy-api/sdk-generation-action/.github/workflows/sdk-generation.yaml@v14
+    with:
+      speakeasy_version: latest
+      openapi_docs: |
+        - ./api/openapi.yaml
+      languages: |
+        - terraform
+      create_release: true
+      force: ${{ github.event.inputs.force }}
+    secrets:
+      github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      speakeasy_api_key: ${{ secrets.SPEAKEASY_API_KEY }}
+
