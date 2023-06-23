@@ -12,6 +12,7 @@ on:
 
 jobs:
   generate:
+    steps:
     - name: Get OAS 
     - uses: actions/checkout@v3
       with:
