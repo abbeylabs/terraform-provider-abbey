@@ -17,6 +17,7 @@ jobs:
     uses: speakeasy-api/sdk-generation-action/.github/workflows/sdk-generation.yaml@v14
     with:
       speakeasy_version: latest
+      openapi_doc_auth_header: Authorization
       openapi_docs: |
         - https://raw.githubusercontent.com/alramech/speakeasy-test/api/openapi.yaml
       languages: |
