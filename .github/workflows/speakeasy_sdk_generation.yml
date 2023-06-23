@@ -11,7 +11,7 @@ on:
     - cron: 0 0 * * * # Runs every day at midnight
 
 jobs:
-  setup:
+  job0:
     steps:
       - name: Get OAS 
         uses: actions/checkout@v3
