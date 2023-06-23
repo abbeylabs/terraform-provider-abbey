@@ -3,9 +3,10 @@
 package sdk
 
 import (
+	"abbey/internal/sdk/pkg/models/shared"
+	"abbey/internal/sdk/pkg/utils"
 	"fmt"
 	"net/http"
-	"terraform/internal/sdk/pkg/utils"
 	"time"
 )
 
@@ -46,9 +47,9 @@ func Float32(f float32) *float32 { return &f }
 func Float64(f float64) *float64 { return &f }
 
 type sdkConfiguration struct {
-	DefaultClient  HTTPClient
-	SecurityClient HTTPClient
-
+	DefaultClient     HTTPClient
+	SecurityClient    HTTPClient
+	Security          *shared.Security
 	ServerURL         string
 	Server            string
 	Language          string
@@ -120,13 +121,20 @@ func WithClient(client HTTPClient) SDKOption {
 	}
 }
 
+// WithSecurity configures the SDK to use the provided security details
+func WithSecurity(security shared.Security) SDKOption {
+	return func(sdk *SDK) {
+		sdk.sdkConfiguration.Security = &security
+	}
+}
+
 // New creates a new instance of the SDK with the provided options
 func New(opts ...SDKOption) *SDK {
 	sdk := &SDK{
 		sdkConfiguration: sdkConfiguration{
 			Language:          "terraform",
 			OpenAPIDocVersion: "0.1.0",
-			SDKVersion:        "1.0.0",
+			SDKVersion:        "1.0.1",
 			GenVersion:        "2.43.2",
 		},
 	}
@@ -139,7 +147,11 @@ func New(opts ...SDKOption) *SDK {
 		sdk.sdkConfiguration.DefaultClient = &http.Client{Timeout: 60 * time.Second}
 	}
 	if sdk.sdkConfiguration.SecurityClient == nil {
-		sdk.sdkConfiguration.SecurityClient = sdk.sdkConfiguration.DefaultClient
+		if sdk.sdkConfiguration.Security != nil {
+			sdk.sdkConfiguration.SecurityClient = utils.ConfigureSecurityClient(sdk.sdkConfiguration.DefaultClient, sdk.sdkConfiguration.Security)
+		} else {
+			sdk.sdkConfiguration.SecurityClient = sdk.sdkConfiguration.DefaultClient
+		}
 	}
 
 	sdk.APIKeys = newAPIKeys(sdk.sdkConfiguration)

@@ -3,6 +3,7 @@
 package provider
 
 import (
+	tfReflect "abbey/internal/provider/reflect"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -14,7 +15,6 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"reflect"
-	tfReflect "terraform/internal/provider/reflect"
 )
 
 func debugResponse(response *http.Response) string {

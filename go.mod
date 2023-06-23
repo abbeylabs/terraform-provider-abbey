@@ -1,4 +1,4 @@
-module terraform
+module abbey
 
 go 1.18
 

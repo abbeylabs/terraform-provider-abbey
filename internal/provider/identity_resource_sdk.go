@@ -3,14 +3,17 @@
 package provider
 
 import (
+	"abbey/internal/sdk/pkg/models/shared"
+	"encoding/json"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"terraform/internal/sdk/pkg/models/shared"
 	"time"
 )
 
 func (r *IdentityResourceModel) ToCreateSDKType() *shared.IdentityParams {
-	linked := make(map[string][]interface{})
-	// Warning. This is a map, but the source tf var is not a map. This might indicate a bug.
+	var linked interface{}
+	if !r.Linked.IsUnknown() && !r.Linked.IsNull() {
+		_ = json.Unmarshal([]byte(r.Linked.ValueString()), &linked)
+	}
 	name := r.Name.ValueString()
 	out := shared.IdentityParams{
 		Linked: linked,
@@ -32,7 +35,12 @@ func (r *IdentityResourceModel) ToDeleteSDKType() *shared.IdentityParams {
 func (r *IdentityResourceModel) RefreshFromGetResponse(resp *shared.Identity) {
 	r.CreatedAt = types.StringValue(resp.CreatedAt.Format(time.RFC3339))
 	r.ID = types.StringValue(resp.ID)
-	// Not Implemented resp.Linked, {"Scope":"","Format":"","Discriminator":null,"Input":false,"Extensions":{"x-untouched":true,"x-speakeasy-param-computed":true},"Name":"","Fields":[],"Enum":null,"BaseName":"","Examples":[],"Type":"map","ItemType":{"Fields":[],"Output":false,"Extensions":{"x-untouched":true,"x-speakeasy-param-computed":true},"Name":"","AssociatedTypes":[],"Enum":null,"RefType":"","Truncated":false,"AdditionalProperties":null,"ItemType":{"Scope":"","Output":false,"Type":"any","Fields":[],"Input":false,"Examples":[],"AdditionalProperties":null,"BaseName":"","RefType":"","Extensions":{"x-untouched":true,"x-speakeasy-param-computed":true,"Symbol":""},"Discriminator":null,"Name":"","AssociatedTypes":[],"Truncated":false,"Comments":null,"Format":"","ItemType":null,"Enum":null},"Discriminator":null,"Format":"","Type":"array","Scope":"","BaseName":"","Comments":null,"Input":false,"Examples":[]},"RefType":"","Truncated":false,"AssociatedTypes":[],"Comments":null,"Output":false,"AdditionalProperties":null}, false, , , r.Linked
+	if resp.Linked == nil {
+		r.Linked = types.StringNull()
+	} else {
+		linkedResult, _ := json.Marshal(resp.Linked)
+		r.Linked = types.StringValue(string(linkedResult))
+	}
 	r.Name = types.StringValue(resp.Name)
 }
 

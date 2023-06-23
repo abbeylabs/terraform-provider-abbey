@@ -3,15 +3,15 @@
 package sdk
 
 import (
+	"abbey/internal/sdk/pkg/models/operations"
+	"abbey/internal/sdk/pkg/models/shared"
+	"abbey/internal/sdk/pkg/utils"
 	"bytes"
 	"context"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
-	"terraform/internal/sdk/pkg/models/operations"
-	"terraform/internal/sdk/pkg/models/shared"
-	"terraform/internal/sdk/pkg/utils"
 )
 
 type tasks struct {
@@ -46,7 +46,7 @@ func (s *tasks) CreateTask(ctx context.Context, request shared.TaskParams) (*ope
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.DefaultClient
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -119,7 +119,7 @@ func (s *tasks) GetTaskByID(ctx context.Context, request operations.GetTaskByIDR
 	req.Header.Set("Accept", "application/json;q=1, application/json;q=0")
 	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
 
-	client := s.sdkConfiguration.DefaultClient
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -188,7 +188,7 @@ func (s *tasks) ListTasks(ctx context.Context) (*operations.ListTasksResponse, e
 	req.Header.Set("Accept", "application/json;q=1, application/json;q=0")
 	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
 
-	client := s.sdkConfiguration.DefaultClient
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -268,7 +268,7 @@ func (s *tasks) UpdateTask(ctx context.Context, request operations.UpdateTaskReq
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.DefaultClient
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {

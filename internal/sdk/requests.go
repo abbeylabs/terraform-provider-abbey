@@ -3,15 +3,15 @@
 package sdk
 
 import (
+	"abbey/internal/sdk/pkg/models/operations"
+	"abbey/internal/sdk/pkg/models/shared"
+	"abbey/internal/sdk/pkg/utils"
 	"bytes"
 	"context"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
-	"terraform/internal/sdk/pkg/models/operations"
-	"terraform/internal/sdk/pkg/models/shared"
-	"terraform/internal/sdk/pkg/utils"
 )
 
 type requests struct {
@@ -46,7 +46,7 @@ func (s *requests) CreateRequest(ctx context.Context, request shared.RequestPara
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.DefaultClient
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -119,7 +119,7 @@ func (s *requests) GetRequestByID(ctx context.Context, request operations.GetReq
 	req.Header.Set("Accept", "application/json;q=1, application/json;q=0")
 	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
 
-	client := s.sdkConfiguration.DefaultClient
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -188,7 +188,7 @@ func (s *requests) ListRequests(ctx context.Context) (*operations.ListRequestsRe
 	req.Header.Set("Accept", "application/json;q=1, application/json;q=0")
 	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
 
-	client := s.sdkConfiguration.DefaultClient
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -267,7 +267,7 @@ func (s *requests) RevokeRequestByID(ctx context.Context, request operations.Rev
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.DefaultClient
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {

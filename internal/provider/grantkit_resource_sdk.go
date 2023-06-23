@@ -3,8 +3,8 @@
 package provider
 
 import (
+	"abbey/internal/sdk/pkg/models/shared"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"terraform/internal/sdk/pkg/models/shared"
 	"time"
 )
 

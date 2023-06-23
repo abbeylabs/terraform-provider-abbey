@@ -3,8 +3,8 @@
 package listplanmodifier
 
 import (
+	"abbey/internal/planmodifiers/utils"
 	"context"
-	"terraform/internal/planmodifiers/utils"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 )

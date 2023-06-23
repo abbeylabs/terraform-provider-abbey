@@ -3,15 +3,15 @@
 package sdk
 
 import (
+	"abbey/internal/sdk/pkg/models/operations"
+	"abbey/internal/sdk/pkg/models/shared"
+	"abbey/internal/sdk/pkg/utils"
 	"bytes"
 	"context"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
-	"terraform/internal/sdk/pkg/models/operations"
-	"terraform/internal/sdk/pkg/models/shared"
-	"terraform/internal/sdk/pkg/utils"
 )
 
 type identities struct {
@@ -47,7 +47,7 @@ func (s *identities) CreateIdentity(ctx context.Context, request shared.Identity
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.DefaultClient
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -120,7 +120,7 @@ func (s *identities) DeleteIdentity(ctx context.Context, request operations.Dele
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
 
-	client := s.sdkConfiguration.DefaultClient
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -182,7 +182,7 @@ func (s *identities) GetIdentity(ctx context.Context, request operations.GetIden
 	req.Header.Set("Accept", "application/json;q=1, application/json;q=0")
 	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
 
-	client := s.sdkConfiguration.DefaultClient
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {

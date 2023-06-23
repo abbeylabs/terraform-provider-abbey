@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"terraform/internal/sdk/pkg/types"
+	"abbey/internal/sdk/pkg/types"
 )
 
 const (
