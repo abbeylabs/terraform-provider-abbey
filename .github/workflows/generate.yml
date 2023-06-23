@@ -10,23 +10,12 @@ on:
   schedule:
     - cron: 0 0 * * * # Runs every day at midnight
 jobs:
-  oas:
-    steps:
-      - name: Get OAS 
-        uses: actions/checkout@v3
-        with:
-          repository: alramech/speakeasy-test
-          sparse-checkout: |
-            api/openapi.yaml
-          sparse-checkout-cone-mode: false
-          ssh-key: ${{ secrets.DEPLOY_KEY }}
-          path: "./oas"
   generate:
     uses: speakeasy-api/sdk-generation-action/.github/workflows/sdk-generation.yaml@v14
     with:
       speakeasy_version: latest
       openapi_docs: |
-        - ./oas/api/openapi.yaml
+        - https://raw.githubusercontent.com/alramech/speakeasy-test/api/openapi.yaml
       languages: |
         - terraform
       create_release: true
@@ -34,3 +23,4 @@ jobs:
     secrets:
       github_access_token: ${{ secrets.GITHUB_TOKEN }}
       speakeasy_api_key: ${{ secrets.SPEAKEASY_API_KEY }}
+      openapi_doc_auth_token: ${{ secrets.SPEC_TOKEN }}
