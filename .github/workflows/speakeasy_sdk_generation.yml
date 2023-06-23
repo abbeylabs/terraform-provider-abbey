@@ -12,14 +12,22 @@ on:
 
 jobs:
   oas:
-    uses: actions/checkout@v3
-    
+    steps:
+      - name: Get OAS 
+        uses: actions/checkout@v3
+        with:
+          repository: alramech/speakeasy-test
+          sparse-checkout: |
+            api/openapi.yaml
+          sparse-checkout-cone-mode: false
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          path: "./oas"
   generate:
     uses: speakeasy-api/sdk-generation-action/.github/workflows/sdk-generation.yaml@v14
     with:
       speakeasy_version: latest
       openapi_docs: |
-        - ./oas/openapi/openapi.yaml
+        - ./oas/api/openapi.yaml
       languages: |
         - terraform
       create_release: true
