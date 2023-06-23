@@ -11,17 +11,6 @@ on:
     - cron: 0 0 * * * # Runs every day at midnight
 
 jobs:
-  job0:
-    steps:
-      - name: Get OAS 
-        uses: actions/checkout@v3
-        with:
-          repository: alramech/speakeasy-test
-          sparse-checkout: |
-            README.md
-          sparse-checkout-cone-mode: false
-          ssh-key: ${{ secrets.DEPLOY_KEY }}
-          path: "./oas"
   generate:
     uses: speakeasy-api/sdk-generation-action/.github/workflows/sdk-generation.yaml@v14
     with:
