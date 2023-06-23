@@ -14,7 +14,7 @@ jobs:
   generate:
     steps:
     - name: Get OAS 
-    - uses: actions/checkout@v3
+      uses: actions/checkout@v3
       with:
       repository: alramech/speakeasy-test
       sparse-checkout: |
