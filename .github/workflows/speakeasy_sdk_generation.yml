@@ -9,7 +9,6 @@ on:
         default: false
   schedule:
     - cron: 0 0 * * * # Runs every day at midnight
-
 jobs:
   oas:
     steps:
