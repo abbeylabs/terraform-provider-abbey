@@ -10,7 +10,7 @@ import (
 type Identity struct {
 	CreatedAt time.Time `json:"created_at"`
 	ID        string    `json:"id"`
-	// See documentation
-	Linked interface{} `json:"linked,omitempty"`
-	Name   string      `json:"name"`
+	// Json encoded string. See documentation for details
+	Linked *string `json:"linked,omitempty"`
+	Name   string  `json:"name"`
 }

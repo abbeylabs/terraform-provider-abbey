@@ -58,10 +58,6 @@ func (r *IdentityResource) Schema(ctx context.Context, req resource.SchemaReques
 			"linked": schema.StringAttribute{
 				Computed: true,
 				Optional: true,
-				Validators: []validator.String{
-					validators.IsValidJSON(),
-				},
-				Description: `Parsed as JSON.`,
 			},
 			"name": schema.StringAttribute{
 				Required: true,

@@ -72,12 +72,14 @@ func (c *sdkConfiguration) GetServerDetails() (string, map[string]string) {
 
 // SDK - Edge API: The front door to Abbey Labs.
 type SDK struct {
-	APIKeys      *apiKeys
-	GrantKits    *grantKits
-	Identities   *identities
-	Requestables *requestables
-	Requests     *requests
-	Tasks        *tasks
+	APIKeys         *apiKeys
+	ConnectionSpecs *connectionSpecs
+	Connections     *connections
+	GrantKits       *grantKits
+	Identities      *identities
+	Requestables    *requestables
+	Requests        *requests
+	Tasks           *tasks
 
 	sdkConfiguration sdkConfiguration
 }
@@ -134,8 +136,8 @@ func New(opts ...SDKOption) *SDK {
 		sdkConfiguration: sdkConfiguration{
 			Language:          "terraform",
 			OpenAPIDocVersion: "0.1.0",
-			SDKVersion:        "1.0.1",
-			GenVersion:        "2.43.2",
+			SDKVersion:        "1.1.0",
+			GenVersion:        "2.50.2",
 		},
 	}
 	for _, opt := range opts {
@@ -155,6 +157,10 @@ func New(opts ...SDKOption) *SDK {
 	}
 
 	sdk.APIKeys = newAPIKeys(sdk.sdkConfiguration)
+
+	sdk.ConnectionSpecs = newConnectionSpecs(sdk.sdkConfiguration)
+
+	sdk.Connections = newConnections(sdk.sdkConfiguration)
 
 	sdk.GrantKits = newGrantKits(sdk.sdkConfiguration)
 
