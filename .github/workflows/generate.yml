@@ -15,7 +15,7 @@ on:
 jobs:
   generate:
     uses: speakeasy-api/sdk-generation-action/.github/workflows/sdk-generation.yaml@v14
-    with:
+    with: 
       speakeasy_version: latest
       openapi_doc_auth_header: Authorization
       openapi_docs: |
