@@ -12,7 +12,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -35,10 +34,10 @@ type IdentityResource struct {
 
 // IdentityResourceModel describes the resource data model.
 type IdentityResourceModel struct {
-	CreatedAt types.String              `tfsdk:"created_at"`
-	ID        types.String              `tfsdk:"id"`
-	Linked    map[string][]types.String `tfsdk:"linked"`
-	Name      types.String              `tfsdk:"name"`
+	CreatedAt types.String `tfsdk:"created_at"`
+	ID        types.String `tfsdk:"id"`
+	Linked    types.String `tfsdk:"linked"`
+	Name      types.String `tfsdk:"name"`
 }
 
 func (r *IdentityResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -59,11 +58,12 @@ func (r *IdentityResource) Schema(ctx context.Context, req resource.SchemaReques
 			"id": schema.StringAttribute{
 				Computed: true,
 			},
-			"linked": schema.MapAttribute{
-				PlanModifiers: []planmodifier.Map{
-					mapplanmodifier.RequiresReplace(),
+			"linked": schema.StringAttribute{
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
 				},
-				Required: true,
+				Required:    true,
+				Description: `Json encoded string. See documentation for details`,
 			},
 			"name": schema.StringAttribute{
 				PlanModifiers: []planmodifier.String{

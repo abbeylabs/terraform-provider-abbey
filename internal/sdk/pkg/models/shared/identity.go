@@ -8,8 +8,9 @@ import (
 
 // Identity - Created
 type Identity struct {
-	CreatedAt time.Time                `json:"created_at"`
-	ID        string                   `json:"id"`
-	Linked    map[string][]interface{} `json:"linked"`
-	Name      string                   `json:"name"`
+	CreatedAt time.Time `json:"created_at"`
+	ID        string    `json:"id"`
+	// Json encoded string. See documentation for details
+	Linked string `json:"linked"`
+	Name   string `json:"name"`
 }

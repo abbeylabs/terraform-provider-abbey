@@ -3,6 +3,7 @@
 package shared
 
 type IdentityParams struct {
-	Linked map[string][]interface{} `json:"linked"`
-	Name   string                   `json:"name"`
+	// Json encoded string. See documentation for details
+	Linked string `json:"linked"`
+	Name   string `json:"name"`
 }
