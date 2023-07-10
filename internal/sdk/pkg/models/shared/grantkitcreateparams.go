@@ -6,6 +6,6 @@ type GrantKitCreateParams struct {
 	Description string         `json:"description"`
 	Name        string         `json:"name"`
 	Output      Output         `json:"output"`
-	Policies    *Policies      `json:"policies,omitempty"`
+	Policies    []Policy       `json:"policies,omitempty"`
 	Workflow    *GrantWorkflow `json:"workflow,omitempty"`
 }

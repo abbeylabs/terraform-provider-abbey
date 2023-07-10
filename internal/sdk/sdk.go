@@ -116,7 +116,6 @@ type SDK struct {
 	//
 	// https://docs.abbey.io/product/approving-or-denying-access-requests
 	Reviews *reviews
-	Tasks   *tasks
 
 	sdkConfiguration sdkConfiguration
 }
@@ -166,7 +165,7 @@ func New(opts ...SDKOption) *SDK {
 		sdkConfiguration: sdkConfiguration{
 			Language:          "terraform",
 			OpenAPIDocVersion: "0.1.0",
-			SDKVersion:        "1.1.0",
+			SDKVersion:        "1.1.1",
 			GenVersion:        "2.59.0",
 		},
 	}
@@ -197,8 +196,6 @@ func New(opts ...SDKOption) *SDK {
 	sdk.Requests = newRequests(sdk.sdkConfiguration)
 
 	sdk.Reviews = newReviews(sdk.sdkConfiguration)
-
-	sdk.Tasks = newTasks(sdk.sdkConfiguration)
 
 	return sdk
 }

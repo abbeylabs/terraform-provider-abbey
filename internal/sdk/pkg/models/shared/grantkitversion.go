@@ -13,7 +13,7 @@ type GrantKitVersion struct {
 	GrantKitName string        `json:"grant_kit_name"`
 	ID           string        `json:"id"`
 	Output       Output        `json:"output"`
-	Policies     Policies      `json:"policies"`
+	Policies     []Policy      `json:"policies"`
 	UpdatedAt    time.Time     `json:"updated_at"`
 	Version      int64         `json:"version"`
 	Workflow     GrantWorkflow `json:"workflow"`

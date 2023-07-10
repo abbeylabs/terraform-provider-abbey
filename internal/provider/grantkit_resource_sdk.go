@@ -29,50 +29,24 @@ func (r *GrantKitResourceModel) ToCreateSDKType() *shared.GrantKitCreateParams {
 		Location:  location,
 		Overwrite: overwrite,
 	}
-	var policies *shared.Policies
-	if r.Policies != nil {
-		grantIf := make([]shared.Policy, 0)
-		for _, grantIfItem := range r.Policies.GrantIf {
-			bundle := new(string)
-			if !grantIfItem.Bundle.IsUnknown() && !grantIfItem.Bundle.IsNull() {
-				*bundle = grantIfItem.Bundle.ValueString()
-			} else {
-				bundle = nil
-			}
-			query := new(string)
-			if !grantIfItem.Query.IsUnknown() && !grantIfItem.Query.IsNull() {
-				*query = grantIfItem.Query.ValueString()
-			} else {
-				query = nil
-			}
-			grantIf = append(grantIf, shared.Policy{
-				Bundle: bundle,
-				Query:  query,
-			})
+	policies := make([]shared.Policy, 0)
+	for _, policiesItem := range r.Policies {
+		bundle := new(string)
+		if !policiesItem.Bundle.IsUnknown() && !policiesItem.Bundle.IsNull() {
+			*bundle = policiesItem.Bundle.ValueString()
+		} else {
+			bundle = nil
 		}
-		revokeIf := make([]shared.Policy, 0)
-		for _, revokeIfItem := range r.Policies.RevokeIf {
-			bundle1 := new(string)
-			if !revokeIfItem.Bundle.IsUnknown() && !revokeIfItem.Bundle.IsNull() {
-				*bundle1 = revokeIfItem.Bundle.ValueString()
-			} else {
-				bundle1 = nil
-			}
-			query1 := new(string)
-			if !revokeIfItem.Query.IsUnknown() && !revokeIfItem.Query.IsNull() {
-				*query1 = revokeIfItem.Query.ValueString()
-			} else {
-				query1 = nil
-			}
-			revokeIf = append(revokeIf, shared.Policy{
-				Bundle: bundle1,
-				Query:  query1,
-			})
+		query := new(string)
+		if !policiesItem.Query.IsUnknown() && !policiesItem.Query.IsNull() {
+			*query = policiesItem.Query.ValueString()
+		} else {
+			query = nil
 		}
-		policies = &shared.Policies{
-			GrantIf:  grantIf,
-			RevokeIf: revokeIf,
-		}
+		policies = append(policies, shared.Policy{
+			Bundle: bundle,
+			Query:  query,
+		})
 	}
 	var workflow *shared.GrantWorkflow
 	if r.Workflow != nil {
@@ -92,21 +66,21 @@ func (r *GrantKitResourceModel) ToCreateSDKType() *shared.GrantKitCreateParams {
 			}
 			skipIf := make([]shared.Policy, 0)
 			for _, skipIfItem := range stepsItem.SkipIf {
-				bundle2 := new(string)
+				bundle1 := new(string)
 				if !skipIfItem.Bundle.IsUnknown() && !skipIfItem.Bundle.IsNull() {
-					*bundle2 = skipIfItem.Bundle.ValueString()
+					*bundle1 = skipIfItem.Bundle.ValueString()
 				} else {
-					bundle2 = nil
+					bundle1 = nil
 				}
-				query2 := new(string)
+				query1 := new(string)
 				if !skipIfItem.Query.IsUnknown() && !skipIfItem.Query.IsNull() {
-					*query2 = skipIfItem.Query.ValueString()
+					*query1 = skipIfItem.Query.ValueString()
 				} else {
-					query2 = nil
+					query1 = nil
 				}
 				skipIf = append(skipIf, shared.Policy{
-					Bundle: bundle2,
-					Query:  query2,
+					Bundle: bundle1,
+					Query:  query1,
 				})
 			}
 			steps = append(steps, shared.Step{
@@ -154,50 +128,24 @@ func (r *GrantKitResourceModel) ToUpdateSDKType() *shared.GrantKitUpdateParams {
 		Location:  location,
 		Overwrite: overwrite,
 	}
-	var policies *shared.Policies
-	if r.Policies != nil {
-		grantIf := make([]shared.Policy, 0)
-		for _, grantIfItem := range r.Policies.GrantIf {
-			bundle := new(string)
-			if !grantIfItem.Bundle.IsUnknown() && !grantIfItem.Bundle.IsNull() {
-				*bundle = grantIfItem.Bundle.ValueString()
-			} else {
-				bundle = nil
-			}
-			query := new(string)
-			if !grantIfItem.Query.IsUnknown() && !grantIfItem.Query.IsNull() {
-				*query = grantIfItem.Query.ValueString()
-			} else {
-				query = nil
-			}
-			grantIf = append(grantIf, shared.Policy{
-				Bundle: bundle,
-				Query:  query,
-			})
+	policies := make([]shared.Policy, 0)
+	for _, policiesItem := range r.Policies {
+		bundle := new(string)
+		if !policiesItem.Bundle.IsUnknown() && !policiesItem.Bundle.IsNull() {
+			*bundle = policiesItem.Bundle.ValueString()
+		} else {
+			bundle = nil
 		}
-		revokeIf := make([]shared.Policy, 0)
-		for _, revokeIfItem := range r.Policies.RevokeIf {
-			bundle1 := new(string)
-			if !revokeIfItem.Bundle.IsUnknown() && !revokeIfItem.Bundle.IsNull() {
-				*bundle1 = revokeIfItem.Bundle.ValueString()
-			} else {
-				bundle1 = nil
-			}
-			query1 := new(string)
-			if !revokeIfItem.Query.IsUnknown() && !revokeIfItem.Query.IsNull() {
-				*query1 = revokeIfItem.Query.ValueString()
-			} else {
-				query1 = nil
-			}
-			revokeIf = append(revokeIf, shared.Policy{
-				Bundle: bundle1,
-				Query:  query1,
-			})
+		query := new(string)
+		if !policiesItem.Query.IsUnknown() && !policiesItem.Query.IsNull() {
+			*query = policiesItem.Query.ValueString()
+		} else {
+			query = nil
 		}
-		policies = &shared.Policies{
-			GrantIf:  grantIf,
-			RevokeIf: revokeIf,
-		}
+		policies = append(policies, shared.Policy{
+			Bundle: bundle,
+			Query:  query,
+		})
 	}
 	var workflow *shared.GrantWorkflow
 	if r.Workflow != nil {
@@ -217,21 +165,21 @@ func (r *GrantKitResourceModel) ToUpdateSDKType() *shared.GrantKitUpdateParams {
 			}
 			skipIf := make([]shared.Policy, 0)
 			for _, skipIfItem := range stepsItem.SkipIf {
-				bundle2 := new(string)
+				bundle1 := new(string)
 				if !skipIfItem.Bundle.IsUnknown() && !skipIfItem.Bundle.IsNull() {
-					*bundle2 = skipIfItem.Bundle.ValueString()
+					*bundle1 = skipIfItem.Bundle.ValueString()
 				} else {
-					bundle2 = nil
+					bundle1 = nil
 				}
-				query2 := new(string)
+				query1 := new(string)
 				if !skipIfItem.Query.IsUnknown() && !skipIfItem.Query.IsNull() {
-					*query2 = skipIfItem.Query.ValueString()
+					*query1 = skipIfItem.Query.ValueString()
 				} else {
-					query2 = nil
+					query1 = nil
 				}
 				skipIf = append(skipIf, shared.Policy{
-					Bundle: bundle2,
-					Query:  query2,
+					Bundle: bundle1,
+					Query:  query1,
 				})
 			}
 			steps = append(steps, shared.Step{
@@ -275,43 +223,20 @@ func (r *GrantKitResourceModel) RefreshFromGetResponse(resp *shared.GrantKit) {
 	} else {
 		r.Output.Overwrite = types.StringNull()
 	}
-	if r.Policies == nil {
-		r.Policies = &Policies{}
-	}
-	if resp.Policies == nil {
-		r.Policies = nil
-	} else {
-		r.Policies = &Policies{}
-		r.Policies.GrantIf = nil
-		for _, grantIfItem := range resp.Policies.GrantIf {
-			var grantIf1 Policy
-			if grantIfItem.Bundle != nil {
-				grantIf1.Bundle = types.StringValue(*grantIfItem.Bundle)
-			} else {
-				grantIf1.Bundle = types.StringNull()
-			}
-			if grantIfItem.Query != nil {
-				grantIf1.Query = types.StringValue(*grantIfItem.Query)
-			} else {
-				grantIf1.Query = types.StringNull()
-			}
-			r.Policies.GrantIf = append(r.Policies.GrantIf, grantIf1)
+	r.Policies = nil
+	for _, policiesItem := range resp.Policies {
+		var policies1 Policy
+		if policiesItem.Bundle != nil {
+			policies1.Bundle = types.StringValue(*policiesItem.Bundle)
+		} else {
+			policies1.Bundle = types.StringNull()
 		}
-		r.Policies.RevokeIf = nil
-		for _, revokeIfItem := range resp.Policies.RevokeIf {
-			var revokeIf1 Policy
-			if revokeIfItem.Bundle != nil {
-				revokeIf1.Bundle = types.StringValue(*revokeIfItem.Bundle)
-			} else {
-				revokeIf1.Bundle = types.StringNull()
-			}
-			if revokeIfItem.Query != nil {
-				revokeIf1.Query = types.StringValue(*revokeIfItem.Query)
-			} else {
-				revokeIf1.Query = types.StringNull()
-			}
-			r.Policies.RevokeIf = append(r.Policies.RevokeIf, revokeIf1)
+		if policiesItem.Query != nil {
+			policies1.Query = types.StringValue(*policiesItem.Query)
+		} else {
+			policies1.Query = types.StringNull()
 		}
+		r.Policies = append(r.Policies, policies1)
 	}
 	r.UpdatedAt = types.StringValue(resp.UpdatedAt.Format(time.RFC3339))
 	if r.Workflow == nil {

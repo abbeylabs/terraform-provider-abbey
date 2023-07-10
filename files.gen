@@ -6,11 +6,9 @@ internal/sdk/grants.go
 internal/sdk/identities.go
 internal/sdk/requests.go
 internal/sdk/reviews.go
-internal/sdk/tasks.go
 internal/sdk/sdk.go
 internal/provider/type_output.go
 internal/provider/type_policy.go
-internal/provider/type_policies.go
 internal/provider/type_reviewers.go
 internal/provider/type_step.go
 internal/provider/type_grant_workflow.go
@@ -89,10 +87,6 @@ internal/sdk/pkg/models/operations/listreviews.go
 internal/sdk/pkg/models/operations/approvereview.go
 internal/sdk/pkg/models/operations/denyreview.go
 internal/sdk/pkg/models/operations/getreviewbyid.go
-internal/sdk/pkg/models/operations/createtask.go
-internal/sdk/pkg/models/operations/gettaskbyid.go
-internal/sdk/pkg/models/operations/listtasks.go
-internal/sdk/pkg/models/operations/updatetask.go
 internal/sdk/pkg/models/shared/error.go
 internal/sdk/pkg/models/shared/apikey.go
 internal/sdk/pkg/models/shared/apikeyscreateparams.go
@@ -124,7 +118,6 @@ internal/sdk/pkg/models/shared/grantworkflow.go
 internal/sdk/pkg/models/shared/step.go
 internal/sdk/pkg/models/shared/policy.go
 internal/sdk/pkg/models/shared/reviewers.go
-internal/sdk/pkg/models/shared/policies.go
 internal/sdk/pkg/models/shared/output.go
 internal/sdk/pkg/models/shared/grantkitcreateparams.go
 internal/sdk/pkg/models/shared/grantkitversion.go
@@ -139,8 +132,6 @@ internal/sdk/pkg/models/shared/reviewstatus.go
 internal/sdk/pkg/models/shared/requestcancelparams.go
 internal/sdk/pkg/models/shared/requestparams.go
 internal/sdk/pkg/models/shared/reviewupdateparams.go
-internal/sdk/pkg/models/shared/task.go
-internal/sdk/pkg/models/shared/taskparams.go
 USAGE.md
 internal/provider/provider.go
 internal/provider/grantkit_resource.go

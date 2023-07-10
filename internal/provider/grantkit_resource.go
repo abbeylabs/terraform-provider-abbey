@@ -38,7 +38,7 @@ type GrantKitResourceModel struct {
 	ID               types.String   `tfsdk:"id"`
 	Name             types.String   `tfsdk:"name"`
 	Output           Output         `tfsdk:"output"`
-	Policies         *Policies      `tfsdk:"policies"`
+	Policies         []Policy       `tfsdk:"policies"`
 	UpdatedAt        types.String   `tfsdk:"updated_at"`
 	Workflow         *GrantWorkflow `tfsdk:"workflow"`
 }
@@ -86,40 +86,18 @@ func (r *GrantKitResource) Schema(ctx context.Context, req resource.SchemaReques
 					},
 				},
 			},
-			"policies": schema.SingleNestedAttribute{
+			"policies": schema.ListNestedAttribute{
 				Computed: true,
 				Optional: true,
-				Attributes: map[string]schema.Attribute{
-					"grant_if": schema.ListNestedAttribute{
-						Computed: true,
-						Optional: true,
-						NestedObject: schema.NestedAttributeObject{
-							Attributes: map[string]schema.Attribute{
-								"bundle": schema.StringAttribute{
-									Computed: true,
-									Optional: true,
-								},
-								"query": schema.StringAttribute{
-									Computed: true,
-									Optional: true,
-								},
-							},
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"bundle": schema.StringAttribute{
+							Computed: true,
+							Optional: true,
 						},
-					},
-					"revoke_if": schema.ListNestedAttribute{
-						Computed: true,
-						Optional: true,
-						NestedObject: schema.NestedAttributeObject{
-							Attributes: map[string]schema.Attribute{
-								"bundle": schema.StringAttribute{
-									Computed: true,
-									Optional: true,
-								},
-								"query": schema.StringAttribute{
-									Computed: true,
-									Optional: true,
-								},
-							},
+						"query": schema.StringAttribute{
+							Computed: true,
+							Optional: true,
 						},
 					},
 				},

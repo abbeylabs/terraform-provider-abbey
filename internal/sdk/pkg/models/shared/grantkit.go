@@ -14,7 +14,7 @@ type GrantKit struct {
 	ID               string         `json:"id"`
 	Name             string         `json:"name"`
 	Output           Output         `json:"output"`
-	Policies         *Policies      `json:"policies,omitempty"`
+	Policies         []Policy       `json:"policies,omitempty"`
 	UpdatedAt        time.Time      `json:"updated_at"`
 	Workflow         *GrantWorkflow `json:"workflow,omitempty"`
 }
