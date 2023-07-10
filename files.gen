@@ -134,7 +134,10 @@ internal/sdk/pkg/models/shared/requestparams.go
 internal/sdk/pkg/models/shared/reviewupdateparams.go
 USAGE.md
 internal/provider/provider.go
+examples/provider/provider.tf
 internal/provider/grantkit_resource.go
 internal/provider/grantkit_resource_sdk.go
+examples/resources/abbey_grant_kit/resource.tf
 internal/provider/identity_resource.go
 internal/provider/identity_resource_sdk.go
+examples/resources/abbey_identity/resource.tf
