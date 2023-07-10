@@ -9,7 +9,7 @@ import (
 
 type DeleteAPIKeyRequest struct {
 	// The API Key to delete.
-	APIKey string `pathParam:"style=simple,explode=false,name=api_key"`
+	APIKey string `pathParam:"style=simple,explode=false,name=api-key"`
 }
 
 type DeleteAPIKeyResponse struct {

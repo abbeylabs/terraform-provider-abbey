@@ -7,17 +7,12 @@ import (
 	"net/http"
 )
 
-type RevokeGrantRequest struct {
-	// The ID of the grant to revoke
-	GrantID string `pathParam:"style=simple,explode=false,name=grant_id"`
-}
-
-type RevokeGrantResponse struct {
+type CreateRequestableResponse struct {
 	ContentType string
 	// Request Failed
 	Error *shared.Error
-	// Success
-	Grant       *shared.Grant
+	// Created
+	Requestable *shared.Requestable
 	StatusCode  int
 	RawResponse *http.Response
 }

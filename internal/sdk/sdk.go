@@ -9,17 +9,12 @@ import (
 	"time"
 )
 
-const (
-	// ServerProd - prod
-	ServerProd string = "prod"
-	// ServerDev - dev
-	ServerDev string = "dev"
-)
-
 // ServerList contains the list of servers available to the SDK
-var ServerList = map[string]string{
-	ServerProd: "https://api.abbey.io/v1",
-	ServerDev:  "http://localhost:8080/v1",
+var ServerList = []string{
+	// prod
+	"https://api.abbey.io/v1",
+	// dev
+	"http://localhost:8080/v1",
 }
 
 // HTTPClient provides an interface for suplying the SDK with a custom HTTP client
@@ -50,7 +45,7 @@ type sdkConfiguration struct {
 	SecurityClient HTTPClient
 
 	ServerURL         string
-	Server            string
+	ServerIndex       int
 	Language          string
 	OpenAPIDocVersion string
 	SDKVersion        string
@@ -62,61 +57,19 @@ func (c *sdkConfiguration) GetServerDetails() (string, map[string]string) {
 		return c.ServerURL, nil
 	}
 
-	if c.Server == "" {
-		c.Server = "prod"
-	}
-
-	return ServerList[c.Server], nil
+	return ServerList[c.ServerIndex], nil
 }
 
 // SDK - Edge API: The front door to Abbey Labs.
 type SDK struct {
-	// APIKeys - API Keys are used to authenticate to the Abbey API.
-	//
-	// https://docs.abbey.io/product/managing-api-keys
-	APIKeys *apiKeys
-	// ConnectionSpecs - Connection Specs are the templates for creating connections.
-	// They are used to validate connection parameters and to provide a UI for creating connections.
-	//
-	// https://docs.abbey.io
+	APIKeys         *apiKeys
 	ConnectionSpecs *connectionSpecs
-	// Connections - Connections are authenticated, with scopes if available, and made available to Abbey Grant Kits at runtime.
-	//
-	// https://docs.abbey.io
-	Connections *connections
-	// GrantKits - Grant Kits are what you configure in code to control and automatically right-size permissions for resources.
-	// A Grant Kit has 3 components:
-	//
-	// 1. Workflow to configure how someone should get access.
-	// 2. Policies to configure if someone should get access.
-	// 3. Output to configure how and where Grants should materialize.
-	//
-	// https://docs.abbey.io/getting-started/concepts#grant-kits
-	GrantKits *grantKits
-	// Grants - Grants are permissions that reflect the result of an access request going through the process of evaluating
-	// policies and approval workflows where all approval conditions are met.
-	//
-	// Grants may be revoked manually by a user or automatically if a time-based or attribute-based policy is
-	// included in the corresponding Grant Kit's policy.
-	//
-	// https://docs.abbey.io/getting-started/concepts#grants
-	Grants *grants
-	// Identities - User metadata used for enriching data.
-	// Enriched data is used to write richer policies, workflows, and outputs.
-	//
-	// https://docs.abbey.io
-	Identities *identities
-	// Requests - Requests are Access Requests that users make to get access to a resource.
-	//
-	// https://docs.abbey.io/getting-started/concepts#access-requests
-	Requests *requests
-	// Reviews - Reviews are decisions made by a reviewer on an Access Request.
-	//
-	// A Reviewer might approve or deny a request.
-	//
-	// https://docs.abbey.io/product/approving-or-denying-access-requests
-	Reviews *reviews
-	Tasks   *tasks
+	Connections     *connections
+	GrantKits       *grantKits
+	Identities      *identities
+	Requestables    *requestables
+	Requests        *requests
+	Tasks           *tasks
 
 	sdkConfiguration sdkConfiguration
 }
@@ -141,15 +94,14 @@ func WithTemplatedServerURL(serverURL string, params map[string]string) SDKOptio
 	}
 }
 
-// WithServer allows the overriding of the default server by name
-func WithServer(server string) SDKOption {
+// WithServerIndex allows the overriding of the default server by index
+func WithServerIndex(serverIndex int) SDKOption {
 	return func(sdk *SDK) {
-		_, ok := ServerList[server]
-		if !ok {
-			panic(fmt.Errorf("server %s not found", server))
+		if serverIndex < 0 || serverIndex >= len(ServerList) {
+			panic(fmt.Errorf("server index %d out of range", serverIndex))
 		}
 
-		sdk.sdkConfiguration.Server = server
+		sdk.sdkConfiguration.ServerIndex = serverIndex
 	}
 }
 
@@ -166,7 +118,7 @@ func New(opts ...SDKOption) *SDK {
 		sdkConfiguration: sdkConfiguration{
 			Language:          "terraform",
 			OpenAPIDocVersion: "0.1.0",
-			SDKVersion:        "1.1.0",
+			SDKVersion:        "1.1.1",
 			GenVersion:        "2.59.0",
 		},
 	}
@@ -190,13 +142,11 @@ func New(opts ...SDKOption) *SDK {
 
 	sdk.GrantKits = newGrantKits(sdk.sdkConfiguration)
 
-	sdk.Grants = newGrants(sdk.sdkConfiguration)
-
 	sdk.Identities = newIdentities(sdk.sdkConfiguration)
 
-	sdk.Requests = newRequests(sdk.sdkConfiguration)
+	sdk.Requestables = newRequestables(sdk.sdkConfiguration)
 
-	sdk.Reviews = newReviews(sdk.sdkConfiguration)
+	sdk.Requests = newRequests(sdk.sdkConfiguration)
 
 	sdk.Tasks = newTasks(sdk.sdkConfiguration)
 

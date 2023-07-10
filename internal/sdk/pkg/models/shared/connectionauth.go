@@ -23,8 +23,8 @@ type ConnectionAuth struct {
 
 func CreateConnectionAuthOauth2(oauth2 Oauth2Flow) ConnectionAuth {
 	typ := ConnectionAuthTypeOauth2
-	typStr := ConnectionAuthTypeEnum(typ)
-	oauth2.ConnectionAuthTypeEnum = &typStr
+	typStr := ConnectionAuthType(typ)
+	oauth2.Type = typStr
 
 	return ConnectionAuth{
 		Oauth2Flow: &oauth2,
@@ -36,7 +36,7 @@ func (u *ConnectionAuth) UnmarshalJSON(data []byte) error {
 	var d *json.Decoder
 
 	type discriminator struct {
-		ConnectionAuthTypeEnum string
+		Type string
 	}
 
 	dis := new(discriminator)
@@ -44,7 +44,7 @@ func (u *ConnectionAuth) UnmarshalJSON(data []byte) error {
 		return fmt.Errorf("could not unmarshal discriminator: %w", err)
 	}
 
-	switch dis.ConnectionAuthTypeEnum {
+	switch dis.Type {
 	case "Oauth2":
 		d = json.NewDecoder(bytes.NewReader(data))
 		oauth2Flow := new(Oauth2Flow)

@@ -3,6 +3,6 @@
 package shared
 
 type RequestParams struct {
-	GrantKitID *string `json:"grant_kit_id,omitempty"`
-	Reason     string  `json:"reason"`
+	Reason       *string                          `json:"reason,omitempty"`
+	Requestables []RequestParamsRequestablesInner `json:"requestables"`
 }

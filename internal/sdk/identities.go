@@ -14,10 +14,6 @@ import (
 	"strings"
 )
 
-// identities - User metadata used for enriching data.
-// Enriched data is used to write richer policies, workflows, and outputs.
-//
-// https://docs.abbey.io
 type identities struct {
 	sdkConfiguration sdkConfiguration
 }
@@ -28,9 +24,7 @@ func newIdentities(sdkConfig sdkConfiguration) *identities {
 	}
 }
 
-// CreateIdentity - Create an Identity
-// Creates a new identity.
-//
+// CreateIdentity - Creates a new identity.
 // An identity represents a human, service, or workload.
 func (s *identities) CreateIdentity(ctx context.Context, request shared.IdentityParams) (*operations.CreateIdentityResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
@@ -111,8 +105,7 @@ func (s *identities) CreateIdentity(ctx context.Context, request shared.Identity
 	return res, nil
 }
 
-// DeleteIdentity - Delete an Identity
-// Deletes the specified identity.
+// DeleteIdentity - Deletes the specified identity.
 func (s *identities) DeleteIdentity(ctx context.Context, request operations.DeleteIdentityRequest) (*operations.DeleteIdentityResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/identities/{identity_id}", request, nil)
@@ -174,8 +167,7 @@ func (s *identities) DeleteIdentity(ctx context.Context, request operations.Dele
 	return res, nil
 }
 
-// GetIdentity - Retrieve an Identity
-// Returns the details of an identity.
+// GetIdentity - Returns the details of an identity.
 func (s *identities) GetIdentity(ctx context.Context, request operations.GetIdentityRequest) (*operations.GetIdentityResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/identities/{identity_id}", request, nil)

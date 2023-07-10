@@ -2,7 +2,7 @@
 
 package shared
 
-type RequestCancelParams struct {
-	// The reason for canceling the request
+type RequestRevokeParams struct {
+	// The reason for revoking the request
 	Reason *string `json:"reason,omitempty"`
 }

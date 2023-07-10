@@ -7,17 +7,17 @@ import (
 	"net/http"
 )
 
-type GetGrantByIDRequest struct {
-	// The ID of the grant to retrieve
-	GrantID string `pathParam:"style=simple,explode=false,name=grant_id"`
+type GetRequestableByIDRequest struct {
+	// The ID of the requestable to retrieve.
+	RequestableID string `pathParam:"style=simple,explode=false,name=requestable_id"`
 }
 
-type GetGrantByIDResponse struct {
+type GetRequestableByIDResponse struct {
 	ContentType string
 	// Authentication Failed
 	Error *shared.Error
 	// Success
-	Grant       *shared.Grant
+	Requestable *shared.Requestable
 	StatusCode  int
 	RawResponse *http.Response
 }

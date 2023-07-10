@@ -14,9 +14,6 @@ import (
 	"strings"
 )
 
-// apiKeys - API Keys are used to authenticate to the Abbey API.
-//
-// https://docs.abbey.io/product/managing-api-keys
 type apiKeys struct {
 	sdkConfiguration sdkConfiguration
 }
@@ -27,8 +24,7 @@ func newAPIKeys(sdkConfig sdkConfiguration) *apiKeys {
 	}
 }
 
-// CreateAPIKey - Create an API Key
-// Creates a new API Key
+// CreateAPIKey - Creates a new API Key
 func (s *apiKeys) CreateAPIKey(ctx context.Context, request shared.APIKeysCreateParams) (*operations.CreateAPIKeyResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url := strings.TrimSuffix(baseURL, "/") + "/api-keys"
@@ -108,8 +104,7 @@ func (s *apiKeys) CreateAPIKey(ctx context.Context, request shared.APIKeysCreate
 	return res, nil
 }
 
-// GetAPIKeys - List API Keys
-// Returns a list of a user's API Keys.
+// GetAPIKeys - Returns a list of a user's API Keys.
 func (s *apiKeys) GetAPIKeys(ctx context.Context) (*operations.GetAPIKeysResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url := strings.TrimSuffix(baseURL, "/") + "/api-keys"
@@ -175,11 +170,10 @@ func (s *apiKeys) GetAPIKeys(ctx context.Context) (*operations.GetAPIKeysRespons
 	return res, nil
 }
 
-// DeleteAPIKey - Delete an API Key
-// Delete a specified API Key.
+// DeleteAPIKey - Delete a specified API Key.
 func (s *apiKeys) DeleteAPIKey(ctx context.Context, request operations.DeleteAPIKeyRequest) (*operations.DeleteAPIKeyResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url, err := utils.GenerateURL(ctx, baseURL, "/api-keys/{api_key}", request, nil)
+	url, err := utils.GenerateURL(ctx, baseURL, "/api-keys/{api-key}", request, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error generating URL: %w", err)
 	}

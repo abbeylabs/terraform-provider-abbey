@@ -7,13 +7,13 @@ import (
 	"net/http"
 )
 
-type CancelRequestByIDRequest struct {
-	RequestCancelParams shared.RequestCancelParams `request:"mediaType=application/json"`
-	// The ID of the request to cancel
+type RevokeRequestByIDRequest struct {
+	RequestRevokeParams shared.RequestRevokeParams `request:"mediaType=application/json"`
+	// The ID of the request to revoke
 	RequestID string `pathParam:"style=simple,explode=false,name=request_id"`
 }
 
-type CancelRequestByIDResponse struct {
+type RevokeRequestByIDResponse struct {
 	ContentType string
 	// Request Failed
 	Error *shared.Error

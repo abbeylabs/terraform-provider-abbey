@@ -7,12 +7,15 @@ import (
 	"net/http"
 )
 
-type ListReviewsResponse struct {
+type DeleteRequestableRequest struct {
+	// The ID of the requestable to delete
+	RequestableID string `pathParam:"style=simple,explode=false,name=requestable_id"`
+}
+
+type DeleteRequestableResponse struct {
 	ContentType string
 	// Authentication Failed
-	Error *shared.Error
-	// Success
-	Reviews     []shared.Review
+	Error       *shared.Error
 	StatusCode  int
 	RawResponse *http.Response
 }

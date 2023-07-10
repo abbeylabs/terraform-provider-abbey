@@ -14,9 +14,6 @@ import (
 	"strings"
 )
 
-// connections - Connections are authenticated, with scopes if available, and made available to Abbey Grant Kits at runtime.
-//
-// https://docs.abbey.io
 type connections struct {
 	sdkConfiguration sdkConfiguration
 }
@@ -27,9 +24,7 @@ func newConnections(sdkConfig sdkConfiguration) *connections {
 	}
 }
 
-// CreateConnection - Create a Connection
-// Creates a new connection.
-//
+// CreateConnection - Creates a new connection.
 // Connections are authenticated, with scopes if available, and made available to Abbey Grant Kits at runtime.
 func (s *connections) CreateConnection(ctx context.Context, request shared.ConnectionParams) (*operations.CreateConnectionResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
@@ -110,8 +105,7 @@ func (s *connections) CreateConnection(ctx context.Context, request shared.Conne
 	return res, nil
 }
 
-// GetConnection - Retrieve a Connection by ID
-// Returns the details of a connection.
+// GetConnection - Returns the details of a connection.
 func (s *connections) GetConnection(ctx context.Context, request operations.GetConnectionRequest) (*operations.GetConnectionResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/connections/{connection_id}", request, nil)
@@ -182,8 +176,7 @@ func (s *connections) GetConnection(ctx context.Context, request operations.GetC
 	return res, nil
 }
 
-// ListConnections - List Connections
-// Returns a list of connections.
+// ListConnections - Returns a list of connections.
 // The connections are returned sorted by creation date, descending.
 func (s *connections) ListConnections(ctx context.Context) (*operations.ListConnectionsResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
@@ -250,8 +243,7 @@ func (s *connections) ListConnections(ctx context.Context) (*operations.ListConn
 	return res, nil
 }
 
-// UpdateConnection - Update a Connection
-// Updates the specified connection.
+// UpdateConnection - Updates the specified connection.
 func (s *connections) UpdateConnection(ctx context.Context, request operations.UpdateConnectionRequest) (*operations.UpdateConnectionResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/connections/{connection_id}", request, nil)

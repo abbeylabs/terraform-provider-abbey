@@ -3,18 +3,67 @@
 package shared
 
 import (
-	"time"
+	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
 )
 
-// Grant - Success
+type GrantType string
+
+const (
+	GrantTypeGenerate GrantType = "Generate"
+)
+
 type Grant struct {
-	CreatedAt         time.Time `json:"created_at"`
-	Deleted           bool      `json:"deleted"`
-	GrantKitID        string    `json:"grant_kit_id"`
-	GrantKitVersionID string    `json:"grant_kit_version_id"`
-	ID                string    `json:"id"`
-	OrganizationID    string    `json:"organization_id"`
-	RequestID         string    `json:"request_id"`
-	UpdatedAt         time.Time `json:"updated_at"`
-	UserID            string    `json:"user_id"`
+	GenerateVariant *GenerateVariant
+
+	Type GrantType
+}
+
+func CreateGrantGenerate(generate GenerateVariant) Grant {
+	typ := GrantTypeGenerate
+	typStr := GenerateVariantType(typ)
+	generate.Type = typStr
+
+	return Grant{
+		GenerateVariant: &generate,
+		Type:            typ,
+	}
+}
+
+func (u *Grant) UnmarshalJSON(data []byte) error {
+	var d *json.Decoder
+
+	type discriminator struct {
+		Type string
+	}
+
+	dis := new(discriminator)
+	if err := json.Unmarshal(data, &dis); err != nil {
+		return fmt.Errorf("could not unmarshal discriminator: %w", err)
+	}
+
+	switch dis.Type {
+	case "Generate":
+		d = json.NewDecoder(bytes.NewReader(data))
+		generateVariant := new(GenerateVariant)
+		if err := d.Decode(&generateVariant); err != nil {
+			return fmt.Errorf("could not unmarshal expected type: %w", err)
+		}
+
+		u.GenerateVariant = generateVariant
+		u.Type = GrantTypeGenerate
+		return nil
+	}
+
+	return errors.New("could not unmarshal into supported union types")
+}
+
+func (u Grant) MarshalJSON() ([]byte, error) {
+	if u.GenerateVariant != nil {
+		return json.Marshal(u.GenerateVariant)
+	}
+
+	return nil, nil
 }

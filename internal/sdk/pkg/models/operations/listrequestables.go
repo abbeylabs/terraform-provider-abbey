@@ -7,12 +7,12 @@ import (
 	"net/http"
 )
 
-type ListGrantsResponse struct {
+type ListRequestablesResponse struct {
 	ContentType string
 	// Authentication Failed
 	Error *shared.Error
 	// Success
-	Grants      []shared.Grant
-	StatusCode  int
-	RawResponse *http.Response
+	Requestables []shared.Requestable
+	StatusCode   int
+	RawResponse  *http.Response
 }

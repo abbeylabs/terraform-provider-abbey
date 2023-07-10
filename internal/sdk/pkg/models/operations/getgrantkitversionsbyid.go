@@ -7,17 +7,17 @@ import (
 	"net/http"
 )
 
-type GetReviewByIDRequest struct {
-	// The ID of the review to retrieve.
-	ReviewID string `pathParam:"style=simple,explode=false,name=review_id"`
+type GetGrantKitVersionsByIDRequest struct {
+	// The ID of the grant kit or resource to retrieve.
+	GrantKitIDOrName string `pathParam:"style=simple,explode=false,name=grant_kit_id_or_name"`
 }
 
-type GetReviewByIDResponse struct {
+type GetGrantKitVersionsByIDResponse struct {
 	ContentType string
 	// Authentication Failed
 	Error *shared.Error
 	// Success
-	Review      *shared.Review
+	GrantKits   []shared.GrantKit
 	StatusCode  int
 	RawResponse *http.Response
 }

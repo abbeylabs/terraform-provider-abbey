@@ -70,10 +70,7 @@ func (p *AbbeyProvider) Configure(ctx context.Context, req provider.ConfigureReq
 }
 
 func (p *AbbeyProvider) Resources(ctx context.Context) []func() resource.Resource {
-	return []func() resource.Resource{
-		NewGrantKitResource,
-		NewIdentityResource,
-	}
+	return []func() resource.Resource{}
 }
 
 func (p *AbbeyProvider) DataSources(ctx context.Context) []func() datasource.DataSource {

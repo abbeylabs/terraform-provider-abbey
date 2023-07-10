@@ -14,10 +14,6 @@ import (
 	"strings"
 )
 
-// connectionSpecs - Connection Specs are the templates for creating connections.
-// They are used to validate connection parameters and to provide a UI for creating connections.
-//
-// https://docs.abbey.io
 type connectionSpecs struct {
 	sdkConfiguration sdkConfiguration
 }
@@ -28,8 +24,7 @@ func newConnectionSpecs(sdkConfig sdkConfiguration) *connectionSpecs {
 	}
 }
 
-// ListConnectionSpecs - List Connection Specs
-// Returns a list of connection specs.
+// ListConnectionSpecs - Returns a list of connection specs.
 // The connection specs are returned sorted alphabetically.
 func (s *connectionSpecs) ListConnectionSpecs(ctx context.Context) (*operations.ListConnectionSpecsResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())

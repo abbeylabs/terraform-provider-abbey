@@ -2,6 +2,6 @@
 
 package shared
 
-type ReviewUpdateParams struct {
-	Reason string `json:"reason"`
+type ReviewWorkflow struct {
+	Steps []ReviewStep `json:"steps"`
 }
