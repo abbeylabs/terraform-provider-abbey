@@ -19,7 +19,7 @@ jobs:
       speakeasy_version: latest
       openapi_doc_auth_header: Authorization
       openapi_docs: |
-        - https://raw.githubusercontent.com/Alramech/speakeasy-test/main/openapi/openapi4.yaml
+        - https://raw.githubusercontent.com/abbeylabs/edge/main/api/openapi.yaml
       languages: |
         - terraform
       create_release: true
@@ -27,4 +27,4 @@ jobs:
     secrets:
       github_access_token: ${{ secrets.GITHUB_TOKEN }}
       speakeasy_api_key: ${{ secrets.SPEAKEASY_API_KEY }}
-      openapi_doc_auth_token: ${{ secrets.SPEC_TOKEN }}
+      openapi_doc_auth_token: ${{ secrets.EDGE_SPEC_TOKEN }}
