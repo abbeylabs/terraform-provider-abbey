@@ -10,13 +10,14 @@ import (
 	"abbey/internal/sdk/pkg/models/operations"
 	"abbey/internal/validators"
 	"github.com/hashicorp/terraform-plugin-framework/path"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-) // Ensure provider defined types fully satisfy framework interfaces.
+)
+
+// Ensure provider defined types fully satisfy framework interfaces.
 var _ resource.Resource = &GrantKitResource{}
 var _ resource.ResourceWithImportState = &GrantKitResource{}
 
@@ -31,15 +32,15 @@ type GrantKitResource struct {
 
 // GrantKitResourceModel describes the resource data model.
 type GrantKitResourceModel struct {
-	CreatedAt   types.String   `tfsdk:"created_at"`
-	Description types.String   `tfsdk:"description"`
-	ID          types.String   `tfsdk:"id"`
-	Name        types.String   `tfsdk:"name"`
-	Output      Output         `tfsdk:"output"`
-	Policies    *Policies      `tfsdk:"policies"`
-	UpdatedAt   types.String   `tfsdk:"updated_at"`
-	Version     types.Int64    `tfsdk:"version"`
-	Workflow    *GrantWorkflow `tfsdk:"workflow"`
+	CreatedAt        types.String   `tfsdk:"created_at"`
+	CurrentVersionID types.String   `tfsdk:"current_version_id"`
+	Description      types.String   `tfsdk:"description"`
+	ID               types.String   `tfsdk:"id"`
+	Name             types.String   `tfsdk:"name"`
+	Output           Output         `tfsdk:"output"`
+	Policies         *Policies      `tfsdk:"policies"`
+	UpdatedAt        types.String   `tfsdk:"updated_at"`
+	Workflow         *GrantWorkflow `tfsdk:"workflow"`
 }
 
 func (r *GrantKitResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -56,6 +57,9 @@ func (r *GrantKitResource) Schema(ctx context.Context, req resource.SchemaReques
 				Validators: []validator.String{
 					validators.IsRFC3339(),
 				},
+			},
+			"current_version_id": schema.StringAttribute{
+				Computed: true,
 			},
 			"description": schema.StringAttribute{
 				Required: true,
@@ -125,9 +129,6 @@ func (r *GrantKitResource) Schema(ctx context.Context, req resource.SchemaReques
 				Validators: []validator.String{
 					validators.IsRFC3339(),
 				},
-			},
-			"version": schema.Int64Attribute{
-				Computed: true,
 			},
 			"workflow": schema.SingleNestedAttribute{
 				Computed: true,

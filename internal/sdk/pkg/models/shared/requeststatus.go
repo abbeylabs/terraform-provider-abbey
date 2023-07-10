@@ -10,9 +10,10 @@ import (
 type RequestStatus string
 
 const (
-	RequestStatusDenied   RequestStatus = "Denied"
 	RequestStatusPending  RequestStatus = "Pending"
+	RequestStatusDenied   RequestStatus = "Denied"
 	RequestStatusApproved RequestStatus = "Approved"
+	RequestStatusCanceled RequestStatus = "Canceled"
 )
 
 func (e RequestStatus) ToPointer() *RequestStatus {
@@ -25,11 +26,13 @@ func (e *RequestStatus) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	switch v {
-	case "Denied":
-		fallthrough
 	case "Pending":
 		fallthrough
+	case "Denied":
+		fallthrough
 	case "Approved":
+		fallthrough
+	case "Canceled":
 		*e = RequestStatus(v)
 		return nil
 	default:

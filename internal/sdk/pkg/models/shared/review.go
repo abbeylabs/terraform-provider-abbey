@@ -2,8 +2,19 @@
 
 package shared
 
+import (
+	"time"
+)
+
+// Review - Success
 type Review struct {
-	Decision     string  `json:"decision"`
-	Reason       *string `json:"reason,omitempty"`
-	ReviewerName string  `json:"reviewer_name"`
+	CreatedAt         time.Time    `json:"created_at"`
+	GrantID           string       `json:"grant_id"`
+	GrantKitVersionID string       `json:"grant_kit_version_id"`
+	ID                string       `json:"id"`
+	Reason            string       `json:"reason"`
+	RequestID         string       `json:"request_id"`
+	Status            ReviewStatus `json:"status"`
+	UpdatedAt         time.Time    `json:"updated_at"`
+	UserID            string       `json:"user_id"`
 }

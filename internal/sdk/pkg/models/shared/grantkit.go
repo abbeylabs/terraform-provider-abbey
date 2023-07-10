@@ -8,13 +8,13 @@ import (
 
 // GrantKit - Created
 type GrantKit struct {
-	CreatedAt   time.Time      `json:"created_at"`
-	Description string         `json:"description"`
-	ID          string         `json:"id"`
-	Name        string         `json:"name"`
-	Output      Output         `json:"output"`
-	Policies    *Policies      `json:"policies,omitempty"`
-	UpdatedAt   time.Time      `json:"updated_at"`
-	Version     *int64         `json:"version,omitempty"`
-	Workflow    *GrantWorkflow `json:"workflow,omitempty"`
+	CreatedAt        time.Time      `json:"created_at"`
+	CurrentVersionID string         `json:"current_version_id"`
+	Description      string         `json:"description"`
+	ID               string         `json:"id"`
+	Name             string         `json:"name"`
+	Output           Output         `json:"output"`
+	Policies         *Policies      `json:"policies,omitempty"`
+	UpdatedAt        time.Time      `json:"updated_at"`
+	Workflow         *GrantWorkflow `json:"workflow,omitempty"`
 }

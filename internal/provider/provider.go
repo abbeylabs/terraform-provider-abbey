@@ -4,7 +4,6 @@ package provider
 
 import (
 	"abbey/internal/sdk"
-	"abbey/internal/sdk/pkg/models/shared"
 	"context"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -25,8 +24,7 @@ type AbbeyProvider struct {
 
 // AbbeyProviderModel describes the provider data model.
 type AbbeyProviderModel struct {
-	ServerURL  types.String `tfsdk:"server_url"`
-	BearerAuth types.String `tfsdk:"bearer_auth"`
+	ServerURL types.String `tfsdk:"server_url"`
 }
 
 func (p *AbbeyProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -36,15 +34,12 @@ func (p *AbbeyProvider) Metadata(ctx context.Context, req provider.MetadataReque
 
 func (p *AbbeyProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: `Edge API: The front door to Abbey Labs.`,
 		Attributes: map[string]schema.Attribute{
 			"server_url": schema.StringAttribute{
 				MarkdownDescription: "Server URL (defaults to https://api.abbey.io/v1)",
 				Optional:            true,
 				Required:            false,
-			},
-			"bearer_auth": schema.StringAttribute{
-				Optional:  true,
-				Sensitive: true,
 			},
 		},
 	}
@@ -65,14 +60,8 @@ func (p *AbbeyProvider) Configure(ctx context.Context, req provider.ConfigureReq
 		ServerURL = "https://api.abbey.io/v1"
 	}
 
-	bearerAuth := data.BearerAuth.ValueString()
-	security := shared.Security{
-		BearerAuth: bearerAuth,
-	}
-
 	opts := []sdk.SDKOption{
 		sdk.WithServerURL(ServerURL),
-		sdk.WithSecurity(security),
 	}
 	client := sdk.New(opts...)
 

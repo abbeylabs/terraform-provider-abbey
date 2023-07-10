@@ -14,6 +14,9 @@ import (
 	"strings"
 )
 
+// apiKeys - API Keys are used to authenticate to the Abbey API.
+//
+// https://docs.abbey.io/product/managing-api-keys
 type apiKeys struct {
 	sdkConfiguration sdkConfiguration
 }
@@ -24,7 +27,8 @@ func newAPIKeys(sdkConfig sdkConfiguration) *apiKeys {
 	}
 }
 
-// CreateAPIKey - Creates a new API Key
+// CreateAPIKey - Create an API Key
+// Creates a new API Key
 func (s *apiKeys) CreateAPIKey(ctx context.Context, request shared.APIKeysCreateParams) (*operations.CreateAPIKeyResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url := strings.TrimSuffix(baseURL, "/") + "/api-keys"
@@ -46,7 +50,7 @@ func (s *apiKeys) CreateAPIKey(ctx context.Context, request shared.APIKeysCreate
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -104,7 +108,8 @@ func (s *apiKeys) CreateAPIKey(ctx context.Context, request shared.APIKeysCreate
 	return res, nil
 }
 
-// GetAPIKeys - Returns a list of a user's API Keys.
+// GetAPIKeys - List API Keys
+// Returns a list of a user's API Keys.
 func (s *apiKeys) GetAPIKeys(ctx context.Context) (*operations.GetAPIKeysResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url := strings.TrimSuffix(baseURL, "/") + "/api-keys"
@@ -116,7 +121,7 @@ func (s *apiKeys) GetAPIKeys(ctx context.Context) (*operations.GetAPIKeysRespons
 	req.Header.Set("Accept", "application/json;q=1, application/json;q=0")
 	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -170,10 +175,11 @@ func (s *apiKeys) GetAPIKeys(ctx context.Context) (*operations.GetAPIKeysRespons
 	return res, nil
 }
 
-// DeleteAPIKey - Delete a specified API Key.
+// DeleteAPIKey - Delete an API Key
+// Delete a specified API Key.
 func (s *apiKeys) DeleteAPIKey(ctx context.Context, request operations.DeleteAPIKeyRequest) (*operations.DeleteAPIKeyResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url, err := utils.GenerateURL(ctx, baseURL, "/api-keys/{api-key}", request, nil)
+	url, err := utils.GenerateURL(ctx, baseURL, "/api-keys/{api_key}", request, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error generating URL: %w", err)
 	}
@@ -185,7 +191,7 @@ func (s *apiKeys) DeleteAPIKey(ctx context.Context, request operations.DeleteAPI
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {

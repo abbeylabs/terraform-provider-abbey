@@ -10,13 +10,17 @@ import (
 	"abbey/internal/sdk/pkg/models/operations"
 	"abbey/internal/validators"
 	"github.com/hashicorp/terraform-plugin-framework/path"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-) // Ensure provider defined types fully satisfy framework interfaces.
+)
+
+// Ensure provider defined types fully satisfy framework interfaces.
 var _ resource.Resource = &IdentityResource{}
 var _ resource.ResourceWithImportState = &IdentityResource{}
 
@@ -31,10 +35,10 @@ type IdentityResource struct {
 
 // IdentityResourceModel describes the resource data model.
 type IdentityResourceModel struct {
-	CreatedAt types.String `tfsdk:"created_at"`
-	ID        types.String `tfsdk:"id"`
-	Linked    types.String `tfsdk:"linked"`
-	Name      types.String `tfsdk:"name"`
+	CreatedAt types.String              `tfsdk:"created_at"`
+	ID        types.String              `tfsdk:"id"`
+	Linked    map[string][]types.String `tfsdk:"linked"`
+	Name      types.String              `tfsdk:"name"`
 }
 
 func (r *IdentityResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -55,15 +59,16 @@ func (r *IdentityResource) Schema(ctx context.Context, req resource.SchemaReques
 			"id": schema.StringAttribute{
 				Computed: true,
 			},
-			"linked": schema.StringAttribute{
-				Computed: true,
-				Optional: true,
-				Validators: []validator.String{
-					validators.IsValidJSON(),
+			"linked": schema.MapAttribute{
+				PlanModifiers: []planmodifier.Map{
+					mapplanmodifier.RequiresReplace(),
 				},
-				Description: `Parsed as JSON.`,
+				Required: true,
 			},
 			"name": schema.StringAttribute{
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 				Required: true,
 			},
 		},

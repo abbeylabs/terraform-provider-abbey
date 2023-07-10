@@ -260,6 +260,7 @@ func (r *GrantKitResourceModel) ToDeleteSDKType() *shared.GrantKitCreateParams {
 
 func (r *GrantKitResourceModel) RefreshFromGetResponse(resp *shared.GrantKit) {
 	r.CreatedAt = types.StringValue(resp.CreatedAt.Format(time.RFC3339))
+	r.CurrentVersionID = types.StringValue(resp.CurrentVersionID)
 	r.Description = types.StringValue(resp.Description)
 	r.ID = types.StringValue(resp.ID)
 	r.Name = types.StringValue(resp.Name)
@@ -313,11 +314,6 @@ func (r *GrantKitResourceModel) RefreshFromGetResponse(resp *shared.GrantKit) {
 		}
 	}
 	r.UpdatedAt = types.StringValue(resp.UpdatedAt.Format(time.RFC3339))
-	if resp.Version != nil {
-		r.Version = types.Int64Value(*resp.Version)
-	} else {
-		r.Version = types.Int64Null()
-	}
 	if r.Workflow == nil {
 		r.Workflow = &GrantWorkflow{}
 	}

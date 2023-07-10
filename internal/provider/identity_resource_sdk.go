@@ -4,16 +4,13 @@ package provider
 
 import (
 	"abbey/internal/sdk/pkg/models/shared"
-	"encoding/json"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"time"
 )
 
 func (r *IdentityResourceModel) ToCreateSDKType() *shared.IdentityParams {
-	var linked interface{}
-	if !r.Linked.IsUnknown() && !r.Linked.IsNull() {
-		_ = json.Unmarshal([]byte(r.Linked.ValueString()), &linked)
-	}
+	linked := make(map[string][]interface{})
+	// Warning. This is a map, but the source tf var is not a map. This might indicate a bug.
 	name := r.Name.ValueString()
 	out := shared.IdentityParams{
 		Linked: linked,
@@ -35,12 +32,7 @@ func (r *IdentityResourceModel) ToDeleteSDKType() *shared.IdentityParams {
 func (r *IdentityResourceModel) RefreshFromGetResponse(resp *shared.Identity) {
 	r.CreatedAt = types.StringValue(resp.CreatedAt.Format(time.RFC3339))
 	r.ID = types.StringValue(resp.ID)
-	if resp.Linked == nil {
-		r.Linked = types.StringNull()
-	} else {
-		linkedResult, _ := json.Marshal(resp.Linked)
-		r.Linked = types.StringValue(string(linkedResult))
-	}
+	// Not Implemented resp.Linked, {"Type":"map","Scope":"","BaseName":"","Truncated":false,"AdditionalProperties":null,"Extensions":{"x-speakeasy-param-force-new":true,"x-untouched":true,"x-speakeasy-param-computed":true},"Name":"","ItemType":{"Extensions":{"x-untouched":true,"x-speakeasy-param-computed":true,"x-speakeasy-param-force-new":true},"Format":"","Discriminator":null,"RefType":"","Comments":null,"Input":false,"Output":false,"AdditionalProperties":null,"ItemType":{"Type":"any","ItemType":null,"Enum":null,"Output":false,"Discriminator":null,"AssociatedTypes":[],"RefType":"","Extensions":{"x-untouched":true,"x-speakeasy-param-computed":true,"x-speakeasy-param-force-new":true,"Symbol":""},"Format":"","AdditionalProperties":null,"Fields":[],"BaseName":"","Truncated":false,"Input":false,"Name":"","Scope":"","Comments":null,"Examples":[]},"Fields":[],"Scope":"","Examples":[],"Type":"array","AssociatedTypes":[],"Enum":null,"BaseName":"","Name":"","Truncated":false},"Fields":[],"Enum":null,"Input":false,"AssociatedTypes":[],"RefType":"","Comments":null,"Output":false,"Examples":[],"Format":"","Discriminator":null}, false, , , r.Linked
 	r.Name = types.StringValue(resp.Name)
 }
 

@@ -3,7 +3,6 @@
 package sdk
 
 import (
-	"abbey/internal/sdk/pkg/models/shared"
 	"abbey/internal/sdk/pkg/utils"
 	"fmt"
 	"net/http"
@@ -47,9 +46,9 @@ func Float32(f float32) *float32 { return &f }
 func Float64(f float64) *float64 { return &f }
 
 type sdkConfiguration struct {
-	DefaultClient     HTTPClient
-	SecurityClient    HTTPClient
-	Security          *shared.Security
+	DefaultClient  HTTPClient
+	SecurityClient HTTPClient
+
 	ServerURL         string
 	Server            string
 	Language          string
@@ -72,12 +71,52 @@ func (c *sdkConfiguration) GetServerDetails() (string, map[string]string) {
 
 // SDK - Edge API: The front door to Abbey Labs.
 type SDK struct {
-	APIKeys      *apiKeys
-	GrantKits    *grantKits
-	Identities   *identities
-	Requestables *requestables
-	Requests     *requests
-	Tasks        *tasks
+	// APIKeys - API Keys are used to authenticate to the Abbey API.
+	//
+	// https://docs.abbey.io/product/managing-api-keys
+	APIKeys *apiKeys
+	// ConnectionSpecs - Connection Specs are the templates for creating connections.
+	// They are used to validate connection parameters and to provide a UI for creating connections.
+	//
+	// https://docs.abbey.io
+	ConnectionSpecs *connectionSpecs
+	// Connections - Connections are authenticated, with scopes if available, and made available to Abbey Grant Kits at runtime.
+	//
+	// https://docs.abbey.io
+	Connections *connections
+	// GrantKits - Grant Kits are what you configure in code to control and automatically right-size permissions for resources.
+	// A Grant Kit has 3 components:
+	//
+	// 1. Workflow to configure how someone should get access.
+	// 2. Policies to configure if someone should get access.
+	// 3. Output to configure how and where Grants should materialize.
+	//
+	// https://docs.abbey.io/getting-started/concepts#grant-kits
+	GrantKits *grantKits
+	// Grants - Grants are permissions that reflect the result of an access request going through the process of evaluating
+	// policies and approval workflows where all approval conditions are met.
+	//
+	// Grants may be revoked manually by a user or automatically if a time-based or attribute-based policy is
+	// included in the corresponding Grant Kit's policy.
+	//
+	// https://docs.abbey.io/getting-started/concepts#grants
+	Grants *grants
+	// Identities - User metadata used for enriching data.
+	// Enriched data is used to write richer policies, workflows, and outputs.
+	//
+	// https://docs.abbey.io
+	Identities *identities
+	// Requests - Requests are Access Requests that users make to get access to a resource.
+	//
+	// https://docs.abbey.io/getting-started/concepts#access-requests
+	Requests *requests
+	// Reviews - Reviews are decisions made by a reviewer on an Access Request.
+	//
+	// A Reviewer might approve or deny a request.
+	//
+	// https://docs.abbey.io/product/approving-or-denying-access-requests
+	Reviews *reviews
+	Tasks   *tasks
 
 	sdkConfiguration sdkConfiguration
 }
@@ -121,21 +160,14 @@ func WithClient(client HTTPClient) SDKOption {
 	}
 }
 
-// WithSecurity configures the SDK to use the provided security details
-func WithSecurity(security shared.Security) SDKOption {
-	return func(sdk *SDK) {
-		sdk.sdkConfiguration.Security = &security
-	}
-}
-
 // New creates a new instance of the SDK with the provided options
 func New(opts ...SDKOption) *SDK {
 	sdk := &SDK{
 		sdkConfiguration: sdkConfiguration{
 			Language:          "terraform",
 			OpenAPIDocVersion: "0.1.0",
-			SDKVersion:        "1.0.1",
-			GenVersion:        "2.43.2",
+			SDKVersion:        "1.1.0",
+			GenVersion:        "2.59.0",
 		},
 	}
 	for _, opt := range opts {
@@ -147,22 +179,24 @@ func New(opts ...SDKOption) *SDK {
 		sdk.sdkConfiguration.DefaultClient = &http.Client{Timeout: 60 * time.Second}
 	}
 	if sdk.sdkConfiguration.SecurityClient == nil {
-		if sdk.sdkConfiguration.Security != nil {
-			sdk.sdkConfiguration.SecurityClient = utils.ConfigureSecurityClient(sdk.sdkConfiguration.DefaultClient, sdk.sdkConfiguration.Security)
-		} else {
-			sdk.sdkConfiguration.SecurityClient = sdk.sdkConfiguration.DefaultClient
-		}
+		sdk.sdkConfiguration.SecurityClient = sdk.sdkConfiguration.DefaultClient
 	}
 
 	sdk.APIKeys = newAPIKeys(sdk.sdkConfiguration)
 
+	sdk.ConnectionSpecs = newConnectionSpecs(sdk.sdkConfiguration)
+
+	sdk.Connections = newConnections(sdk.sdkConfiguration)
+
 	sdk.GrantKits = newGrantKits(sdk.sdkConfiguration)
+
+	sdk.Grants = newGrants(sdk.sdkConfiguration)
 
 	sdk.Identities = newIdentities(sdk.sdkConfiguration)
 
-	sdk.Requestables = newRequestables(sdk.sdkConfiguration)
-
 	sdk.Requests = newRequests(sdk.sdkConfiguration)
+
+	sdk.Reviews = newReviews(sdk.sdkConfiguration)
 
 	sdk.Tasks = newTasks(sdk.sdkConfiguration)
 

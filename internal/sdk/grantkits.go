@@ -14,6 +14,14 @@ import (
 	"strings"
 )
 
+// grantKits - Grant Kits are what you configure in code to control and automatically right-size permissions for resources.
+// A Grant Kit has 3 components:
+//
+// 1. Workflow to configure how someone should get access.
+// 2. Policies to configure if someone should get access.
+// 3. Output to configure how and where Grants should materialize.
+//
+// https://docs.abbey.io/getting-started/concepts#grant-kits
 type grantKits struct {
 	sdkConfiguration sdkConfiguration
 }
@@ -24,7 +32,8 @@ func newGrantKits(sdkConfig sdkConfiguration) *grantKits {
 	}
 }
 
-// CreateGrantKit - Creates a new Grant Kit
+// CreateGrantKit - Create a Grant Kit
+// Creates a new Grant Kit
 func (s *grantKits) CreateGrantKit(ctx context.Context, request shared.GrantKitCreateParams) (*operations.CreateGrantKitResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url := strings.TrimSuffix(baseURL, "/") + "/grant-kits"
@@ -46,7 +55,7 @@ func (s *grantKits) CreateGrantKit(ctx context.Context, request shared.GrantKitC
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -104,8 +113,9 @@ func (s *grantKits) CreateGrantKit(ctx context.Context, request shared.GrantKitC
 	return res, nil
 }
 
-// GetGrantKits - Returns a list of the latest versions of each
-// grant kit in the organization.
+// GetGrantKits - List Grant Kits
+// Returns a list of the latest versions of each grant kit in the organization.
+//
 // Grant Kits are sorted by creation date, descending.
 func (s *grantKits) GetGrantKits(ctx context.Context) (*operations.GetGrantKitsResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
@@ -118,7 +128,7 @@ func (s *grantKits) GetGrantKits(ctx context.Context) (*operations.GetGrantKitsR
 	req.Header.Set("Accept", "application/json;q=1, application/json;q=0")
 	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -172,7 +182,8 @@ func (s *grantKits) GetGrantKits(ctx context.Context) (*operations.GetGrantKitsR
 	return res, nil
 }
 
-// DeleteGrantKit - Deletes the specified grant kit.
+// DeleteGrantKit - Delete a Grant Kit
+// Deletes the specified grant kit.
 func (s *grantKits) DeleteGrantKit(ctx context.Context, request operations.DeleteGrantKitRequest) (*operations.DeleteGrantKitResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/grant-kits/{grant_kit_id_or_name}", request, nil)
@@ -184,10 +195,10 @@ func (s *grantKits) DeleteGrantKit(ctx context.Context, request operations.Delet
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
 	}
-	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Accept", "application/json;q=1, application/json;q=0")
 	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -213,6 +224,15 @@ func (s *grantKits) DeleteGrantKit(ctx context.Context, request operations.Delet
 	}
 	switch {
 	case httpRes.StatusCode == 200:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *shared.GrantKit
+			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
+				return nil, err
+			}
+
+			res.GrantKit = out
+		}
 	case httpRes.StatusCode == 401:
 		fallthrough
 	case httpRes.StatusCode == 404:
@@ -234,7 +254,8 @@ func (s *grantKits) DeleteGrantKit(ctx context.Context, request operations.Delet
 	return res, nil
 }
 
-// GetGrantKitByID - Returns the details of a grant kit.
+// GetGrantKitByID - Retrieve a Grant Kit by ID
+// Returns the details of a Grant Kit.
 func (s *grantKits) GetGrantKitByID(ctx context.Context, request operations.GetGrantKitByIDRequest) (*operations.GetGrantKitByIDResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/grant-kits/{grant_kit_id_or_name}", request, nil)
@@ -249,7 +270,7 @@ func (s *grantKits) GetGrantKitByID(ctx context.Context, request operations.GetG
 	req.Header.Set("Accept", "application/json;q=1, application/json;q=0")
 	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -305,9 +326,11 @@ func (s *grantKits) GetGrantKitByID(ctx context.Context, request operations.GetG
 	return res, nil
 }
 
-// GetGrantKitVersionsByID - Returns all versions of a grant kit.
+// ListGrantKitVersionsByID - List Grant Kit Versions of a Grant Kit ID
+// Returns all versions of a grant kit.
+//
 // Grant Kits are sorted by creation date, descending.
-func (s *grantKits) GetGrantKitVersionsByID(ctx context.Context, request operations.GetGrantKitVersionsByIDRequest) (*operations.GetGrantKitVersionsByIDResponse, error) {
+func (s *grantKits) ListGrantKitVersionsByID(ctx context.Context, request operations.ListGrantKitVersionsByIDRequest) (*operations.ListGrantKitVersionsByIDResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/grant-kits/{grant_kit_id_or_name}/versions", request, nil)
 	if err != nil {
@@ -321,7 +344,7 @@ func (s *grantKits) GetGrantKitVersionsByID(ctx context.Context, request operati
 	req.Header.Set("Accept", "application/json;q=1, application/json;q=0")
 	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -340,7 +363,7 @@ func (s *grantKits) GetGrantKitVersionsByID(ctx context.Context, request operati
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.GetGrantKitVersionsByIDResponse{
+	res := &operations.ListGrantKitVersionsByIDResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
@@ -349,12 +372,12 @@ func (s *grantKits) GetGrantKitVersionsByID(ctx context.Context, request operati
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out []shared.GrantKit
+			var out []shared.GrantKitVersion
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
 				return nil, err
 			}
 
-			res.GrantKits = out
+			res.GrantKitVersions = out
 		}
 	case httpRes.StatusCode == 401:
 		fallthrough
@@ -377,7 +400,8 @@ func (s *grantKits) GetGrantKitVersionsByID(ctx context.Context, request operati
 	return res, nil
 }
 
-// UpdateGrantKit - Updates the specified grant kit.
+// UpdateGrantKit - Update a Grant Kit
+// Updates the specified grant kit.
 func (s *grantKits) UpdateGrantKit(ctx context.Context, request operations.UpdateGrantKitRequest) (*operations.UpdateGrantKitResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/grant-kits/{grant_kit_id_or_name}", request, nil)
@@ -402,7 +426,7 @@ func (s *grantKits) UpdateGrantKit(ctx context.Context, request operations.Updat
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {

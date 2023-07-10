@@ -8,9 +8,13 @@ import (
 
 // Request - Created
 type Request struct {
-	CreatedAt time.Time     `json:"created_at"`
-	ID        string        `json:"id"`
-	Reason    *string       `json:"reason,omitempty"`
-	Reviews   []Review      `json:"reviews,omitempty"`
-	Status    RequestStatus `json:"status"`
+	CreatedAt         time.Time     `json:"created_at"`
+	GrantID           string        `json:"grant_id"`
+	GrantKitVersionID string        `json:"grant_kit_version_id"`
+	ID                string        `json:"id"`
+	Reason            string        `json:"reason"`
+	Reviews           []Review      `json:"reviews"`
+	Status            RequestStatus `json:"status"`
+	UpdatedAt         time.Time     `json:"updated_at"`
+	UserID            string        `json:"user_id"`
 }

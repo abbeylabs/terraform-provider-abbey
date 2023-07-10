@@ -15,7 +15,9 @@ type DeleteGrantKitRequest struct {
 type DeleteGrantKitResponse struct {
 	ContentType string
 	// Authentication Failed
-	Error       *shared.Error
+	Error *shared.Error
+	// Success
+	GrantKit    *shared.GrantKit
 	StatusCode  int
 	RawResponse *http.Response
 }
