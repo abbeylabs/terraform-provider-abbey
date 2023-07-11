@@ -132,6 +132,7 @@ internal/sdk/pkg/models/shared/reviewstatus.go
 internal/sdk/pkg/models/shared/requestcancelparams.go
 internal/sdk/pkg/models/shared/requestparams.go
 internal/sdk/pkg/models/shared/reviewupdateparams.go
+internal/sdk/pkg/models/shared/security.go
 USAGE.md
 internal/provider/provider.go
 examples/provider/provider.tf
