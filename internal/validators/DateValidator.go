@@ -3,7 +3,7 @@
 package validators
 
 import (
-	"abbey/internal/sdk/pkg/types"
+	"abbey/v2/internal/sdk/pkg/types"
 	"context"
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"

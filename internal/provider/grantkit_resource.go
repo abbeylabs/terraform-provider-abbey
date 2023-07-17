@@ -3,12 +3,13 @@
 package provider
 
 import (
-	"abbey/internal/sdk"
+	"abbey/v2/internal/sdk"
 	"context"
 	"fmt"
 
-	"abbey/internal/sdk/pkg/models/operations"
-	"abbey/internal/validators"
+	"abbey/v2/internal/sdk/pkg/models/operations"
+	"abbey/v2/internal/validators"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -35,10 +36,12 @@ type GrantKitResourceModel struct {
 	CreatedAt        types.String   `tfsdk:"created_at"`
 	CurrentVersionID types.String   `tfsdk:"current_version_id"`
 	Description      types.String   `tfsdk:"description"`
+	Grants           []Grant        `tfsdk:"grants"`
 	ID               types.String   `tfsdk:"id"`
 	Name             types.String   `tfsdk:"name"`
 	Output           Output         `tfsdk:"output"`
 	Policies         []Policy       `tfsdk:"policies"`
+	Requests         []Request      `tfsdk:"requests"`
 	UpdatedAt        types.String   `tfsdk:"updated_at"`
 	Workflow         *GrantWorkflow `tfsdk:"workflow"`
 }
@@ -63,6 +66,46 @@ func (r *GrantKitResource) Schema(ctx context.Context, req resource.SchemaReques
 			},
 			"description": schema.StringAttribute{
 				Required: true,
+			},
+			"grants": schema.ListNestedAttribute{
+				Computed: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"created_at": schema.StringAttribute{
+							Computed: true,
+							Validators: []validator.String{
+								validators.IsRFC3339(),
+							},
+						},
+						"deleted": schema.BoolAttribute{
+							Computed: true,
+						},
+						"grant_kit_id": schema.StringAttribute{
+							Computed: true,
+						},
+						"grant_kit_version_id": schema.StringAttribute{
+							Computed: true,
+						},
+						"id": schema.StringAttribute{
+							Computed: true,
+						},
+						"organization_id": schema.StringAttribute{
+							Computed: true,
+						},
+						"request_id": schema.StringAttribute{
+							Computed: true,
+						},
+						"updated_at": schema.StringAttribute{
+							Computed: true,
+							Validators: []validator.String{
+								validators.IsRFC3339(),
+							},
+						},
+						"user_id": schema.StringAttribute{
+							Computed: true,
+						},
+					},
+				},
 			},
 			"id": schema.StringAttribute{
 				Computed: true,
@@ -98,6 +141,152 @@ func (r *GrantKitResource) Schema(ctx context.Context, req resource.SchemaReques
 						"query": schema.StringAttribute{
 							Computed: true,
 							Optional: true,
+						},
+					},
+				},
+			},
+			"requests": schema.ListNestedAttribute{
+				Computed: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"created_at": schema.StringAttribute{
+							Computed: true,
+							Validators: []validator.String{
+								validators.IsRFC3339(),
+							},
+						},
+						"grant_id": schema.StringAttribute{
+							Computed: true,
+						},
+						"grant_kit_id": schema.StringAttribute{
+							Computed: true,
+						},
+						"grant_kit_name": schema.StringAttribute{
+							Computed: true,
+						},
+						"grant_kit_version_id": schema.StringAttribute{
+							Computed: true,
+						},
+						"id": schema.StringAttribute{
+							Computed: true,
+						},
+						"reason": schema.StringAttribute{
+							Computed: true,
+						},
+						"reviews": schema.ListNestedAttribute{
+							Computed: true,
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"created_at": schema.StringAttribute{
+										Computed: true,
+										Validators: []validator.String{
+											validators.IsRFC3339(),
+										},
+									},
+									"grant": schema.SingleNestedAttribute{
+										Computed: true,
+										Attributes: map[string]schema.Attribute{
+											"created_at": schema.StringAttribute{
+												Computed: true,
+												Validators: []validator.String{
+													validators.IsRFC3339(),
+												},
+											},
+											"deleted": schema.BoolAttribute{
+												Computed: true,
+											},
+											"grant_kit_id": schema.StringAttribute{
+												Computed: true,
+											},
+											"grant_kit_version_id": schema.StringAttribute{
+												Computed: true,
+											},
+											"id": schema.StringAttribute{
+												Computed: true,
+											},
+											"organization_id": schema.StringAttribute{
+												Computed: true,
+											},
+											"request_id": schema.StringAttribute{
+												Computed: true,
+											},
+											"updated_at": schema.StringAttribute{
+												Computed: true,
+												Validators: []validator.String{
+													validators.IsRFC3339(),
+												},
+											},
+											"user_id": schema.StringAttribute{
+												Computed: true,
+											},
+										},
+										Description: `Success`,
+									},
+									"grant_id": schema.StringAttribute{
+										Computed: true,
+									},
+									"grant_kit_name": schema.StringAttribute{
+										Computed: true,
+									},
+									"grant_kit_version_id": schema.StringAttribute{
+										Computed: true,
+									},
+									"id": schema.StringAttribute{
+										Computed: true,
+									},
+									"reason": schema.StringAttribute{
+										Computed: true,
+									},
+									"request_id": schema.StringAttribute{
+										Computed: true,
+									},
+									"status": schema.StringAttribute{
+										Computed: true,
+										Validators: []validator.String{
+											stringvalidator.OneOf(
+												"Pending",
+												"Denied",
+												"Approved",
+												"Canceled",
+											),
+										},
+										Description: `must be one of [Pending, Denied, Approved, Canceled]`,
+									},
+									"updated_at": schema.StringAttribute{
+										Computed: true,
+										Validators: []validator.String{
+											validators.IsRFC3339(),
+										},
+									},
+									"user_email": schema.StringAttribute{
+										Computed: true,
+									},
+									"user_id": schema.StringAttribute{
+										Computed: true,
+									},
+								},
+							},
+						},
+						"status": schema.StringAttribute{
+							Computed: true,
+							Validators: []validator.String{
+								stringvalidator.OneOf(
+									"Pending",
+									"Denied",
+									"Approved",
+									"Canceled",
+								),
+							},
+							Description: `must be one of [Pending, Denied, Approved, Canceled]`,
+						},
+						"updated_at": schema.StringAttribute{
+							Computed: true,
+							Validators: []validator.String{
+								validators.IsRFC3339(),
+							},
+						},
+						"user_id": schema.StringAttribute{
+							Computed: true,
 						},
 					},
 				},
