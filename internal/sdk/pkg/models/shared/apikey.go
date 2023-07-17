@@ -2,8 +2,15 @@
 
 package shared
 
+import (
+	"time"
+)
+
 // APIKey - Created
 type APIKey struct {
-	APIKey string `json:"api_key"`
-	Name   string `json:"name"`
+	APIKey    string     `json:"api_key"`
+	Expired   bool       `json:"expired"`
+	ExpiredAt *time.Time `json:"expired_at,omitempty"`
+	LastUsed  *time.Time `json:"last_used,omitempty"`
+	Name      string     `json:"name"`
 }

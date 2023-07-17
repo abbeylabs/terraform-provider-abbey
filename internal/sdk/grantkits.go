@@ -3,9 +3,9 @@
 package sdk
 
 import (
-	"abbey/internal/sdk/pkg/models/operations"
-	"abbey/internal/sdk/pkg/models/shared"
-	"abbey/internal/sdk/pkg/utils"
+	"abbey/v2/internal/sdk/pkg/models/operations"
+	"abbey/v2/internal/sdk/pkg/models/shared"
+	"abbey/v2/internal/sdk/pkg/utils"
 	"bytes"
 	"context"
 	"fmt"
@@ -113,11 +113,11 @@ func (s *grantKits) CreateGrantKit(ctx context.Context, request shared.GrantKitC
 	return res, nil
 }
 
-// GetGrantKits - List Grant Kits
+// ListGrantKits - List Grant Kits
 // Returns a list of the latest versions of each grant kit in the organization.
 //
 // Grant Kits are sorted by creation date, descending.
-func (s *grantKits) GetGrantKits(ctx context.Context) (*operations.GetGrantKitsResponse, error) {
+func (s *grantKits) ListGrantKits(ctx context.Context) (*operations.ListGrantKitsResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url := strings.TrimSuffix(baseURL, "/") + "/grant-kits"
 
@@ -147,7 +147,7 @@ func (s *grantKits) GetGrantKits(ctx context.Context) (*operations.GetGrantKitsR
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.GetGrantKitsResponse{
+	res := &operations.ListGrantKitsResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,

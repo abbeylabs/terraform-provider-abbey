@@ -2,6 +2,11 @@
 
 package shared
 
+import (
+	"time"
+)
+
 type APIKeysCreateParams struct {
-	Name string `json:"name"`
+	ExpiredAt *time.Time `json:"expired_at,omitempty"`
+	Name      string     `json:"name"`
 }

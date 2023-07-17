@@ -3,12 +3,12 @@
 package provider
 
 import (
-	"abbey/internal/sdk"
+	"abbey/v2/internal/sdk"
 	"context"
 	"fmt"
 
-	"abbey/internal/sdk/pkg/models/operations"
-	"abbey/internal/validators"
+	"abbey/v2/internal/sdk/pkg/models/operations"
+	"abbey/v2/internal/validators"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"

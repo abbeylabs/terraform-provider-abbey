@@ -7,7 +7,7 @@ import (
 	"flag"
 	"log"
 
-	"abbey/internal/provider"
+	"abbey/v2/internal/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 )
 
