@@ -258,6 +258,11 @@ func (r *GrantKitResourceModel) RefreshFromGetResponse(resp *shared.GrantKit) {
 		requests1.CreatedAt = types.StringValue(requestsItem.CreatedAt.Format(time.RFC3339))
 		requests1.GrantID = types.StringValue(requestsItem.GrantID)
 		requests1.GrantKitID = types.StringValue(requestsItem.GrantKitID)
+		if requestsItem.GrantKitName != nil {
+			requests1.GrantKitName = types.StringValue(*requestsItem.GrantKitName)
+		} else {
+			requests1.GrantKitName = types.StringNull()
+		}
 		requests1.GrantKitVersionID = types.StringValue(requestsItem.GrantKitVersionID)
 		requests1.ID = types.StringValue(requestsItem.ID)
 		requests1.Reason = types.StringValue(requestsItem.Reason)
@@ -283,6 +288,7 @@ func (r *GrantKitResourceModel) RefreshFromGetResponse(resp *shared.GrantKit) {
 				reviews1.Grant.UserID = types.StringValue(reviewsItem.Grant.UserID)
 			}
 			reviews1.GrantID = types.StringValue(reviewsItem.GrantID)
+			reviews1.GrantKitName = types.StringValue(reviewsItem.GrantKitName)
 			reviews1.GrantKitVersionID = types.StringValue(reviewsItem.GrantKitVersionID)
 			reviews1.ID = types.StringValue(reviewsItem.ID)
 			reviews1.Reason = types.StringValue(reviewsItem.Reason)

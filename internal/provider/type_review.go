@@ -8,6 +8,7 @@ type Review struct {
 	CreatedAt         types.String `tfsdk:"created_at"`
 	Grant             *Grant       `tfsdk:"grant"`
 	GrantID           types.String `tfsdk:"grant_id"`
+	GrantKitName      types.String `tfsdk:"grant_kit_name"`
 	GrantKitVersionID types.String `tfsdk:"grant_kit_version_id"`
 	ID                types.String `tfsdk:"id"`
 	Reason            types.String `tfsdk:"reason"`

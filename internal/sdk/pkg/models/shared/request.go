@@ -11,6 +11,7 @@ type Request struct {
 	CreatedAt         time.Time     `json:"created_at"`
 	GrantID           string        `json:"grant_id"`
 	GrantKitID        string        `json:"grant_kit_id"`
+	GrantKitName      *string       `json:"grant_kit_name,omitempty"`
 	GrantKitVersionID string        `json:"grant_kit_version_id"`
 	ID                string        `json:"id"`
 	Reason            string        `json:"reason"`

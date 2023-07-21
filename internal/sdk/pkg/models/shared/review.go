@@ -11,6 +11,7 @@ type Review struct {
 	CreatedAt         time.Time    `json:"created_at"`
 	Grant             *Grant       `json:"grant,omitempty"`
 	GrantID           string       `json:"grant_id"`
+	GrantKitName      string       `json:"grant_kit_name"`
 	GrantKitVersionID string       `json:"grant_kit_version_id"`
 	ID                string       `json:"id"`
 	Reason            string       `json:"reason"`
