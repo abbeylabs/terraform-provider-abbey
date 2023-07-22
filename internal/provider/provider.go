@@ -3,8 +3,8 @@
 package provider
 
 import (
-	"abbey/internal/sdk"
-	"abbey/internal/sdk/pkg/models/shared"
+	"abbey/v2/internal/sdk"
+	"abbey/v2/internal/sdk/pkg/models/shared"
 	"context"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -36,7 +36,9 @@ func (p *AbbeyProvider) Metadata(ctx context.Context, req provider.MetadataReque
 
 func (p *AbbeyProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: `Edge API: The front door to Abbey Labs.`,
+		MarkdownDescription: `Abbey API: The public Abbey API. Used for integrating with Abbey and building interfaces to extend the Abbey platform.` + "\n" +
+			`See https://docs.abbey.io for more information.` + "\n" +
+			``,
 		Attributes: map[string]schema.Attribute{
 			"server_url": schema.StringAttribute{
 				MarkdownDescription: "Server URL (defaults to https://api.abbey.io/v1)",

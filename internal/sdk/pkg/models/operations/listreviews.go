@@ -3,7 +3,7 @@
 package operations
 
 import (
-	"abbey/internal/sdk/pkg/models/shared"
+	"abbey/v2/internal/sdk/pkg/models/shared"
 	"net/http"
 )
 

@@ -3,8 +3,8 @@
 package sdk
 
 import (
-	"abbey/internal/sdk/pkg/models/shared"
-	"abbey/internal/sdk/pkg/utils"
+	"abbey/v2/internal/sdk/pkg/models/shared"
+	"abbey/v2/internal/sdk/pkg/utils"
 	"fmt"
 	"net/http"
 	"time"
@@ -70,7 +70,8 @@ func (c *sdkConfiguration) GetServerDetails() (string, map[string]string) {
 	return ServerList[c.Server], nil
 }
 
-// SDK - Edge API: The front door to Abbey Labs.
+// SDK - Abbey API: The public Abbey API. Used for integrating with Abbey and building interfaces to extend the Abbey platform.
+// See https://docs.abbey.io for more information.
 type SDK struct {
 	// APIKeys - API Keys are used to authenticate to the Abbey API.
 	//
@@ -172,9 +173,9 @@ func New(opts ...SDKOption) *SDK {
 	sdk := &SDK{
 		sdkConfiguration: sdkConfiguration{
 			Language:          "terraform",
-			OpenAPIDocVersion: "0.1.0",
-			SDKVersion:        "1.2.1",
-			GenVersion:        "2.61.0",
+			OpenAPIDocVersion: "v1",
+			SDKVersion:        "2.0.0",
+			GenVersion:        "2.71.0",
 		},
 	}
 	for _, opt := range opts {
