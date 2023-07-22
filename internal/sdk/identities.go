@@ -152,7 +152,7 @@ func (s *identities) DeleteIdentity(ctx context.Context, request operations.Dele
 		RawResponse: httpRes,
 	}
 	switch {
-	case httpRes.StatusCode == 204:
+	case httpRes.StatusCode == 200:
 	case httpRes.StatusCode == 401:
 		fallthrough
 	case httpRes.StatusCode == 404:
