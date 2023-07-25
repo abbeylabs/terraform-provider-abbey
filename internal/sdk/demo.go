@@ -14,123 +14,27 @@ import (
 	"strings"
 )
 
-// requests - Requests are Access Requests that users make to get access to a resource.
-//
-// https://docs.abbey.io/getting-started/concepts#access-requests
-type requests struct {
+// demo - Abbey Demo
+// https://docs.abbey.io/getting-started/quickstart
+type demo struct {
 	sdkConfiguration sdkConfiguration
 }
 
-func newRequests(sdkConfig sdkConfiguration) *requests {
-	return &requests{
+func newDemo(sdkConfig sdkConfiguration) *demo {
+	return &demo{
 		sdkConfiguration: sdkConfig,
 	}
 }
 
-// CancelRequestByID - Cancel a Request by ID
-// Cancels the specified request.
-func (s *requests) CancelRequestByID(ctx context.Context, request operations.CancelRequestByIDRequest) (*operations.CancelRequestByIDResponse, error) {
+// CreateDemo - Create Demo Access
+// Creates a new Demo access
+func (s *demo) CreateDemo(ctx context.Context, request shared.DemoParams) (*operations.CreateDemoResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url, err := utils.GenerateURL(ctx, baseURL, "/requests/{request_id}/cancel", request, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error generating URL: %w", err)
-	}
-
-	bodyReader, reqContentType, err := utils.SerializeRequestBody(ctx, request, "RequestCancelParams", "json")
-	if err != nil {
-		return nil, fmt.Errorf("error serializing request body: %w", err)
-	}
-	if bodyReader == nil {
-		return nil, fmt.Errorf("request body is required")
-	}
-
-	req, err := http.NewRequestWithContext(ctx, "PUT", url, bodyReader)
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %w", err)
-	}
-	req.Header.Set("Accept", "application/json;q=1, application/json;q=0")
-	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
-
-	req.Header.Set("Content-Type", reqContentType)
-
-	client := s.sdkConfiguration.SecurityClient
-
-	httpRes, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %w", err)
-	}
-	if httpRes == nil {
-		return nil, fmt.Errorf("error sending request: no response")
-	}
-
-	rawBody, err := io.ReadAll(httpRes.Body)
-	if err != nil {
-		return nil, fmt.Errorf("error reading response body: %w", err)
-	}
-	httpRes.Body.Close()
-	httpRes.Body = io.NopCloser(bytes.NewBuffer(rawBody))
-
-	contentType := httpRes.Header.Get("Content-Type")
-
-	res := &operations.CancelRequestByIDResponse{
-		StatusCode:  httpRes.StatusCode,
-		ContentType: contentType,
-		RawResponse: httpRes,
-	}
-	switch {
-	case httpRes.StatusCode == 200:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *shared.Request
-			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
-			}
-
-			res.Request = out
-		}
-	case httpRes.StatusCode == 400:
-		fallthrough
-	case httpRes.StatusCode == 401:
-		fallthrough
-	case httpRes.StatusCode == 404:
-		fallthrough
-	case httpRes.StatusCode == 409:
-		fallthrough
-	case httpRes.StatusCode == 429:
-		fallthrough
-	default:
-		switch {
-		case utils.MatchContentType(contentType, `application/json`):
-			var out *shared.Error
-			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
-			}
-
-			res.Error = out
-		}
-	}
-
-	return res, nil
-}
-
-// CreateRequest - Create a Request
-// Creates a new request.
-//
-// You will need to pass in a Grant Kit ID as the target of this request. This will create a request
-// against the latest version of the Grant Kit.
-//
-// Grant Kit Versions are immutable and you won't be able to create a request against an older Grant Kit Version.
-// If you want to do this, you will have to roll forward by creating a new Grant Kit Version.
-func (s *requests) CreateRequest(ctx context.Context, request shared.RequestParams) (*operations.CreateRequestResponse, error) {
-	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url := strings.TrimSuffix(baseURL, "/") + "/requests"
+	url := strings.TrimSuffix(baseURL, "/") + "/demo"
 
 	bodyReader, reqContentType, err := utils.SerializeRequestBody(ctx, request, "Request", "json")
 	if err != nil {
 		return nil, fmt.Errorf("error serializing request body: %w", err)
-	}
-	if bodyReader == nil {
-		return nil, fmt.Errorf("request body is required")
 	}
 
 	req, err := http.NewRequestWithContext(ctx, "POST", url, bodyReader)
@@ -161,7 +65,7 @@ func (s *requests) CreateRequest(ctx context.Context, request shared.RequestPara
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.CreateRequestResponse{
+	res := &operations.CreateDemoResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
@@ -170,18 +74,16 @@ func (s *requests) CreateRequest(ctx context.Context, request shared.RequestPara
 	case httpRes.StatusCode == 201:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out *shared.Request
+			var out *shared.Demo
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
 				return nil, err
 			}
 
-			res.Request = out
+			res.Demo = out
 		}
 	case httpRes.StatusCode == 400:
 		fallthrough
 	case httpRes.StatusCode == 401:
-		fallthrough
-	case httpRes.StatusCode == 409:
 		fallthrough
 	case httpRes.StatusCode == 429:
 		fallthrough
@@ -200,21 +102,25 @@ func (s *requests) CreateRequest(ctx context.Context, request shared.RequestPara
 	return res, nil
 }
 
-// GetRequestByID - Retrieve a Request by ID
-// Returns the details of a request.
-func (s *requests) GetRequestByID(ctx context.Context, request operations.GetRequestByIDRequest) (*operations.GetRequestByIDResponse, error) {
+// DeleteDemo - Delete Demo Access
+// Deletes the Demo access
+func (s *demo) DeleteDemo(ctx context.Context, request shared.DemoParams) (*operations.DeleteDemoResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url, err := utils.GenerateURL(ctx, baseURL, "/requests/{request_id}", request, nil)
+	url := strings.TrimSuffix(baseURL, "/") + "/demo"
+
+	bodyReader, reqContentType, err := utils.SerializeRequestBody(ctx, request, "Request", "json")
 	if err != nil {
-		return nil, fmt.Errorf("error generating URL: %w", err)
+		return nil, fmt.Errorf("error serializing request body: %w", err)
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	req, err := http.NewRequestWithContext(ctx, "DELETE", url, bodyReader)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
 	}
 	req.Header.Set("Accept", "application/json;q=1, application/json;q=0")
 	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
+
+	req.Header.Set("Content-Type", reqContentType)
 
 	client := s.sdkConfiguration.SecurityClient
 
@@ -235,7 +141,7 @@ func (s *requests) GetRequestByID(ctx context.Context, request operations.GetReq
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.GetRequestByIDResponse{
+	res := &operations.DeleteDemoResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
@@ -244,12 +150,12 @@ func (s *requests) GetRequestByID(ctx context.Context, request operations.GetReq
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out *shared.Request
+			var out *shared.Demo
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
 				return nil, err
 			}
 
-			res.Request = out
+			res.Demo = out
 		}
 	case httpRes.StatusCode == 401:
 		fallthrough
@@ -272,13 +178,11 @@ func (s *requests) GetRequestByID(ctx context.Context, request operations.GetReq
 	return res, nil
 }
 
-// ListRequests - List Requests
-// Returns a list of requests.
-//
-// Requests are sorted by creation date, descending.
-func (s *requests) ListRequests(ctx context.Context) (*operations.ListRequestsResponse, error) {
+// GetDemo - Get Demo
+// Get the demo response
+func (s *demo) GetDemo(ctx context.Context) (*operations.GetDemoResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url := strings.TrimSuffix(baseURL, "/") + "/requests"
+	url := strings.TrimSuffix(baseURL, "/") + "/demo"
 
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
@@ -306,7 +210,7 @@ func (s *requests) ListRequests(ctx context.Context) (*operations.ListRequestsRe
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.ListRequestsResponse{
+	res := &operations.GetDemoResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
@@ -315,14 +219,16 @@ func (s *requests) ListRequests(ctx context.Context) (*operations.ListRequestsRe
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out []shared.Request
+			var out *shared.Demo
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
 				return nil, err
 			}
 
-			res.Requests = out
+			res.Demo = out
 		}
 	case httpRes.StatusCode == 401:
+		fallthrough
+	case httpRes.StatusCode == 403:
 		fallthrough
 	case httpRes.StatusCode == 429:
 		fallthrough

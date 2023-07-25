@@ -3,16 +3,16 @@
 package operations
 
 import (
-	"abbey/internal/sdk/pkg/models/shared"
+	"abbey/v2/internal/sdk/pkg/models/shared"
 	"net/http"
 )
 
-type GetGrantKitsResponse struct {
+type CreateDemoResponse struct {
 	ContentType string
-	// Authentication Failed
-	Error *shared.Error
-	// Success
-	GrantKits   []shared.GrantKit
+	// Created
+	Demo *shared.Demo
+	// Request Failed
+	Error       *shared.Error
 	StatusCode  int
 	RawResponse *http.Response
 }

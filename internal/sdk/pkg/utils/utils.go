@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"abbey/internal/sdk/pkg/types"
+	"abbey/v2/internal/sdk/pkg/types"
 )
 
 const (

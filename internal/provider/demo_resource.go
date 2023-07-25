@@ -7,9 +7,8 @@ import (
 	"context"
 	"fmt"
 
-	"abbey/v2/internal/sdk/pkg/models/operations"
 	"abbey/v2/internal/validators"
-	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -20,33 +19,35 @@ import (
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.
-var _ resource.Resource = &IdentityResource{}
-var _ resource.ResourceWithImportState = &IdentityResource{}
+var _ resource.Resource = &DemoResource{}
+var _ resource.ResourceWithImportState = &DemoResource{}
 
-func NewIdentityResource() resource.Resource {
-	return &IdentityResource{}
+func NewDemoResource() resource.Resource {
+	return &DemoResource{}
 }
 
-// IdentityResource defines the resource implementation.
-type IdentityResource struct {
+// DemoResource defines the resource implementation.
+type DemoResource struct {
 	client *sdk.SDK
 }
 
-// IdentityResourceModel describes the resource data model.
-type IdentityResourceModel struct {
-	CreatedAt types.String `tfsdk:"created_at"`
-	ID        types.String `tfsdk:"id"`
-	Linked    types.String `tfsdk:"linked"`
-	Name      types.String `tfsdk:"name"`
+// DemoResourceModel describes the resource data model.
+type DemoResourceModel struct {
+	CreatedAt  types.String `tfsdk:"created_at"`
+	Email      types.String `tfsdk:"email"`
+	ID         types.Int64  `tfsdk:"id"`
+	Permission types.String `tfsdk:"permission"`
+	UpdatedAt  types.String `tfsdk:"updated_at"`
+	UserID     types.String `tfsdk:"user_id"`
 }
 
-func (r *IdentityResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_identity"
+func (r *DemoResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_demo"
 }
 
-func (r *IdentityResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *DemoResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Identity Resource",
+		MarkdownDescription: "Demo Resource",
 
 		Attributes: map[string]schema.Attribute{
 			"created_at": schema.StringAttribute{
@@ -55,27 +56,41 @@ func (r *IdentityResource) Schema(ctx context.Context, req resource.SchemaReques
 					validators.IsRFC3339(),
 				},
 			},
-			"id": schema.StringAttribute{
+			"email": schema.StringAttribute{
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+				Optional: true,
+			},
+			"id": schema.Int64Attribute{
 				Computed: true,
 			},
-			"linked": schema.StringAttribute{
+			"permission": schema.StringAttribute{
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
-				Required:    true,
-				Description: `Json encoded string. See documentation for details`,
+				Optional: true,
+				Validators: []validator.String{
+					stringvalidator.OneOf(
+						"read_write",
+					),
+				},
+				Description: `must be one of [read_write]`,
 			},
-			"name": schema.StringAttribute{
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
+			"updated_at": schema.StringAttribute{
+				Computed: true,
+				Validators: []validator.String{
+					validators.IsRFC3339(),
 				},
-				Required: true,
+			},
+			"user_id": schema.StringAttribute{
+				Computed: true,
 			},
 		},
 	}
 }
 
-func (r *IdentityResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (r *DemoResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
@@ -95,8 +110,8 @@ func (r *IdentityResource) Configure(ctx context.Context, req resource.Configure
 	r.client = client
 }
 
-func (r *IdentityResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data *IdentityResourceModel
+func (r *DemoResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data *DemoResourceModel
 	var item types.Object
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &item)...)
@@ -114,7 +129,7 @@ func (r *IdentityResource) Create(ctx context.Context, req resource.CreateReques
 	}
 
 	request := *data.ToCreateSDKType()
-	res, err := r.client.Identities.CreateIdentity(ctx, request)
+	res, err := r.client.Demo.CreateDemo(ctx, request)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", err.Error())
 		return
@@ -127,18 +142,18 @@ func (r *IdentityResource) Create(ctx context.Context, req resource.CreateReques
 		resp.Diagnostics.AddError(fmt.Sprintf("unexpected response from API. Got an unexpected response code %v", res.StatusCode), debugResponse(res.RawResponse))
 		return
 	}
-	if res.Identity == nil {
+	if res.Demo == nil {
 		resp.Diagnostics.AddError("unexpected response from API. No response body", debugResponse(res.RawResponse))
 		return
 	}
-	data.RefreshFromCreateResponse(res.Identity)
+	data.RefreshFromCreateResponse(res.Demo)
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *IdentityResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var data *IdentityResourceModel
+func (r *DemoResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data *DemoResourceModel
 	var item types.Object
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &item)...)
@@ -155,35 +170,14 @@ func (r *IdentityResource) Read(ctx context.Context, req resource.ReadRequest, r
 		return
 	}
 
-	identityID := data.ID.ValueString()
-	request := operations.GetIdentityRequest{
-		IdentityID: identityID,
-	}
-	res, err := r.client.Identities.GetIdentity(ctx, request)
-	if err != nil {
-		resp.Diagnostics.AddError("failure to invoke API", err.Error())
-		return
-	}
-	if res == nil {
-		resp.Diagnostics.AddError("unexpected response from API", fmt.Sprintf("%v", res))
-		return
-	}
-	if res.StatusCode != 200 {
-		resp.Diagnostics.AddError(fmt.Sprintf("unexpected response from API. Got an unexpected response code %v", res.StatusCode), debugResponse(res.RawResponse))
-		return
-	}
-	if res.Identity == nil {
-		resp.Diagnostics.AddError("unexpected response from API. No response body", debugResponse(res.RawResponse))
-		return
-	}
-	data.RefreshFromGetResponse(res.Identity)
+	// Not Implemented; we rely entirely on CREATE API request response
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *IdentityResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var data *IdentityResourceModel
+func (r *DemoResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var data *DemoResourceModel
 	merge(ctx, req, resp, &data)
 	if resp.Diagnostics.HasError() {
 		return
@@ -195,8 +189,8 @@ func (r *IdentityResource) Update(ctx context.Context, req resource.UpdateReques
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *IdentityResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var data *IdentityResourceModel
+func (r *DemoResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data *DemoResourceModel
 	var item types.Object
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &item)...)
@@ -213,11 +207,8 @@ func (r *IdentityResource) Delete(ctx context.Context, req resource.DeleteReques
 		return
 	}
 
-	identityID := data.ID.ValueString()
-	request := operations.DeleteIdentityRequest{
-		IdentityID: identityID,
-	}
-	res, err := r.client.Identities.DeleteIdentity(ctx, request)
+	request := *data.ToDeleteSDKType()
+	res, err := r.client.Demo.DeleteDemo(ctx, request)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", err.Error())
 		return
@@ -233,6 +224,6 @@ func (r *IdentityResource) Delete(ctx context.Context, req resource.DeleteReques
 
 }
 
-func (r *IdentityResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+func (r *DemoResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resp.Diagnostics.AddError("Not Implemented", "No available import state operation is available for resource demo.")
 }

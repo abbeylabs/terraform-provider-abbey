@@ -3,7 +3,7 @@
 package int64planmodifier
 
 import (
-	"abbey/internal/planmodifiers/utils"
+	"abbey/v2/internal/planmodifiers/utils"
 	"context"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"

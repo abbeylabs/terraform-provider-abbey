@@ -2,7 +2,7 @@ terraform {
   required_providers {
     abbey = {
       source  = "abbeylabs/abbey"
-      version = "1.2.1"
+      version = "2.1.0"
     }
   }
 }

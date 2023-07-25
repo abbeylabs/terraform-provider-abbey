@@ -3,7 +3,7 @@
 package provider
 
 import (
-	tfReflect "abbey/internal/provider/reflect"
+	tfReflect "abbey/v2/internal/provider/reflect"
 	"context"
 	"encoding/json"
 	"fmt"

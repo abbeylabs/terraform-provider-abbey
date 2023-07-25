@@ -7,12 +7,12 @@ import (
 	"net/http"
 )
 
-type CreateIdentityResponse struct {
+type GetDemoResponse struct {
 	ContentType string
-	// Request Failed
-	Error *shared.Error
-	// Created
-	Identity    *shared.Identity
+	// Success
+	Demo *shared.Demo
+	// Authentication Failed
+	Error       *shared.Error
 	StatusCode  int
 	RawResponse *http.Response
 }

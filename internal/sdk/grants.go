@@ -3,9 +3,9 @@
 package sdk
 
 import (
-	"abbey/internal/sdk/pkg/models/operations"
-	"abbey/internal/sdk/pkg/models/shared"
-	"abbey/internal/sdk/pkg/utils"
+	"abbey/v2/internal/sdk/pkg/models/operations"
+	"abbey/v2/internal/sdk/pkg/models/shared"
+	"abbey/v2/internal/sdk/pkg/utils"
 	"bytes"
 	"context"
 	"fmt"
@@ -155,7 +155,7 @@ func (s *grants) GetGrantByID(ctx context.Context, request operations.GetGrantBy
 		fallthrough
 	case httpRes.StatusCode == 404:
 		fallthrough
-	case httpRes.StatusCode == 429:
+	case httpRes.StatusCode == 409:
 		fallthrough
 	default:
 		switch {

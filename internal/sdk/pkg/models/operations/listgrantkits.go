@@ -7,12 +7,12 @@ import (
 	"net/http"
 )
 
-type CreateIdentityResponse struct {
+type ListGrantKitsResponse struct {
 	ContentType string
-	// Request Failed
+	// Authentication Failed
 	Error *shared.Error
-	// Created
-	Identity    *shared.Identity
+	// Success
+	GrantKits   []shared.GrantKit
 	StatusCode  int
 	RawResponse *http.Response
 }

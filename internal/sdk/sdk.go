@@ -3,8 +3,8 @@
 package sdk
 
 import (
-	"abbey/internal/sdk/pkg/models/shared"
-	"abbey/internal/sdk/pkg/utils"
+	"abbey/v2/internal/sdk/pkg/models/shared"
+	"abbey/v2/internal/sdk/pkg/utils"
 	"fmt"
 	"net/http"
 	"time"
@@ -70,7 +70,8 @@ func (c *sdkConfiguration) GetServerDetails() (string, map[string]string) {
 	return ServerList[c.Server], nil
 }
 
-// SDK - Edge API: The front door to Abbey Labs.
+// SDK - Abbey API: The public Abbey API. Used for integrating with Abbey and building interfaces to extend the Abbey platform.
+// See https://docs.abbey.io for more information.
 type SDK struct {
 	// APIKeys - API Keys are used to authenticate to the Abbey API.
 	//
@@ -85,6 +86,9 @@ type SDK struct {
 	//
 	// https://docs.abbey.io
 	Connections *connections
+	// Demo - Abbey Demo
+	// https://docs.abbey.io/getting-started/quickstart
+	Demo *demo
 	// GrantKits - Grant Kits are what you configure in code to control and automatically right-size permissions for resources.
 	// A Grant Kit has 3 components:
 	//
@@ -172,9 +176,9 @@ func New(opts ...SDKOption) *SDK {
 	sdk := &SDK{
 		sdkConfiguration: sdkConfiguration{
 			Language:          "terraform",
-			OpenAPIDocVersion: "0.1.0",
-			SDKVersion:        "1.2.1",
-			GenVersion:        "2.61.0",
+			OpenAPIDocVersion: "v1",
+			SDKVersion:        "2.1.0",
+			GenVersion:        "2.73.0",
 		},
 	}
 	for _, opt := range opts {
@@ -198,6 +202,8 @@ func New(opts ...SDKOption) *SDK {
 	sdk.ConnectionSpecs = newConnectionSpecs(sdk.sdkConfiguration)
 
 	sdk.Connections = newConnections(sdk.sdkConfiguration)
+
+	sdk.Demo = newDemo(sdk.sdkConfiguration)
 
 	sdk.GrantKits = newGrantKits(sdk.sdkConfiguration)
 
