@@ -86,6 +86,9 @@ type SDK struct {
 	//
 	// https://docs.abbey.io
 	Connections *connections
+	// Demo - Abbey Demo
+	// https://docs.abbey.io/getting-started/quickstart
+	Demo *demo
 	// GrantKits - Grant Kits are what you configure in code to control and automatically right-size permissions for resources.
 	// A Grant Kit has 3 components:
 	//
@@ -174,7 +177,7 @@ func New(opts ...SDKOption) *SDK {
 		sdkConfiguration: sdkConfiguration{
 			Language:          "terraform",
 			OpenAPIDocVersion: "v1",
-			SDKVersion:        "2.0.0",
+			SDKVersion:        "2.0.1",
 			GenVersion:        "2.71.0",
 		},
 	}
@@ -199,6 +202,8 @@ func New(opts ...SDKOption) *SDK {
 	sdk.ConnectionSpecs = newConnectionSpecs(sdk.sdkConfiguration)
 
 	sdk.Connections = newConnections(sdk.sdkConfiguration)
+
+	sdk.Demo = newDemo(sdk.sdkConfiguration)
 
 	sdk.GrantKits = newGrantKits(sdk.sdkConfiguration)
 

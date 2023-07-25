@@ -85,6 +85,7 @@ func (p *AbbeyProvider) Configure(ctx context.Context, req provider.ConfigureReq
 
 func (p *AbbeyProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
+		NewDemoResource,
 		NewGrantKitResource,
 		NewIdentityResource,
 	}

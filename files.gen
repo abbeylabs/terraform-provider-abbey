@@ -1,6 +1,7 @@
 internal/sdk/apikeys.go
 internal/sdk/connectionspecs.go
 internal/sdk/connections.go
+internal/sdk/demo.go
 internal/sdk/grantkits.go
 internal/sdk/grants.go
 internal/sdk/identities.go
@@ -70,6 +71,9 @@ internal/sdk/pkg/models/operations/createconnection.go
 internal/sdk/pkg/models/operations/getconnection.go
 internal/sdk/pkg/models/operations/listconnections.go
 internal/sdk/pkg/models/operations/updateconnection.go
+internal/sdk/pkg/models/operations/createdemo.go
+internal/sdk/pkg/models/operations/deletedemo.go
+internal/sdk/pkg/models/operations/getdemo.go
 internal/sdk/pkg/models/operations/creategrantkit.go
 internal/sdk/pkg/models/operations/listgrantkits.go
 internal/sdk/pkg/models/operations/deletegrantkit.go
@@ -116,6 +120,8 @@ internal/sdk/pkg/models/shared/pagerdutyconnectionvalue.go
 internal/sdk/pkg/models/shared/pagerdutyconnection.go
 internal/sdk/pkg/models/shared/connectionlisting.go
 internal/sdk/pkg/models/shared/connectionupdateparams.go
+internal/sdk/pkg/models/shared/demo.go
+internal/sdk/pkg/models/shared/demoparams.go
 internal/sdk/pkg/models/shared/grantkit.go
 internal/sdk/pkg/models/shared/grantworkflow.go
 internal/sdk/pkg/models/shared/step.go
@@ -139,6 +145,9 @@ internal/sdk/pkg/models/shared/security.go
 USAGE.md
 internal/provider/provider.go
 examples/provider/provider.tf
+internal/provider/demo_resource.go
+internal/provider/demo_resource_sdk.go
+examples/resources/abbey_demo/resource.tf
 internal/provider/grantkit_resource.go
 internal/provider/grantkit_resource_sdk.go
 examples/resources/abbey_grant_kit/resource.tf
