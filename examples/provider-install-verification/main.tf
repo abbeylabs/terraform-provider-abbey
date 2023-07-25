@@ -9,7 +9,7 @@ terraform {
 provider "abbey" {}
 
 resource "abbey_grant_kit" "example" {
-  name = ""
+  name        = ""
   description = ""
 
   workflow = {
@@ -40,7 +40,7 @@ resource "abbey_grant_kit" "example" {
 
   output = {
     location = "github://organization/repo/path/to/access.tf"
-    append = <<-EOT
+    append   = <<-EOT
     EOT
   }
 }
