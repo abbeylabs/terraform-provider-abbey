@@ -265,6 +265,7 @@ func (r *GrantKitResourceModel) RefreshFromGetResponse(resp *shared.GrantKit) {
 		}
 		requests1.GrantKitVersionID = types.StringValue(requestsItem.GrantKitVersionID)
 		requests1.ID = types.StringValue(requestsItem.ID)
+		requests1.PullRequest = types.StringValue(requestsItem.PullRequest)
 		requests1.Reason = types.StringValue(requestsItem.Reason)
 		requests1.Reviews = nil
 		for _, reviewsItem := range requestsItem.Reviews {
@@ -291,6 +292,7 @@ func (r *GrantKitResourceModel) RefreshFromGetResponse(resp *shared.GrantKit) {
 			reviews1.GrantKitName = types.StringValue(reviewsItem.GrantKitName)
 			reviews1.GrantKitVersionID = types.StringValue(reviewsItem.GrantKitVersionID)
 			reviews1.ID = types.StringValue(reviewsItem.ID)
+			reviews1.PullRequest = types.StringValue(reviewsItem.PullRequest)
 			reviews1.Reason = types.StringValue(reviewsItem.Reason)
 			reviews1.RequestID = types.StringValue(reviewsItem.RequestID)
 			reviews1.Status = types.StringValue(string(reviewsItem.Status))

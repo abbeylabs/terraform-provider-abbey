@@ -14,6 +14,7 @@ type Request struct {
 	GrantKitName      *string       `json:"grant_kit_name,omitempty"`
 	GrantKitVersionID string        `json:"grant_kit_version_id"`
 	ID                string        `json:"id"`
+	PullRequest       string        `json:"pull_request"`
 	Reason            string        `json:"reason"`
 	Reviews           []Review      `json:"reviews,omitempty"`
 	Status            RequestStatus `json:"status"`

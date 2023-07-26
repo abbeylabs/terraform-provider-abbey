@@ -170,6 +170,9 @@ func (r *GrantKitResource) Schema(ctx context.Context, req resource.SchemaReques
 						"id": schema.StringAttribute{
 							Computed: true,
 						},
+						"pull_request": schema.StringAttribute{
+							Computed: true,
+						},
 						"reason": schema.StringAttribute{
 							Computed: true,
 						},
@@ -232,6 +235,9 @@ func (r *GrantKitResource) Schema(ctx context.Context, req resource.SchemaReques
 										Computed: true,
 									},
 									"id": schema.StringAttribute{
+										Computed: true,
+									},
+									"pull_request": schema.StringAttribute{
 										Computed: true,
 									},
 									"reason": schema.StringAttribute{
