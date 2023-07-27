@@ -3,6 +3,6 @@
 package shared
 
 type Step struct {
-	Reviewers Reviewers `json:"reviewers"`
-	SkipIf    []Policy  `json:"skip_if,omitempty"`
+	Reviewers *Reviewers `json:"reviewers,omitempty"`
+	SkipIf    []Policy   `json:"skip_if,omitempty"`
 }

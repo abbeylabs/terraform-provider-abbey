@@ -308,11 +308,13 @@ func (r *GrantKitResource) Schema(ctx context.Context, req resource.SchemaReques
 				Optional: true,
 				Attributes: map[string]schema.Attribute{
 					"steps": schema.ListNestedAttribute{
-						Required: true,
+						Computed: true,
+						Optional: true,
 						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
 								"reviewers": schema.SingleNestedAttribute{
-									Required: true,
+									Computed: true,
+									Optional: true,
 									Attributes: map[string]schema.Attribute{
 										"all_of": schema.ListAttribute{
 											Computed:    true,

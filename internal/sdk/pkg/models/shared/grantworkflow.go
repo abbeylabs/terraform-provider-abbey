@@ -3,5 +3,5 @@
 package shared
 
 type GrantWorkflow struct {
-	Steps []Step `json:"steps"`
+	Steps []Step `json:"steps,omitempty"`
 }

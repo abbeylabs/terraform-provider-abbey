@@ -3,6 +3,6 @@
 package provider
 
 type Step struct {
-	Reviewers Reviewers `tfsdk:"reviewers"`
-	SkipIf    []Policy  `tfsdk:"skip_if"`
+	Reviewers *Reviewers `tfsdk:"reviewers"`
+	SkipIf    []Policy   `tfsdk:"skip_if"`
 }
