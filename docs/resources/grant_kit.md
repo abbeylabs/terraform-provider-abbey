@@ -72,19 +72,16 @@ Optional:
 <a id="nestedatt--workflow"></a>
 ### Nested Schema for `workflow`
 
-Required:
+Optional:
 
 - `steps` (Attributes List) (see [below for nested schema](#nestedatt--workflow--steps))
 
 <a id="nestedatt--workflow--steps"></a>
 ### Nested Schema for `workflow.steps`
 
-Required:
-
-- `reviewers` (Attributes) (see [below for nested schema](#nestedatt--workflow--steps--reviewers))
-
 Optional:
 
+- `reviewers` (Attributes) (see [below for nested schema](#nestedatt--workflow--steps--reviewers))
 - `skip_if` (Attributes List) (see [below for nested schema](#nestedatt--workflow--steps--skip_if))
 
 <a id="nestedatt--workflow--steps--reviewers"></a>
@@ -134,6 +131,7 @@ Read-Only:
 - `grant_kit_name` (String)
 - `grant_kit_version_id` (String)
 - `id` (String)
+- `pull_request` (String)
 - `reason` (String)
 - `reviews` (Attributes List) (see [below for nested schema](#nestedatt--requests--reviews))
 - `status` (String) must be one of [Pending, Denied, Approved, Canceled]
@@ -151,6 +149,7 @@ Read-Only:
 - `grant_kit_name` (String)
 - `grant_kit_version_id` (String)
 - `id` (String)
+- `pull_request` (String)
 - `reason` (String)
 - `request_id` (String)
 - `status` (String) must be one of [Pending, Denied, Approved, Canceled]
