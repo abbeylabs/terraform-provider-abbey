@@ -8,9 +8,11 @@ import (
 
 // Identity - Created
 type Identity struct {
-	CreatedAt time.Time `json:"created_at"`
-	ID        string    `json:"id"`
-	// Json encoded string. See documentation for details
-	Linked string `json:"linked"`
-	Name   string `json:"name"`
+	AbbeyAccount string    `json:"abbey_account"`
+	CreatedAt    time.Time `json:"created_at"`
+	ID           string    `json:"id"`
+	// Json encoded string. See documentation for details.
+	Metadata  string    `json:"metadata"`
+	Source    string    `json:"source"`
+	UpdatedAt time.Time `json:"updated_at"`
 }

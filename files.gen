@@ -86,6 +86,7 @@ internal/sdk/pkg/models/operations/revokegrant.go
 internal/sdk/pkg/models/operations/createidentity.go
 internal/sdk/pkg/models/operations/deleteidentity.go
 internal/sdk/pkg/models/operations/getidentity.go
+internal/sdk/pkg/models/operations/updateidentity.go
 internal/sdk/pkg/models/operations/cancelrequestbyid.go
 internal/sdk/pkg/models/operations/createrequest.go
 internal/sdk/pkg/models/operations/getrequestbyid.go

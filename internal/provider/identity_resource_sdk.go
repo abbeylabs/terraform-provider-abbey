@@ -9,16 +9,23 @@ import (
 )
 
 func (r *IdentityResourceModel) ToCreateSDKType() *shared.IdentityParams {
-	linked := r.Linked.ValueString()
-	name := r.Name.ValueString()
+	abbeyAccount := r.AbbeyAccount.ValueString()
+	metadata := r.Metadata.ValueString()
+	source := r.Source.ValueString()
 	out := shared.IdentityParams{
-		Linked: linked,
-		Name:   name,
+		AbbeyAccount: abbeyAccount,
+		Metadata:     metadata,
+		Source:       source,
 	}
 	return &out
 }
 
 func (r *IdentityResourceModel) ToGetSDKType() *shared.IdentityParams {
+	out := r.ToCreateSDKType()
+	return out
+}
+
+func (r *IdentityResourceModel) ToUpdateSDKType() *shared.IdentityParams {
 	out := r.ToCreateSDKType()
 	return out
 }
@@ -29,12 +36,18 @@ func (r *IdentityResourceModel) ToDeleteSDKType() *shared.IdentityParams {
 }
 
 func (r *IdentityResourceModel) RefreshFromGetResponse(resp *shared.Identity) {
+	r.AbbeyAccount = types.StringValue(resp.AbbeyAccount)
 	r.CreatedAt = types.StringValue(resp.CreatedAt.Format(time.RFC3339))
 	r.ID = types.StringValue(resp.ID)
-	r.Linked = types.StringValue(resp.Linked)
-	r.Name = types.StringValue(resp.Name)
+	r.Metadata = types.StringValue(resp.Metadata)
+	r.Source = types.StringValue(resp.Source)
+	r.UpdatedAt = types.StringValue(resp.UpdatedAt.Format(time.RFC3339))
 }
 
 func (r *IdentityResourceModel) RefreshFromCreateResponse(resp *shared.Identity) {
+	r.RefreshFromGetResponse(resp)
+}
+
+func (r *IdentityResourceModel) RefreshFromUpdateResponse(resp *shared.Identity) {
 	r.RefreshFromGetResponse(resp)
 }
