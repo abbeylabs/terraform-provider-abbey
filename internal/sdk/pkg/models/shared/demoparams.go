@@ -32,6 +32,6 @@ func (e *DemoParamsPermission) UnmarshalJSON(data []byte) error {
 }
 
 type DemoParams struct {
-	Email      *string               `json:"email,omitempty"`
-	Permission *DemoParamsPermission `json:"permission,omitempty"`
+	Email      string               `json:"email"`
+	Permission DemoParamsPermission `json:"permission"`
 }
