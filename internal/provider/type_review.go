@@ -11,6 +11,7 @@ type Review struct {
 	GrantKitName      types.String `tfsdk:"grant_kit_name"`
 	GrantKitVersionID types.String `tfsdk:"grant_kit_version_id"`
 	ID                types.String `tfsdk:"id"`
+	PullRequest       types.String `tfsdk:"pull_request"`
 	Reason            types.String `tfsdk:"reason"`
 	RequestID         types.String `tfsdk:"request_id"`
 	Status            types.String `tfsdk:"status"`

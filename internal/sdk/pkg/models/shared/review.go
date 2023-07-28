@@ -14,6 +14,7 @@ type Review struct {
 	GrantKitName      string       `json:"grant_kit_name"`
 	GrantKitVersionID string       `json:"grant_kit_version_id"`
 	ID                string       `json:"id"`
+	PullRequest       string       `json:"pull_request"`
 	Reason            string       `json:"reason"`
 	RequestID         string       `json:"request_id"`
 	Status            ReviewStatus `json:"status"`

@@ -12,8 +12,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
@@ -34,10 +32,12 @@ type IdentityResource struct {
 
 // IdentityResourceModel describes the resource data model.
 type IdentityResourceModel struct {
-	CreatedAt types.String `tfsdk:"created_at"`
-	ID        types.String `tfsdk:"id"`
-	Linked    types.String `tfsdk:"linked"`
-	Name      types.String `tfsdk:"name"`
+	AbbeyAccount types.String `tfsdk:"abbey_account"`
+	CreatedAt    types.String `tfsdk:"created_at"`
+	ID           types.String `tfsdk:"id"`
+	Metadata     types.String `tfsdk:"metadata"`
+	Source       types.String `tfsdk:"source"`
+	UpdatedAt    types.String `tfsdk:"updated_at"`
 }
 
 func (r *IdentityResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -49,6 +49,9 @@ func (r *IdentityResource) Schema(ctx context.Context, req resource.SchemaReques
 		MarkdownDescription: "Identity Resource",
 
 		Attributes: map[string]schema.Attribute{
+			"abbey_account": schema.StringAttribute{
+				Required: true,
+			},
 			"created_at": schema.StringAttribute{
 				Computed: true,
 				Validators: []validator.String{
@@ -58,18 +61,18 @@ func (r *IdentityResource) Schema(ctx context.Context, req resource.SchemaReques
 			"id": schema.StringAttribute{
 				Computed: true,
 			},
-			"linked": schema.StringAttribute{
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
-				},
+			"metadata": schema.StringAttribute{
 				Required:    true,
-				Description: `Json encoded string. See documentation for details`,
+				Description: `Json encoded string. See documentation for details.`,
 			},
-			"name": schema.StringAttribute{
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
-				},
+			"source": schema.StringAttribute{
 				Required: true,
+			},
+			"updated_at": schema.StringAttribute{
+				Computed: true,
+				Validators: []validator.String{
+					validators.IsRFC3339(),
+				},
 			},
 		},
 	}
@@ -189,7 +192,30 @@ func (r *IdentityResource) Update(ctx context.Context, req resource.UpdateReques
 		return
 	}
 
-	// Not Implemented; all attributes marked as RequiresReplace
+	identityParams := *data.ToUpdateSDKType()
+	identityID := data.ID.ValueString()
+	request := operations.UpdateIdentityRequest{
+		IdentityParams: identityParams,
+		IdentityID:     identityID,
+	}
+	res, err := r.client.Identities.UpdateIdentity(ctx, request)
+	if err != nil {
+		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		return
+	}
+	if res == nil {
+		resp.Diagnostics.AddError("unexpected response from API", fmt.Sprintf("%v", res))
+		return
+	}
+	if res.StatusCode != 200 {
+		resp.Diagnostics.AddError(fmt.Sprintf("unexpected response from API. Got an unexpected response code %v", res.StatusCode), debugResponse(res.RawResponse))
+		return
+	}
+	if res.Identity == nil {
+		resp.Diagnostics.AddError("unexpected response from API. No response body", debugResponse(res.RawResponse))
+		return
+	}
+	data.RefreshFromUpdateResponse(res.Identity)
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)

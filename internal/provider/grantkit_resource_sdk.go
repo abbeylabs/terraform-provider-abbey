@@ -52,17 +52,20 @@ func (r *GrantKitResourceModel) ToCreateSDKType() *shared.GrantKitCreateParams {
 	if r.Workflow != nil {
 		steps := make([]shared.Step, 0)
 		for _, stepsItem := range r.Workflow.Steps {
-			allOf := make([]string, 0)
-			for _, allOfItem := range stepsItem.Reviewers.AllOf {
-				allOf = append(allOf, allOfItem.ValueString())
-			}
-			oneOf := make([]string, 0)
-			for _, oneOfItem := range stepsItem.Reviewers.OneOf {
-				oneOf = append(oneOf, oneOfItem.ValueString())
-			}
-			reviewers := shared.Reviewers{
-				AllOf: allOf,
-				OneOf: oneOf,
+			var reviewers *shared.Reviewers
+			if stepsItem.Reviewers != nil {
+				allOf := make([]string, 0)
+				for _, allOfItem := range stepsItem.Reviewers.AllOf {
+					allOf = append(allOf, allOfItem.ValueString())
+				}
+				oneOf := make([]string, 0)
+				for _, oneOfItem := range stepsItem.Reviewers.OneOf {
+					oneOf = append(oneOf, oneOfItem.ValueString())
+				}
+				reviewers = &shared.Reviewers{
+					AllOf: allOf,
+					OneOf: oneOf,
+				}
 			}
 			skipIf := make([]shared.Policy, 0)
 			for _, skipIfItem := range stepsItem.SkipIf {
@@ -151,17 +154,20 @@ func (r *GrantKitResourceModel) ToUpdateSDKType() *shared.GrantKitUpdateParams {
 	if r.Workflow != nil {
 		steps := make([]shared.Step, 0)
 		for _, stepsItem := range r.Workflow.Steps {
-			allOf := make([]string, 0)
-			for _, allOfItem := range stepsItem.Reviewers.AllOf {
-				allOf = append(allOf, allOfItem.ValueString())
-			}
-			oneOf := make([]string, 0)
-			for _, oneOfItem := range stepsItem.Reviewers.OneOf {
-				oneOf = append(oneOf, oneOfItem.ValueString())
-			}
-			reviewers := shared.Reviewers{
-				AllOf: allOf,
-				OneOf: oneOf,
+			var reviewers *shared.Reviewers
+			if stepsItem.Reviewers != nil {
+				allOf := make([]string, 0)
+				for _, allOfItem := range stepsItem.Reviewers.AllOf {
+					allOf = append(allOf, allOfItem.ValueString())
+				}
+				oneOf := make([]string, 0)
+				for _, oneOfItem := range stepsItem.Reviewers.OneOf {
+					oneOf = append(oneOf, oneOfItem.ValueString())
+				}
+				reviewers = &shared.Reviewers{
+					AllOf: allOf,
+					OneOf: oneOf,
+				}
 			}
 			skipIf := make([]shared.Policy, 0)
 			for _, skipIfItem := range stepsItem.SkipIf {
@@ -265,6 +271,7 @@ func (r *GrantKitResourceModel) RefreshFromGetResponse(resp *shared.GrantKit) {
 		}
 		requests1.GrantKitVersionID = types.StringValue(requestsItem.GrantKitVersionID)
 		requests1.ID = types.StringValue(requestsItem.ID)
+		requests1.PullRequest = types.StringValue(requestsItem.PullRequest)
 		requests1.Reason = types.StringValue(requestsItem.Reason)
 		requests1.Reviews = nil
 		for _, reviewsItem := range requestsItem.Reviews {
@@ -291,6 +298,7 @@ func (r *GrantKitResourceModel) RefreshFromGetResponse(resp *shared.GrantKit) {
 			reviews1.GrantKitName = types.StringValue(reviewsItem.GrantKitName)
 			reviews1.GrantKitVersionID = types.StringValue(reviewsItem.GrantKitVersionID)
 			reviews1.ID = types.StringValue(reviewsItem.ID)
+			reviews1.PullRequest = types.StringValue(reviewsItem.PullRequest)
 			reviews1.Reason = types.StringValue(reviewsItem.Reason)
 			reviews1.RequestID = types.StringValue(reviewsItem.RequestID)
 			reviews1.Status = types.StringValue(string(reviewsItem.Status))
@@ -319,13 +327,21 @@ func (r *GrantKitResourceModel) RefreshFromGetResponse(resp *shared.GrantKit) {
 		r.Workflow.Steps = nil
 		for _, stepsItem := range resp.Workflow.Steps {
 			var steps1 Step
-			steps1.Reviewers.AllOf = nil
-			for _, v := range stepsItem.Reviewers.AllOf {
-				steps1.Reviewers.AllOf = append(steps1.Reviewers.AllOf, types.StringValue(v))
+			if steps1.Reviewers == nil {
+				steps1.Reviewers = &Reviewers{}
 			}
-			steps1.Reviewers.OneOf = nil
-			for _, v := range stepsItem.Reviewers.OneOf {
-				steps1.Reviewers.OneOf = append(steps1.Reviewers.OneOf, types.StringValue(v))
+			if stepsItem.Reviewers == nil {
+				steps1.Reviewers = nil
+			} else {
+				steps1.Reviewers = &Reviewers{}
+				steps1.Reviewers.AllOf = nil
+				for _, v := range stepsItem.Reviewers.AllOf {
+					steps1.Reviewers.AllOf = append(steps1.Reviewers.AllOf, types.StringValue(v))
+				}
+				steps1.Reviewers.OneOf = nil
+				for _, v := range stepsItem.Reviewers.OneOf {
+					steps1.Reviewers.OneOf = append(steps1.Reviewers.OneOf, types.StringValue(v))
+				}
 			}
 			steps1.SkipIf = nil
 			for _, skipIfItem := range stepsItem.SkipIf {

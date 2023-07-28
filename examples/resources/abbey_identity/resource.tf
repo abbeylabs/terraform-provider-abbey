@@ -1,4 +1,5 @@
 resource "abbey_identity" "my_identity" {
-    linked = "...my_linked..."
-            name = "Johnnie Stamm"
+    abbey_account = "...my_abbey_account..."
+            metadata = "...my_metadata..."
+            source = "...my_source..."
         }

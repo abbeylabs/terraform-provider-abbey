@@ -14,8 +14,9 @@ Identity Resource
 
 ```terraform
 resource "abbey_identity" "my_identity" {
-  linked = "...my_linked..."
-  name   = "Johnnie Stamm"
+  abbey_account = "...my_abbey_account..."
+  metadata      = "...my_metadata..."
+  source        = "...my_source..."
 }
 ```
 
@@ -24,12 +25,14 @@ resource "abbey_identity" "my_identity" {
 
 ### Required
 
-- `linked` (String) Json encoded string. See documentation for details
-- `name` (String)
+- `abbey_account` (String)
+- `metadata` (String) Json encoded string. See documentation for details.
+- `source` (String)
 
 ### Read-Only
 
 - `created_at` (String)
 - `id` (String) The ID of this resource.
+- `updated_at` (String)
 
 
