@@ -6,41 +6,38 @@ terraform {
   }
 }
 
-provider "abbey" {}
+provider "abbey" {
+  bearer_auth = "<token>"
+}
 
 resource "abbey_grant_kit" "example" {
-  name        = ""
-  description = ""
+  name        = "example_grant_kit"
+  description = "Example description."
 
   workflow = {
     steps = [
       {
         reviewers = {
-          one_of = ["primary-id-1"]
+          one_of = ["replace-me@example.com"]
         }
         skip_if = [
-          { bundle = "github://organization/repository/path/to/bundle.tar.gz" }
+          { bundle = "github://organization/repository/path/to/bundle" }
         ]
       }
     ]
   }
 
-  policies = {
-    grant_if = [
-      { bundle = "github://organization/repository/path/to/bundle.tar.gz" }
-    ]
-    revoke_if = [
-      {
-        query = <<-EOT
-          input.Requester == true
-        EOT
-      }
-    ]
-  }
+  policies = [
+    { bundle = "github://organization/repository/path/to/bundle" }
+  ]
 
   output = {
     location = "github://organization/repo/path/to/access.tf"
     append   = <<-EOT
+      resource "abbey_demo" "my_demo" {
+        permission = "read_write"
+        email = "replace-me@example.com"
+      }
     EOT
   }
 }

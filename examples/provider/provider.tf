@@ -2,11 +2,12 @@ terraform {
   required_providers {
     abbey = {
       source  = "abbeylabs/abbey"
-      version = "2.2.0"
+      version = "0.2.4"
     }
   }
 }
 
 provider "abbey" {
   # Configuration options
+  bearer_auth = "<token>"
 }
