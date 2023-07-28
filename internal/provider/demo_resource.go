@@ -60,7 +60,7 @@ func (r *DemoResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
-				Optional: true,
+				Required: true,
 			},
 			"id": schema.Int64Attribute{
 				Computed: true,
@@ -69,7 +69,7 @@ func (r *DemoResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
-				Optional: true,
+				Required: true,
 				Validators: []validator.String{
 					stringvalidator.OneOf(
 						"read_write",

@@ -9,18 +9,8 @@ import (
 )
 
 func (r *DemoResourceModel) ToCreateSDKType() *shared.DemoParams {
-	email := new(string)
-	if !r.Email.IsUnknown() && !r.Email.IsNull() {
-		*email = r.Email.ValueString()
-	} else {
-		email = nil
-	}
-	permission := new(shared.DemoParamsPermission)
-	if !r.Permission.IsUnknown() && !r.Permission.IsNull() {
-		*permission = shared.DemoParamsPermission(r.Permission.ValueString())
-	} else {
-		permission = nil
-	}
+	email := r.Email.ValueString()
+	permission := shared.DemoParamsPermission(r.Permission.ValueString())
 	out := shared.DemoParams{
 		Email:      email,
 		Permission: permission,
