@@ -14,9 +14,13 @@ Identity Resource
 
 ```terraform
 resource "abbey_identity" "my_identity" {
-  abbey_account = "...my_abbey_account..."
-  metadata      = "...my_metadata..."
-  source        = "...my_source..."
+  abbey_account = "alice@example.com"
+  source        = "mysource"
+  metadata = jsonencode(
+    {
+      "mykey" = "myvalue"
+    }
+  )
 }
 ```
 
