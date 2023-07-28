@@ -33,35 +33,6 @@ Development happens in the [GitHub repo](https://github.com/abbeylabs/terraform-
 - [Releases](https://github.com/abbeylabs/terraform-provider-abbey/releases)
 - [Issues](https://github.com/abbeylabs/terraform-provider-abbey/issues)
 
-## Example Usage
-
-{{ tffile "examples/provider-install-verification/main.tf" }}
-
-## Authentication
-
-Abbey provides the following methods for authenticating to the Abbey API:
-
-- Abbey Token
-
-### Generating Tokens
-
-You can generate an Abbey Token by:
-
-- [Abbey Developers Dashboard](https://app.abbey.io/developers) -> New API Key -> Create
-
-### Using Tokens
-
-Configure your Abbey `provider` block with a `bearer_auth` string.
-
-```hcl
-provider "abbey" {
-  bearer_auth = "<token>"
-}
-```
-
-For better security practice, you should place your token into a variable in your `variables.tf` file and set it
-using an environment variable or secret store.
-
 ## License
 
 This project is licensed under the MPL 2.0 license. See [LICENSE](LICENSE) for more details.
