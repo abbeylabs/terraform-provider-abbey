@@ -155,3 +155,9 @@ examples/resources/abbey_grant_kit/resource.tf
 internal/provider/identity_resource.go
 internal/provider/identity_resource_sdk.go
 examples/resources/abbey_identity/resource.tf
+internal/provider/grantkit_data_source.go
+internal/provider/grantkit_data_source_sdk.go
+examples/data-sources/abbey_grant_kit/data-source.tf
+internal/provider/identity_data_source.go
+internal/provider/identity_data_source_sdk.go
+examples/data-sources/abbey_identity/data-source.tf
