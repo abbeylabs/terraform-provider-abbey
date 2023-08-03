@@ -130,7 +130,6 @@ func (r *GrantKitResource) Schema(ctx context.Context, req resource.SchemaReques
 				},
 			},
 			"policies": schema.ListNestedAttribute{
-				Computed: true,
 				Optional: true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -304,7 +303,6 @@ func (r *GrantKitResource) Schema(ctx context.Context, req resource.SchemaReques
 				},
 			},
 			"workflow": schema.SingleNestedAttribute{
-				Computed: true,
 				Optional: true,
 				Attributes: map[string]schema.Attribute{
 					"steps": schema.ListNestedAttribute{
