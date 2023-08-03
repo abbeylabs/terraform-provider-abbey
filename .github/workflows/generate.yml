@@ -9,9 +9,6 @@ on:
         default: false
   schedule:
     - cron: 0 0 * * * # Runs every day at midnight
-  push:
-    branches:
-      - '*'
 jobs:
   generate:
     uses: speakeasy-api/sdk-generation-action/.github/workflows/sdk-generation.yaml@v14
