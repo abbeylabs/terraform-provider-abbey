@@ -92,7 +92,10 @@ func (p *AbbeyProvider) Resources(ctx context.Context) []func() resource.Resourc
 }
 
 func (p *AbbeyProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{}
+	return []func() datasource.DataSource{
+		NewGrantKitDataSource,
+		NewIdentityDataSource,
+	}
 }
 
 func New(version string) func() provider.Provider {
