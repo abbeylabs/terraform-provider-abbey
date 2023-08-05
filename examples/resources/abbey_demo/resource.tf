@@ -1,4 +1,4 @@
 resource "abbey_demo" "my_demo" {
-  permission = "read_write"
-  email      = "alice@example.com"
-}
+    email = "Larue_Rau85@yahoo.com"
+            permission = "read_write"
+        }
