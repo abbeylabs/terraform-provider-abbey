@@ -75,7 +75,7 @@ func (r *DemoResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 						"read_write",
 					),
 				},
-				Description: `must be one of [read_write]`,
+				Description: `must be one of ["read_write"]`,
 			},
 			"updated_at": schema.StringAttribute{
 				Computed: true,
