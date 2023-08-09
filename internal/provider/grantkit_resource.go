@@ -255,7 +255,7 @@ func (r *GrantKitResource) Schema(ctx context.Context, req resource.SchemaReques
 												"Canceled",
 											),
 										},
-										Description: `must be one of [Pending, Denied, Approved, Canceled]`,
+										Description: `must be one of ["Pending", "Denied", "Approved", "Canceled"]`,
 									},
 									"updated_at": schema.StringAttribute{
 										Computed: true,
@@ -282,7 +282,7 @@ func (r *GrantKitResource) Schema(ctx context.Context, req resource.SchemaReques
 									"Canceled",
 								),
 							},
-							Description: `must be one of [Pending, Denied, Approved, Canceled]`,
+							Description: `must be one of ["Pending", "Denied", "Approved", "Canceled"]`,
 						},
 						"updated_at": schema.StringAttribute{
 							Computed: true,
