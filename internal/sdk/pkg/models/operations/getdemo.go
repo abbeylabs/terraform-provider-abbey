@@ -7,6 +7,11 @@ import (
 	"net/http"
 )
 
+type GetDemoRequest struct {
+	// The email of the user
+	Email string `queryParam:"style=form,explode=true,name=email"`
+}
+
 type GetDemoResponse struct {
 	ContentType string
 	// Success
