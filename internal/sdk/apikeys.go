@@ -41,7 +41,10 @@ func (s *apiKeys) CreateAPIKey(ctx context.Context, request shared.APIKeysCreate
 		return nil, fmt.Errorf("request body is required")
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "POST", url, bodyReader)
+	debugBody := bytes.NewBuffer([]byte{})
+	debugReader := io.TeeReader(bodyReader, debugBody)
+
+	req, err := http.NewRequestWithContext(ctx, "POST", url, debugReader)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
 	}
@@ -64,6 +67,7 @@ func (s *apiKeys) CreateAPIKey(ctx context.Context, request shared.APIKeysCreate
 	if err != nil {
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
+	httpRes.Request.Body = io.NopCloser(debugBody)
 	httpRes.Body.Close()
 	httpRes.Body = io.NopCloser(bytes.NewBuffer(rawBody))
 
@@ -80,7 +84,7 @@ func (s *apiKeys) CreateAPIKey(ctx context.Context, request shared.APIKeysCreate
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.APIKey
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.APIKey = out
@@ -98,7 +102,7 @@ func (s *apiKeys) CreateAPIKey(ctx context.Context, request shared.APIKeysCreate
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Error
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Error = out
@@ -151,7 +155,7 @@ func (s *apiKeys) GetAPIKeys(ctx context.Context) (*operations.GetAPIKeysRespons
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.APIKeys
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.APIKeys = out
@@ -165,7 +169,7 @@ func (s *apiKeys) GetAPIKeys(ctx context.Context) (*operations.GetAPIKeysRespons
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Error
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Error = out
@@ -228,7 +232,7 @@ func (s *apiKeys) DeleteAPIKey(ctx context.Context, request operations.DeleteAPI
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Error
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Error = out

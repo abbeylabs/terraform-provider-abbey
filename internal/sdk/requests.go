@@ -44,7 +44,10 @@ func (s *requests) CancelRequestByID(ctx context.Context, request operations.Can
 		return nil, fmt.Errorf("request body is required")
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "PUT", url, bodyReader)
+	debugBody := bytes.NewBuffer([]byte{})
+	debugReader := io.TeeReader(bodyReader, debugBody)
+
+	req, err := http.NewRequestWithContext(ctx, "PUT", url, debugReader)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
 	}
@@ -67,6 +70,7 @@ func (s *requests) CancelRequestByID(ctx context.Context, request operations.Can
 	if err != nil {
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
+	httpRes.Request.Body = io.NopCloser(debugBody)
 	httpRes.Body.Close()
 	httpRes.Body = io.NopCloser(bytes.NewBuffer(rawBody))
 
@@ -83,7 +87,7 @@ func (s *requests) CancelRequestByID(ctx context.Context, request operations.Can
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Request
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Request = out
@@ -103,7 +107,7 @@ func (s *requests) CancelRequestByID(ctx context.Context, request operations.Can
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Error
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Error = out
@@ -133,7 +137,10 @@ func (s *requests) CreateRequest(ctx context.Context, request shared.RequestPara
 		return nil, fmt.Errorf("request body is required")
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "POST", url, bodyReader)
+	debugBody := bytes.NewBuffer([]byte{})
+	debugReader := io.TeeReader(bodyReader, debugBody)
+
+	req, err := http.NewRequestWithContext(ctx, "POST", url, debugReader)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
 	}
@@ -156,6 +163,7 @@ func (s *requests) CreateRequest(ctx context.Context, request shared.RequestPara
 	if err != nil {
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
+	httpRes.Request.Body = io.NopCloser(debugBody)
 	httpRes.Body.Close()
 	httpRes.Body = io.NopCloser(bytes.NewBuffer(rawBody))
 
@@ -172,7 +180,7 @@ func (s *requests) CreateRequest(ctx context.Context, request shared.RequestPara
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Request
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Request = out
@@ -190,7 +198,7 @@ func (s *requests) CreateRequest(ctx context.Context, request shared.RequestPara
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Error
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Error = out
@@ -246,7 +254,7 @@ func (s *requests) GetRequestByID(ctx context.Context, request operations.GetReq
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Request
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Request = out
@@ -262,7 +270,7 @@ func (s *requests) GetRequestByID(ctx context.Context, request operations.GetReq
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Error
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Error = out
@@ -317,7 +325,7 @@ func (s *requests) ListRequests(ctx context.Context) (*operations.ListRequestsRe
 		case utils.MatchContentType(contentType, `application/json`):
 			var out []shared.Request
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Requests = out
@@ -331,7 +339,7 @@ func (s *requests) ListRequests(ctx context.Context) (*operations.ListRequestsRe
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Error
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Error = out

@@ -393,6 +393,9 @@ func (r *GrantKitResource) Create(ctx context.Context, req resource.CreateReques
 	res, err := r.client.GrantKits.CreateGrantKit(ctx, request)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		if res != nil && res.RawResponse != nil {
+			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
+		}
 		return
 	}
 	if res == nil {
@@ -438,6 +441,9 @@ func (r *GrantKitResource) Read(ctx context.Context, req resource.ReadRequest, r
 	res, err := r.client.GrantKits.GetGrantKitByID(ctx, request)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		if res != nil && res.RawResponse != nil {
+			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
+		}
 		return
 	}
 	if res == nil {
@@ -474,6 +480,9 @@ func (r *GrantKitResource) Update(ctx context.Context, req resource.UpdateReques
 	res, err := r.client.GrantKits.UpdateGrantKit(ctx, request)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		if res != nil && res.RawResponse != nil {
+			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
+		}
 		return
 	}
 	if res == nil {
@@ -519,6 +528,9 @@ func (r *GrantKitResource) Delete(ctx context.Context, req resource.DeleteReques
 	res, err := r.client.GrantKits.DeleteGrantKit(ctx, request)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		if res != nil && res.RawResponse != nil {
+			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
+		}
 		return
 	}
 	if res == nil {

@@ -72,7 +72,7 @@ func (s *connectionSpecs) ListConnectionSpecs(ctx context.Context) (*operations.
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.ConnectionSpecListing
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.ConnectionSpecListing = out
@@ -86,7 +86,7 @@ func (s *connectionSpecs) ListConnectionSpecs(ctx context.Context) (*operations.
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Error
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Error = out

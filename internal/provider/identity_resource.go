@@ -120,6 +120,9 @@ func (r *IdentityResource) Create(ctx context.Context, req resource.CreateReques
 	res, err := r.client.Identities.CreateIdentity(ctx, request)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		if res != nil && res.RawResponse != nil {
+			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
+		}
 		return
 	}
 	if res == nil {
@@ -165,6 +168,9 @@ func (r *IdentityResource) Read(ctx context.Context, req resource.ReadRequest, r
 	res, err := r.client.Identities.GetIdentity(ctx, request)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		if res != nil && res.RawResponse != nil {
+			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
+		}
 		return
 	}
 	if res == nil {
@@ -201,6 +207,9 @@ func (r *IdentityResource) Update(ctx context.Context, req resource.UpdateReques
 	res, err := r.client.Identities.UpdateIdentity(ctx, request)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		if res != nil && res.RawResponse != nil {
+			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
+		}
 		return
 	}
 	if res == nil {
@@ -246,6 +255,9 @@ func (r *IdentityResource) Delete(ctx context.Context, req resource.DeleteReques
 	res, err := r.client.Identities.DeleteIdentity(ctx, request)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		if res != nil && res.RawResponse != nil {
+			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
+		}
 		return
 	}
 	if res == nil {

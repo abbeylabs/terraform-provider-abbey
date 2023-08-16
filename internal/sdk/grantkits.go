@@ -46,7 +46,10 @@ func (s *grantKits) CreateGrantKit(ctx context.Context, request shared.GrantKitC
 		return nil, fmt.Errorf("request body is required")
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "POST", url, bodyReader)
+	debugBody := bytes.NewBuffer([]byte{})
+	debugReader := io.TeeReader(bodyReader, debugBody)
+
+	req, err := http.NewRequestWithContext(ctx, "POST", url, debugReader)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
 	}
@@ -69,6 +72,7 @@ func (s *grantKits) CreateGrantKit(ctx context.Context, request shared.GrantKitC
 	if err != nil {
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
+	httpRes.Request.Body = io.NopCloser(debugBody)
 	httpRes.Body.Close()
 	httpRes.Body = io.NopCloser(bytes.NewBuffer(rawBody))
 
@@ -85,7 +89,7 @@ func (s *grantKits) CreateGrantKit(ctx context.Context, request shared.GrantKitC
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.GrantKit
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.GrantKit = out
@@ -103,7 +107,7 @@ func (s *grantKits) CreateGrantKit(ctx context.Context, request shared.GrantKitC
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Error
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Error = out
@@ -158,7 +162,7 @@ func (s *grantKits) ListGrantKits(ctx context.Context) (*operations.ListGrantKit
 		case utils.MatchContentType(contentType, `application/json`):
 			var out []shared.GrantKit
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.GrantKits = out
@@ -172,7 +176,7 @@ func (s *grantKits) ListGrantKits(ctx context.Context) (*operations.ListGrantKit
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Error
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Error = out
@@ -228,7 +232,7 @@ func (s *grantKits) DeleteGrantKit(ctx context.Context, request operations.Delet
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.GrantKit
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.GrantKit = out
@@ -244,7 +248,7 @@ func (s *grantKits) DeleteGrantKit(ctx context.Context, request operations.Delet
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Error
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Error = out
@@ -300,7 +304,7 @@ func (s *grantKits) GetGrantKitByID(ctx context.Context, request operations.GetG
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.GrantKit
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.GrantKit = out
@@ -316,7 +320,7 @@ func (s *grantKits) GetGrantKitByID(ctx context.Context, request operations.GetG
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Error
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Error = out
@@ -374,7 +378,7 @@ func (s *grantKits) ListGrantKitVersionsByID(ctx context.Context, request operat
 		case utils.MatchContentType(contentType, `application/json`):
 			var out []shared.GrantKitVersion
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.GrantKitVersions = out
@@ -390,7 +394,7 @@ func (s *grantKits) ListGrantKitVersionsByID(ctx context.Context, request operat
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Error
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Error = out
@@ -417,7 +421,10 @@ func (s *grantKits) UpdateGrantKit(ctx context.Context, request operations.Updat
 		return nil, fmt.Errorf("request body is required")
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "PUT", url, bodyReader)
+	debugBody := bytes.NewBuffer([]byte{})
+	debugReader := io.TeeReader(bodyReader, debugBody)
+
+	req, err := http.NewRequestWithContext(ctx, "PUT", url, debugReader)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
 	}
@@ -440,6 +447,7 @@ func (s *grantKits) UpdateGrantKit(ctx context.Context, request operations.Updat
 	if err != nil {
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
+	httpRes.Request.Body = io.NopCloser(debugBody)
 	httpRes.Body.Close()
 	httpRes.Body = io.NopCloser(bytes.NewBuffer(rawBody))
 
@@ -456,7 +464,7 @@ func (s *grantKits) UpdateGrantKit(ctx context.Context, request operations.Updat
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.GrantKit
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.GrantKit = out
@@ -476,7 +484,7 @@ func (s *grantKits) UpdateGrantKit(ctx context.Context, request operations.Updat
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Error
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Error = out

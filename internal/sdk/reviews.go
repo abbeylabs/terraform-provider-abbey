@@ -74,7 +74,7 @@ func (s *reviews) ListReviews(ctx context.Context) (*operations.ListReviewsRespo
 		case utils.MatchContentType(contentType, `application/json`):
 			var out []shared.Review
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Reviews = out
@@ -88,7 +88,7 @@ func (s *reviews) ListReviews(ctx context.Context) (*operations.ListReviewsRespo
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Error
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Error = out
@@ -115,7 +115,10 @@ func (s *reviews) ApproveReview(ctx context.Context, request operations.ApproveR
 		return nil, fmt.Errorf("request body is required")
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "PUT", url, bodyReader)
+	debugBody := bytes.NewBuffer([]byte{})
+	debugReader := io.TeeReader(bodyReader, debugBody)
+
+	req, err := http.NewRequestWithContext(ctx, "PUT", url, debugReader)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
 	}
@@ -138,6 +141,7 @@ func (s *reviews) ApproveReview(ctx context.Context, request operations.ApproveR
 	if err != nil {
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
+	httpRes.Request.Body = io.NopCloser(debugBody)
 	httpRes.Body.Close()
 	httpRes.Body = io.NopCloser(bytes.NewBuffer(rawBody))
 
@@ -154,7 +158,7 @@ func (s *reviews) ApproveReview(ctx context.Context, request operations.ApproveR
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Review
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Review = out
@@ -174,7 +178,7 @@ func (s *reviews) ApproveReview(ctx context.Context, request operations.ApproveR
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Error
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Error = out
@@ -201,7 +205,10 @@ func (s *reviews) DenyReview(ctx context.Context, request operations.DenyReviewR
 		return nil, fmt.Errorf("request body is required")
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "PUT", url, bodyReader)
+	debugBody := bytes.NewBuffer([]byte{})
+	debugReader := io.TeeReader(bodyReader, debugBody)
+
+	req, err := http.NewRequestWithContext(ctx, "PUT", url, debugReader)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
 	}
@@ -224,6 +231,7 @@ func (s *reviews) DenyReview(ctx context.Context, request operations.DenyReviewR
 	if err != nil {
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
+	httpRes.Request.Body = io.NopCloser(debugBody)
 	httpRes.Body.Close()
 	httpRes.Body = io.NopCloser(bytes.NewBuffer(rawBody))
 
@@ -240,7 +248,7 @@ func (s *reviews) DenyReview(ctx context.Context, request operations.DenyReviewR
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Review
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Review = out
@@ -260,7 +268,7 @@ func (s *reviews) DenyReview(ctx context.Context, request operations.DenyReviewR
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Error
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Error = out
@@ -316,7 +324,7 @@ func (s *reviews) GetReviewByID(ctx context.Context, request operations.GetRevie
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Review
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Review = out
@@ -332,7 +340,7 @@ func (s *reviews) GetReviewByID(ctx context.Context, request operations.GetRevie
 		case utils.MatchContentType(contentType, `application/json`):
 			var out *shared.Error
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
-				return nil, err
+				return res, err
 			}
 
 			res.Error = out

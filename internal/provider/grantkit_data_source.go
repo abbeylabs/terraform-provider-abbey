@@ -387,6 +387,9 @@ func (r *GrantKitDataSource) Read(ctx context.Context, req datasource.ReadReques
 	res, err := r.client.GrantKits.GetGrantKitByID(ctx, request)
 	if err != nil {
 		resp.Diagnostics.AddError("failure to invoke API", err.Error())
+		if res != nil && res.RawResponse != nil {
+			resp.Diagnostics.AddError("unexpected http request/response", debugResponse(res.RawResponse))
+		}
 		return
 	}
 	if res == nil {
