@@ -161,3 +161,4 @@ examples/data-sources/abbey_grant_kit/data-source.tf
 internal/provider/identity_data_source.go
 internal/provider/identity_data_source_sdk.go
 examples/data-sources/abbey_identity/data-source.tf
+.gitattributes
