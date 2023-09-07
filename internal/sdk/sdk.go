@@ -111,6 +111,9 @@ type SDK struct {
 	//
 	// https://docs.abbey.io
 	Identities *identities
+	// Oauth - Abbey OAuth
+	// https://docs.abbey.io/getting-started/quickstart
+	Oauth *oauth
 	// Requests - Requests are Access Requests that users make to get access to a resource.
 	//
 	// https://docs.abbey.io/getting-started/concepts#access-requests
@@ -177,8 +180,8 @@ func New(opts ...SDKOption) *SDK {
 		sdkConfiguration: sdkConfiguration{
 			Language:          "terraform",
 			OpenAPIDocVersion: "v1",
-			SDKVersion:        "2.9.3",
-			GenVersion:        "2.96.3",
+			SDKVersion:        "2.9.4",
+			GenVersion:        "2.101.0",
 		},
 	}
 	for _, opt := range opts {
@@ -210,6 +213,8 @@ func New(opts ...SDKOption) *SDK {
 	sdk.Grants = newGrants(sdk.sdkConfiguration)
 
 	sdk.Identities = newIdentities(sdk.sdkConfiguration)
+
+	sdk.Oauth = newOauth(sdk.sdkConfiguration)
 
 	sdk.Requests = newRequests(sdk.sdkConfiguration)
 

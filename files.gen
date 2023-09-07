@@ -5,6 +5,7 @@ internal/sdk/demo.go
 internal/sdk/grantkits.go
 internal/sdk/grants.go
 internal/sdk/identities.go
+internal/sdk/oauth.go
 internal/sdk/requests.go
 internal/sdk/reviews.go
 internal/sdk/sdk.go
@@ -87,6 +88,7 @@ internal/sdk/pkg/models/operations/createidentity.go
 internal/sdk/pkg/models/operations/deleteidentity.go
 internal/sdk/pkg/models/operations/getidentity.go
 internal/sdk/pkg/models/operations/updateidentity.go
+internal/sdk/pkg/models/operations/createoauth.go
 internal/sdk/pkg/models/operations/cancelrequestbyid.go
 internal/sdk/pkg/models/operations/createrequest.go
 internal/sdk/pkg/models/operations/getrequestbyid.go
@@ -139,6 +141,7 @@ internal/sdk/pkg/models/shared/grantkitversion.go
 internal/sdk/pkg/models/shared/grantkitupdateparams.go
 internal/sdk/pkg/models/shared/identity.go
 internal/sdk/pkg/models/shared/identityparams.go
+internal/sdk/pkg/models/shared/oauthcreateparams.go
 internal/sdk/pkg/models/shared/requestcancelparams.go
 internal/sdk/pkg/models/shared/requestparams.go
 internal/sdk/pkg/models/shared/reviewupdateparams.go
