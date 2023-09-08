@@ -2,7 +2,6 @@
 
 package shared
 
-// ConnectionSpecListing - Success
 type ConnectionSpecListing struct {
 	Items []ConnectionSpec `json:"items"`
 	Next  *string          `json:"next,omitempty"`

@@ -6,7 +6,6 @@ import (
 	"time"
 )
 
-// Review - Success
 type Review struct {
 	CreatedAt         time.Time    `json:"created_at"`
 	Grant             *Grant       `json:"grant,omitempty"`

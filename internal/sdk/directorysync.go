@@ -14,27 +14,21 @@ import (
 	"strings"
 )
 
-// identities - User metadata used for enriching data.
-// Enriched data is used to write richer policies, workflows, and outputs.
-//
-// https://docs.abbey.io
-type identities struct {
+type directorySync struct {
 	sdkConfiguration sdkConfiguration
 }
 
-func newIdentities(sdkConfig sdkConfiguration) *identities {
-	return &identities{
+func newDirectorySync(sdkConfig sdkConfiguration) *directorySync {
+	return &directorySync{
 		sdkConfiguration: sdkConfig,
 	}
 }
 
-// CreateIdentity - Create an Identity
-// Creates a new identity.
-//
-// An identity represents a human, service, or workload.
-func (s *identities) CreateIdentity(ctx context.Context, request shared.IdentityParams) (*operations.CreateIdentityResponse, error) {
+// CreateDirectory - create a directory sync org
+// Creates a directory if the current org does not have one
+func (s *directorySync) CreateDirectory(ctx context.Context, request shared.DirectorySyncParams) (*operations.CreateDirectoryResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url := strings.TrimSuffix(baseURL, "/") + "/identities"
+	url := strings.TrimSuffix(baseURL, "/") + "/directory-sync"
 
 	bodyReader, reqContentType, err := utils.SerializeRequestBody(ctx, request, "Request", "json")
 	if err != nil {
@@ -76,7 +70,7 @@ func (s *identities) CreateIdentity(ctx context.Context, request shared.Identity
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.CreateIdentityResponse{
+	res := &operations.CreateDirectoryResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
@@ -85,18 +79,16 @@ func (s *identities) CreateIdentity(ctx context.Context, request shared.Identity
 	case httpRes.StatusCode == 201:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out *shared.Identity
+			var out *shared.DirectorySync
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
 				return res, err
 			}
 
-			res.Identity = out
+			res.DirectorySync = out
 		}
 	case httpRes.StatusCode == 400:
 		fallthrough
 	case httpRes.StatusCode == 401:
-		fallthrough
-	case httpRes.StatusCode == 409:
 		fallthrough
 	case httpRes.StatusCode == 429:
 		fallthrough
@@ -115,14 +107,11 @@ func (s *identities) CreateIdentity(ctx context.Context, request shared.Identity
 	return res, nil
 }
 
-// DeleteIdentity - Delete an Identity
-// Deletes the specified identity.
-func (s *identities) DeleteIdentity(ctx context.Context, request operations.DeleteIdentityRequest) (*operations.DeleteIdentityResponse, error) {
+// DeleteDirectory - delete a directory sync org
+// Deletes a directory if the current org if one exists
+func (s *directorySync) DeleteDirectory(ctx context.Context) (*operations.DeleteDirectoryResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url, err := utils.GenerateURL(ctx, baseURL, "/identities/{identity_id}", request, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error generating URL: %w", err)
-	}
+	url := strings.TrimSuffix(baseURL, "/") + "/directory-sync"
 
 	req, err := http.NewRequestWithContext(ctx, "DELETE", url, nil)
 	if err != nil {
@@ -150,16 +139,16 @@ func (s *identities) DeleteIdentity(ctx context.Context, request operations.Dele
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.DeleteIdentityResponse{
+	res := &operations.DeleteDirectoryResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
 	}
 	switch {
 	case httpRes.StatusCode == 200:
-	case httpRes.StatusCode == 401:
+	case httpRes.StatusCode == 400:
 		fallthrough
-	case httpRes.StatusCode == 404:
+	case httpRes.StatusCode == 401:
 		fallthrough
 	case httpRes.StatusCode == 429:
 		fallthrough
@@ -178,14 +167,11 @@ func (s *identities) DeleteIdentity(ctx context.Context, request operations.Dele
 	return res, nil
 }
 
-// GetIdentity - Retrieve an Identity
-// Returns the details of an identity.
-func (s *identities) GetIdentity(ctx context.Context, request operations.GetIdentityRequest) (*operations.GetIdentityResponse, error) {
+// GetDirectory - gets a directory sync org
+// Gets a directory if the current org if one exists
+func (s *directorySync) GetDirectory(ctx context.Context) (*operations.GetDirectoryResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url, err := utils.GenerateURL(ctx, baseURL, "/identities/{identity_id}", request, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error generating URL: %w", err)
-	}
+	url := strings.TrimSuffix(baseURL, "/") + "/directory-sync"
 
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
@@ -213,7 +199,7 @@ func (s *identities) GetIdentity(ctx context.Context, request operations.GetIden
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.GetIdentityResponse{
+	res := &operations.GetDirectoryResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
@@ -222,16 +208,16 @@ func (s *identities) GetIdentity(ctx context.Context, request operations.GetIden
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out *shared.Identity
+			var out *shared.DirectorySync
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
 				return res, err
 			}
 
-			res.Identity = out
+			res.DirectorySync = out
 		}
-	case httpRes.StatusCode == 401:
+	case httpRes.StatusCode == 400:
 		fallthrough
-	case httpRes.StatusCode == 404:
+	case httpRes.StatusCode == 401:
 		fallthrough
 	case httpRes.StatusCode == 429:
 		fallthrough
@@ -250,11 +236,11 @@ func (s *identities) GetIdentity(ctx context.Context, request operations.GetIden
 	return res, nil
 }
 
-// ListEnrichedIdentities - List all Identities with enriched metadata
-// Returns all Identities with enriched metadata in the org
-func (s *identities) ListEnrichedIdentities(ctx context.Context) (*operations.ListEnrichedIdentitiesResponse, error) {
+// GetPortalLink - gets a directory sync admin portal link
+// Gets the admin portal link for a directory. This will be valid for 5 minutes.
+func (s *directorySync) GetPortalLink(ctx context.Context) (*operations.GetPortalLinkResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url := strings.TrimSuffix(baseURL, "/") + "/identities"
+	url := strings.TrimSuffix(baseURL, "/") + "/directory-sync/admin-portal"
 
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
@@ -282,7 +268,7 @@ func (s *identities) ListEnrichedIdentities(ctx context.Context) (*operations.Li
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.ListEnrichedIdentitiesResponse{
+	res := &operations.GetPortalLinkResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
@@ -291,16 +277,16 @@ func (s *identities) ListEnrichedIdentities(ctx context.Context) (*operations.Li
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out []shared.Identity
+			var out *shared.DirectorySyncAdminPortal
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
 				return res, err
 			}
 
-			res.Identities = out
+			res.DirectorySyncAdminPortal = out
 		}
-	case httpRes.StatusCode == 401:
+	case httpRes.StatusCode == 400:
 		fallthrough
-	case httpRes.StatusCode == 404:
+	case httpRes.StatusCode == 401:
 		fallthrough
 	case httpRes.StatusCode == 429:
 		fallthrough
@@ -319,16 +305,13 @@ func (s *identities) ListEnrichedIdentities(ctx context.Context) (*operations.Li
 	return res, nil
 }
 
-// UpdateIdentity - Update an Identity
-// Updates an identity.
-func (s *identities) UpdateIdentity(ctx context.Context, request operations.UpdateIdentityRequest) (*operations.UpdateIdentityResponse, error) {
+// UpdateDirectory - update a directory sync org
+// Updates a directory if the current org does not have one
+func (s *directorySync) UpdateDirectory(ctx context.Context, request shared.DirectorySyncParams) (*operations.UpdateDirectoryResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url, err := utils.GenerateURL(ctx, baseURL, "/identities/{identity_id}", request, nil)
-	if err != nil {
-		return nil, fmt.Errorf("error generating URL: %w", err)
-	}
+	url := strings.TrimSuffix(baseURL, "/") + "/directory-sync"
 
-	bodyReader, reqContentType, err := utils.SerializeRequestBody(ctx, request, "IdentityParams", "json")
+	bodyReader, reqContentType, err := utils.SerializeRequestBody(ctx, request, "Request", "json")
 	if err != nil {
 		return nil, fmt.Errorf("error serializing request body: %w", err)
 	}
@@ -368,7 +351,7 @@ func (s *identities) UpdateIdentity(ctx context.Context, request operations.Upda
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.UpdateIdentityResponse{
+	res := &operations.UpdateDirectoryResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
@@ -377,16 +360,16 @@ func (s *identities) UpdateIdentity(ctx context.Context, request operations.Upda
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out *shared.Identity
+			var out *shared.DirectorySync
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
 				return res, err
 			}
 
-			res.Identity = out
+			res.DirectorySync = out
 		}
-	case httpRes.StatusCode == 401:
+	case httpRes.StatusCode == 400:
 		fallthrough
-	case httpRes.StatusCode == 404:
+	case httpRes.StatusCode == 401:
 		fallthrough
 	case httpRes.StatusCode == 429:
 		fallthrough

@@ -6,7 +6,6 @@ import (
 	"time"
 )
 
-// APIKey - Created
 type APIKey struct {
 	APIKey    string     `json:"api_key"`
 	Expired   bool       `json:"expired"`

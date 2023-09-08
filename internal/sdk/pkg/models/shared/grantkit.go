@@ -6,7 +6,6 @@ import (
 	"time"
 )
 
-// GrantKit - Created
 type GrantKit struct {
 	CreatedAt        time.Time      `json:"created_at"`
 	CurrentVersionID string         `json:"current_version_id"`

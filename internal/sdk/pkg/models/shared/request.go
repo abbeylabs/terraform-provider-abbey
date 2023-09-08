@@ -6,7 +6,6 @@ import (
 	"time"
 )
 
-// Request - Created
 type Request struct {
 	CreatedAt         time.Time     `json:"created_at"`
 	GrantID           string        `json:"grant_id"`

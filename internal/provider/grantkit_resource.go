@@ -222,7 +222,6 @@ func (r *GrantKitResource) Schema(ctx context.Context, req resource.SchemaReques
 												Computed: true,
 											},
 										},
-										Description: `Success`,
 									},
 									"grant_id": schema.StringAttribute{
 										Computed: true,

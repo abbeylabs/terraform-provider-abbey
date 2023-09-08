@@ -6,7 +6,6 @@ import (
 	"time"
 )
 
-// Identity - Created
 type Identity struct {
 	AbbeyAccount string    `json:"abbey_account"`
 	CreatedAt    time.Time `json:"created_at"`

@@ -6,7 +6,6 @@ import (
 	"time"
 )
 
-// Grant - Success
 type Grant struct {
 	CreatedAt         time.Time `json:"created_at"`
 	Deleted           bool      `json:"deleted"`

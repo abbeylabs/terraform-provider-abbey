@@ -6,7 +6,6 @@ import (
 	"time"
 )
 
-// Connection - Created
 type Connection struct {
 	CreatedAt time.Time      `json:"created_at"`
 	ID        string         `json:"id"`

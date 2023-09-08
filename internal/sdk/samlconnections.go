@@ -14,34 +14,28 @@ import (
 	"strings"
 )
 
-// identities - User metadata used for enriching data.
-// Enriched data is used to write richer policies, workflows, and outputs.
+// samlConnections - SAML Connections setup a SAML / SSO connection with an Identity Provider
 //
 // https://docs.abbey.io
-type identities struct {
+type samlConnections struct {
 	sdkConfiguration sdkConfiguration
 }
 
-func newIdentities(sdkConfig sdkConfiguration) *identities {
-	return &identities{
+func newSAMLConnections(sdkConfig sdkConfiguration) *samlConnections {
+	return &samlConnections{
 		sdkConfiguration: sdkConfig,
 	}
 }
 
-// CreateIdentity - Create an Identity
-// Creates a new identity.
-//
-// An identity represents a human, service, or workload.
-func (s *identities) CreateIdentity(ctx context.Context, request shared.IdentityParams) (*operations.CreateIdentityResponse, error) {
+// CreateSamlConnection - Create a new SAML connection
+// Creates a new SAML connection
+func (s *samlConnections) CreateSamlConnection(ctx context.Context, request shared.SamlConnectionParams) (*operations.CreateSamlConnectionResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url := strings.TrimSuffix(baseURL, "/") + "/identities"
+	url := strings.TrimSuffix(baseURL, "/") + "/samlConnection"
 
 	bodyReader, reqContentType, err := utils.SerializeRequestBody(ctx, request, "Request", "json")
 	if err != nil {
 		return nil, fmt.Errorf("error serializing request body: %w", err)
-	}
-	if bodyReader == nil {
-		return nil, fmt.Errorf("request body is required")
 	}
 
 	debugBody := bytes.NewBuffer([]byte{})
@@ -76,7 +70,7 @@ func (s *identities) CreateIdentity(ctx context.Context, request shared.Identity
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.CreateIdentityResponse{
+	res := &operations.CreateSamlConnectionResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
@@ -85,12 +79,12 @@ func (s *identities) CreateIdentity(ctx context.Context, request shared.Identity
 	case httpRes.StatusCode == 201:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out *shared.Identity
+			var out *shared.SamlConnection
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
 				return res, err
 			}
 
-			res.Identity = out
+			res.SamlConnection = out
 		}
 	case httpRes.StatusCode == 400:
 		fallthrough
@@ -115,11 +109,11 @@ func (s *identities) CreateIdentity(ctx context.Context, request shared.Identity
 	return res, nil
 }
 
-// DeleteIdentity - Delete an Identity
-// Deletes the specified identity.
-func (s *identities) DeleteIdentity(ctx context.Context, request operations.DeleteIdentityRequest) (*operations.DeleteIdentityResponse, error) {
+// DeleteSamlConnectionByID - Deletes a SAML connection by its ID
+// Deletes a SAML connection by its ID
+func (s *samlConnections) DeleteSamlConnectionByID(ctx context.Context, request operations.DeleteSamlConnectionByIDRequest) (*operations.DeleteSamlConnectionByIDResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url, err := utils.GenerateURL(ctx, baseURL, "/identities/{identity_id}", request, nil)
+	url, err := utils.GenerateURL(ctx, baseURL, "/samlConnection/{saml_connection_id}", request, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error generating URL: %w", err)
 	}
@@ -150,13 +144,13 @@ func (s *identities) DeleteIdentity(ctx context.Context, request operations.Dele
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.DeleteIdentityResponse{
+	res := &operations.DeleteSamlConnectionByIDResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
 	}
 	switch {
-	case httpRes.StatusCode == 200:
+	case httpRes.StatusCode == 204:
 	case httpRes.StatusCode == 401:
 		fallthrough
 	case httpRes.StatusCode == 404:
@@ -178,11 +172,11 @@ func (s *identities) DeleteIdentity(ctx context.Context, request operations.Dele
 	return res, nil
 }
 
-// GetIdentity - Retrieve an Identity
-// Returns the details of an identity.
-func (s *identities) GetIdentity(ctx context.Context, request operations.GetIdentityRequest) (*operations.GetIdentityResponse, error) {
+// GetSamlConnectionByID - Fetches a SAML connection by its ID
+// Checks whether a user has a SAML connection and then hydrates the connection from Clerk
+func (s *samlConnections) GetSamlConnectionByID(ctx context.Context, request operations.GetSamlConnectionByIDRequest) (*operations.GetSamlConnectionByIDResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url, err := utils.GenerateURL(ctx, baseURL, "/identities/{identity_id}", request, nil)
+	url, err := utils.GenerateURL(ctx, baseURL, "/samlConnection/{saml_connection_id}", request, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error generating URL: %w", err)
 	}
@@ -213,7 +207,7 @@ func (s *identities) GetIdentity(ctx context.Context, request operations.GetIden
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.GetIdentityResponse{
+	res := &operations.GetSamlConnectionByIDResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
@@ -222,12 +216,12 @@ func (s *identities) GetIdentity(ctx context.Context, request operations.GetIden
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out *shared.Identity
+			var out *shared.SamlConnection
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
 				return res, err
 			}
 
-			res.Identity = out
+			res.SamlConnection = out
 		}
 	case httpRes.StatusCode == 401:
 		fallthrough
@@ -250,11 +244,12 @@ func (s *identities) GetIdentity(ctx context.Context, request operations.GetIden
 	return res, nil
 }
 
-// ListEnrichedIdentities - List all Identities with enriched metadata
-// Returns all Identities with enriched metadata in the org
-func (s *identities) ListEnrichedIdentities(ctx context.Context) (*operations.ListEnrichedIdentitiesResponse, error) {
+// ListSamlConnections - List SAML Connections
+// Returns a list of SAML connections.
+// The connections are scoped by the current user and returned from Clerk
+func (s *samlConnections) ListSamlConnections(ctx context.Context) (*operations.ListSamlConnectionsResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url := strings.TrimSuffix(baseURL, "/") + "/identities"
+	url := strings.TrimSuffix(baseURL, "/") + "/samlConnection"
 
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
@@ -282,7 +277,7 @@ func (s *identities) ListEnrichedIdentities(ctx context.Context) (*operations.Li
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.ListEnrichedIdentitiesResponse{
+	res := &operations.ListSamlConnectionsResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
@@ -291,16 +286,14 @@ func (s *identities) ListEnrichedIdentities(ctx context.Context) (*operations.Li
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out []shared.Identity
+			var out *shared.SamlConnections
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
 				return res, err
 			}
 
-			res.Identities = out
+			res.SamlConnections = out
 		}
 	case httpRes.StatusCode == 401:
-		fallthrough
-	case httpRes.StatusCode == 404:
 		fallthrough
 	case httpRes.StatusCode == 429:
 		fallthrough
@@ -319,16 +312,16 @@ func (s *identities) ListEnrichedIdentities(ctx context.Context) (*operations.Li
 	return res, nil
 }
 
-// UpdateIdentity - Update an Identity
-// Updates an identity.
-func (s *identities) UpdateIdentity(ctx context.Context, request operations.UpdateIdentityRequest) (*operations.UpdateIdentityResponse, error) {
+// UpdateSamlConnectionByID - Updates a SAML connection by its ID
+// Checks whether a user owns a SAML connection and then updates the SAML connection
+func (s *samlConnections) UpdateSamlConnectionByID(ctx context.Context, request operations.UpdateSamlConnectionByIDRequest) (*operations.UpdateSamlConnectionByIDResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url, err := utils.GenerateURL(ctx, baseURL, "/identities/{identity_id}", request, nil)
+	url, err := utils.GenerateURL(ctx, baseURL, "/samlConnection/{saml_connection_id}", request, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error generating URL: %w", err)
 	}
 
-	bodyReader, reqContentType, err := utils.SerializeRequestBody(ctx, request, "IdentityParams", "json")
+	bodyReader, reqContentType, err := utils.SerializeRequestBody(ctx, request, "SamlConnectionUpdateParams", "json")
 	if err != nil {
 		return nil, fmt.Errorf("error serializing request body: %w", err)
 	}
@@ -368,7 +361,7 @@ func (s *identities) UpdateIdentity(ctx context.Context, request operations.Upda
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.UpdateIdentityResponse{
+	res := &operations.UpdateSamlConnectionByIDResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
@@ -377,12 +370,12 @@ func (s *identities) UpdateIdentity(ctx context.Context, request operations.Upda
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out *shared.Identity
+			var out *shared.SamlConnection
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
 				return res, err
 			}
 
-			res.Identity = out
+			res.SamlConnection = out
 		}
 	case httpRes.StatusCode == 401:
 		fallthrough

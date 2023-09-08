@@ -2,6 +2,6 @@
 
 package shared
 
-type APIKeys struct {
-	Items []APIKey `json:"items"`
+type SamlConnections struct {
+	Items []SamlConnection `json:"items"`
 }

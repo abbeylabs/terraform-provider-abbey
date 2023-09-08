@@ -2,7 +2,6 @@
 
 package shared
 
-// Error - Authentication Failed
 type Error struct {
 	Code    string  `json:"code"`
 	DocURL  *string `json:"doc_url,omitempty"`

@@ -6,7 +6,6 @@ import (
 	"time"
 )
 
-// Demo - Success
 type Demo struct {
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	ID        *int64     `json:"id,omitempty"`

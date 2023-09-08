@@ -88,7 +88,8 @@ type SDK struct {
 	Connections *connections
 	// Demo - Abbey Demo
 	// https://docs.abbey.io/getting-started/quickstart
-	Demo *demo
+	Demo          *demo
+	DirectorySync *directorySync
 	// GrantKits - Grant Kits are what you configure in code to control and automatically right-size permissions for resources.
 	// A Grant Kit has 3 components:
 	//
@@ -112,8 +113,9 @@ type SDK struct {
 	// https://docs.abbey.io
 	Identities *identities
 	// Oauth - Abbey OAuth
-	// https://docs.abbey.io/getting-started/quickstart
-	Oauth *oauth
+	// https://docs.abbey.io
+	Oauth  *oauth
+	Oauths *oauths
 	// Requests - Requests are Access Requests that users make to get access to a resource.
 	//
 	// https://docs.abbey.io/getting-started/concepts#access-requests
@@ -124,6 +126,12 @@ type SDK struct {
 	//
 	// https://docs.abbey.io/product/approving-or-denying-access-requests
 	Reviews *reviews
+	// SAMLConnections - SAML Connections setup a SAML / SSO connection with an Identity Provider
+	//
+	// https://docs.abbey.io
+	SAMLConnections *samlConnections
+	// WorkOS - WorkOS Webhook endpoints
+	WorkOS *workOS
 
 	sdkConfiguration sdkConfiguration
 }
@@ -180,8 +188,8 @@ func New(opts ...SDKOption) *SDK {
 		sdkConfiguration: sdkConfiguration{
 			Language:          "terraform",
 			OpenAPIDocVersion: "v1",
-			SDKVersion:        "2.9.4",
-			GenVersion:        "2.101.0",
+			SDKVersion:        "2.10.0",
+			GenVersion:        "2.107.0",
 		},
 	}
 	for _, opt := range opts {
@@ -208,6 +216,8 @@ func New(opts ...SDKOption) *SDK {
 
 	sdk.Demo = newDemo(sdk.sdkConfiguration)
 
+	sdk.DirectorySync = newDirectorySync(sdk.sdkConfiguration)
+
 	sdk.GrantKits = newGrantKits(sdk.sdkConfiguration)
 
 	sdk.Grants = newGrants(sdk.sdkConfiguration)
@@ -216,9 +226,15 @@ func New(opts ...SDKOption) *SDK {
 
 	sdk.Oauth = newOauth(sdk.sdkConfiguration)
 
+	sdk.Oauths = newOauths(sdk.sdkConfiguration)
+
 	sdk.Requests = newRequests(sdk.sdkConfiguration)
 
 	sdk.Reviews = newReviews(sdk.sdkConfiguration)
+
+	sdk.SAMLConnections = newSAMLConnections(sdk.sdkConfiguration)
+
+	sdk.WorkOS = newWorkOS(sdk.sdkConfiguration)
 
 	return sdk
 }

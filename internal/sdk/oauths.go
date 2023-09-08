@@ -14,43 +14,28 @@ import (
 	"strings"
 )
 
-// oauth - Abbey OAuth
-// https://docs.abbey.io
-type oauth struct {
+type oauths struct {
 	sdkConfiguration sdkConfiguration
 }
 
-func newOauth(sdkConfig sdkConfiguration) *oauth {
-	return &oauth{
+func newOauths(sdkConfig sdkConfiguration) *oauths {
+	return &oauths{
 		sdkConfiguration: sdkConfig,
 	}
 }
 
-// CreateOAuth - Create access token via OAuth
-// Create and store a new OAuth token
-func (s *oauth) CreateOAuth(ctx context.Context, request shared.OAuthCreateParams) (*operations.CreateOAuthResponse, error) {
+// ListOauths - List OAuths
+// Returns a list of oauth token IDs.
+func (s *oauths) ListOauths(ctx context.Context) (*operations.ListOauthsResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url := strings.TrimSuffix(baseURL, "/") + "/oauth"
+	url := strings.TrimSuffix(baseURL, "/") + "/oauths"
 
-	bodyReader, reqContentType, err := utils.SerializeRequestBody(ctx, request, "Request", "json")
-	if err != nil {
-		return nil, fmt.Errorf("error serializing request body: %w", err)
-	}
-	if bodyReader == nil {
-		return nil, fmt.Errorf("request body is required")
-	}
-
-	debugBody := bytes.NewBuffer([]byte{})
-	debugReader := io.TeeReader(bodyReader, debugBody)
-
-	req, err := http.NewRequestWithContext(ctx, "POST", url, debugReader)
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
 	}
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
-
-	req.Header.Set("Content-Type", reqContentType)
 
 	client := s.sdkConfiguration.SecurityClient
 
@@ -66,21 +51,27 @@ func (s *oauth) CreateOAuth(ctx context.Context, request shared.OAuthCreateParam
 	if err != nil {
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
-	httpRes.Request.Body = io.NopCloser(debugBody)
 	httpRes.Body.Close()
 	httpRes.Body = io.NopCloser(bytes.NewBuffer(rawBody))
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.CreateOAuthResponse{
+	res := &operations.ListOauthsResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
 	}
 	switch {
-	case httpRes.StatusCode == 201:
-	case httpRes.StatusCode == 400:
-		fallthrough
+	case httpRes.StatusCode == 200:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *shared.OauthListing
+			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
+				return res, err
+			}
+
+			res.OauthListing = out
+		}
 	case httpRes.StatusCode == 401:
 		fallthrough
 	case httpRes.StatusCode == 429:

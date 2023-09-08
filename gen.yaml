@@ -1,21 +1,21 @@
 configVersion: 1.0.0
 management:
-  docChecksum: 218a35dc6899681e7caf28ae8768712c
+  docChecksum: 3f65ac12012d491a64db2b53419e3cd9
   docVersion: v1
-  speakeasyVersion: 1.79.0
-  generationVersion: 2.101.0
+  speakeasyVersion: 1.82.0
+  generationVersion: 2.107.0
 generation:
   sdkClassName: SDK
   singleTagPerOp: false
 features:
   terraform:
-    core: 2.86.3
+    core: 2.88.0
     globalSecurity: 2.81.1
     globalServerURLs: 2.82.0
     includes: 2.81.1
     nameOverrides: 2.81.1
     serverIDs: 2.81.1
 terraform:
-  version: 2.9.4
+  version: 2.10.0
   author: abbeylabs
   packageName: abbey
