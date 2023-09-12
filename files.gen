@@ -11,6 +11,7 @@ internal/sdk/oauths.go
 internal/sdk/requests.go
 internal/sdk/reviews.go
 internal/sdk/samlconnections.go
+internal/sdk/slackcommand.go
 internal/sdk/workos.go
 internal/sdk/sdk.go
 internal/provider/type_grant.go
@@ -113,6 +114,7 @@ internal/sdk/pkg/models/operations/deletesamlconnectionbyid.go
 internal/sdk/pkg/models/operations/getsamlconnectionbyid.go
 internal/sdk/pkg/models/operations/listsamlconnections.go
 internal/sdk/pkg/models/operations/updatesamlconnectionbyid.go
+internal/sdk/pkg/models/operations/slackcommand.go
 internal/sdk/pkg/models/operations/workosdirectorieswebhook.go
 internal/sdk/pkg/models/operations/workosgroupswebhook.go
 internal/sdk/pkg/models/operations/workosuserswebhook.go
@@ -173,6 +175,7 @@ internal/sdk/pkg/models/shared/samlconnection.go
 internal/sdk/pkg/models/shared/samlconnectionparams.go
 internal/sdk/pkg/models/shared/samlconnections.go
 internal/sdk/pkg/models/shared/samlconnectionupdateparams.go
+internal/sdk/pkg/models/shared/slackcommand.go
 internal/sdk/pkg/models/shared/workosdirectoryevent.go
 internal/sdk/pkg/models/shared/workosdirectorydata.go
 internal/sdk/pkg/models/shared/workosgroupevent.go

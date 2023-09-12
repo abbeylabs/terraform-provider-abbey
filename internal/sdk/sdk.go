@@ -130,6 +130,7 @@ type SDK struct {
 	//
 	// https://docs.abbey.io
 	SAMLConnections *samlConnections
+	SlackCommand    *slackCommand
 	// WorkOS - WorkOS Webhook endpoints
 	WorkOS *workOS
 
@@ -188,8 +189,8 @@ func New(opts ...SDKOption) *SDK {
 		sdkConfiguration: sdkConfiguration{
 			Language:          "terraform",
 			OpenAPIDocVersion: "v1",
-			SDKVersion:        "2.10.1",
-			GenVersion:        "2.107.3",
+			SDKVersion:        "2.10.2",
+			GenVersion:        "2.108.3",
 		},
 	}
 	for _, opt := range opts {
@@ -233,6 +234,8 @@ func New(opts ...SDKOption) *SDK {
 	sdk.Reviews = newReviews(sdk.sdkConfiguration)
 
 	sdk.SAMLConnections = newSAMLConnections(sdk.sdkConfiguration)
+
+	sdk.SlackCommand = newSlackCommand(sdk.sdkConfiguration)
 
 	sdk.WorkOS = newWorkOS(sdk.sdkConfiguration)
 

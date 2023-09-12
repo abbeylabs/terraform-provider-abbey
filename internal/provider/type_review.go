@@ -14,6 +14,7 @@ type Review struct {
 	PullRequest       types.String `tfsdk:"pull_request"`
 	Reason            types.String `tfsdk:"reason"`
 	RequestID         types.String `tfsdk:"request_id"`
+	RequestReason     types.String `tfsdk:"request_reason"`
 	Status            types.String `tfsdk:"status"`
 	UpdatedAt         types.String `tfsdk:"updated_at"`
 	UserEmail         types.String `tfsdk:"user_email"`

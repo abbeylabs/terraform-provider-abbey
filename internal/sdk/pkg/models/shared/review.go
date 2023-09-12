@@ -16,6 +16,7 @@ type Review struct {
 	PullRequest       string       `json:"pull_request"`
 	Reason            string       `json:"reason"`
 	RequestID         string       `json:"request_id"`
+	RequestReason     string       `json:"request_reason"`
 	Status            ReviewStatus `json:"status"`
 	UpdatedAt         time.Time    `json:"updated_at"`
 	UserEmail         *string      `json:"user_email,omitempty"`

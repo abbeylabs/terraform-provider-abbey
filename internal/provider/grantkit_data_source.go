@@ -242,6 +242,9 @@ func (r *GrantKitDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 									"request_id": schema.StringAttribute{
 										Computed: true,
 									},
+									"request_reason": schema.StringAttribute{
+										Computed: true,
+									},
 									"status": schema.StringAttribute{
 										Computed: true,
 										Validators: []validator.String{

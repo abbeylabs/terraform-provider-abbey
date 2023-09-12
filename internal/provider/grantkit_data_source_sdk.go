@@ -97,6 +97,7 @@ func (r *GrantKitDataSourceModel) RefreshFromGetResponse(resp *shared.GrantKit) 
 			reviews1.PullRequest = types.StringValue(reviewsItem.PullRequest)
 			reviews1.Reason = types.StringValue(reviewsItem.Reason)
 			reviews1.RequestID = types.StringValue(reviewsItem.RequestID)
+			reviews1.RequestReason = types.StringValue(reviewsItem.RequestReason)
 			reviews1.Status = types.StringValue(string(reviewsItem.Status))
 			reviews1.UpdatedAt = types.StringValue(reviewsItem.UpdatedAt.Format(time.RFC3339))
 			if reviewsItem.UserEmail != nil {
