@@ -3,7 +3,7 @@
 package shared
 
 type ConnectionSpec struct {
-	Auth    ConnectionAuth        `json:"auth"`
+	Auth    Oauth2Flow            `json:"auth"`
 	Icon    string                `json:"icon"`
 	ID      string                `json:"id"`
 	Name    string                `json:"name"`

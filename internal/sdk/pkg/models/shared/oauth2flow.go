@@ -3,8 +3,7 @@
 package shared
 
 type Oauth2Flow struct {
-	CallbackQueryParams    []string                `json:"callback_query_params,omitempty"`
-	ConnectionAuthTypeEnum *ConnectionAuthTypeEnum `json:"type,omitempty"`
+	CallbackQueryParams []string `json:"callback_query_params,omitempty"`
 	// Describes how the client should conduct the authorization code exchange.
 	//
 	Exchange    *Oauth2FlowExchange `json:"exchange,omitempty"`

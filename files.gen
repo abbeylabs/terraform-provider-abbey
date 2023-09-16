@@ -125,7 +125,6 @@ internal/sdk/pkg/models/shared/apikeys.go
 internal/sdk/pkg/models/shared/connectionspeclisting.go
 internal/sdk/pkg/models/shared/connectionspec.go
 internal/sdk/pkg/models/shared/connectionrequestspec.go
-internal/sdk/pkg/models/shared/connectionauth.go
 internal/sdk/pkg/models/shared/oauth2flow.go
 internal/sdk/pkg/models/shared/keyvaluepair.go
 internal/sdk/pkg/models/shared/oauth2flowpkce.go
@@ -134,7 +133,6 @@ internal/sdk/pkg/models/shared/oauth2flowexchange.go
 internal/sdk/pkg/models/shared/requestspec.go
 internal/sdk/pkg/models/shared/httpmethod.go
 internal/sdk/pkg/models/shared/requestcontenttype.go
-internal/sdk/pkg/models/shared/connectionauthtypeenum.go
 internal/sdk/pkg/models/shared/connection.go
 internal/sdk/pkg/models/shared/connectiontype.go
 internal/sdk/pkg/models/shared/connectionparams.go
