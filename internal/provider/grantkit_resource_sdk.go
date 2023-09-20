@@ -213,20 +213,20 @@ func (r *GrantKitResourceModel) ToDeleteSDKType() *shared.GrantKitCreateParams {
 }
 
 func (r *GrantKitResourceModel) RefreshFromGetResponse(resp *shared.GrantKit) {
-	r.CreatedAt = types.StringValue(resp.CreatedAt.Format(time.RFC3339))
+	r.CreatedAt = types.StringValue(resp.CreatedAt.Format(time.RFC3339Nano))
 	r.CurrentVersionID = types.StringValue(resp.CurrentVersionID)
 	r.Description = types.StringValue(resp.Description)
 	r.Grants = nil
 	for _, grantsItem := range resp.Grants {
 		var grants1 Grant
-		grants1.CreatedAt = types.StringValue(grantsItem.CreatedAt.Format(time.RFC3339))
+		grants1.CreatedAt = types.StringValue(grantsItem.CreatedAt.Format(time.RFC3339Nano))
 		grants1.Deleted = types.BoolValue(grantsItem.Deleted)
 		grants1.GrantKitID = types.StringValue(grantsItem.GrantKitID)
 		grants1.GrantKitVersionID = types.StringValue(grantsItem.GrantKitVersionID)
 		grants1.ID = types.StringValue(grantsItem.ID)
 		grants1.OrganizationID = types.StringValue(grantsItem.OrganizationID)
 		grants1.RequestID = types.StringValue(grantsItem.RequestID)
-		grants1.UpdatedAt = types.StringValue(grantsItem.UpdatedAt.Format(time.RFC3339))
+		grants1.UpdatedAt = types.StringValue(grantsItem.UpdatedAt.Format(time.RFC3339Nano))
 		grants1.UserID = types.StringValue(grantsItem.UserID)
 		r.Grants = append(r.Grants, grants1)
 	}
@@ -261,7 +261,7 @@ func (r *GrantKitResourceModel) RefreshFromGetResponse(resp *shared.GrantKit) {
 	r.Requests = nil
 	for _, requestsItem := range resp.Requests {
 		var requests1 Request
-		requests1.CreatedAt = types.StringValue(requestsItem.CreatedAt.Format(time.RFC3339))
+		requests1.CreatedAt = types.StringValue(requestsItem.CreatedAt.Format(time.RFC3339Nano))
 		requests1.GrantID = types.StringValue(requestsItem.GrantID)
 		requests1.GrantKitID = types.StringValue(requestsItem.GrantKitID)
 		if requestsItem.GrantKitName != nil {
@@ -276,7 +276,7 @@ func (r *GrantKitResourceModel) RefreshFromGetResponse(resp *shared.GrantKit) {
 		requests1.Reviews = nil
 		for _, reviewsItem := range requestsItem.Reviews {
 			var reviews1 Review
-			reviews1.CreatedAt = types.StringValue(reviewsItem.CreatedAt.Format(time.RFC3339))
+			reviews1.CreatedAt = types.StringValue(reviewsItem.CreatedAt.Format(time.RFC3339Nano))
 			if reviews1.Grant == nil {
 				reviews1.Grant = &Grant{}
 			}
@@ -284,14 +284,14 @@ func (r *GrantKitResourceModel) RefreshFromGetResponse(resp *shared.GrantKit) {
 				reviews1.Grant = nil
 			} else {
 				reviews1.Grant = &Grant{}
-				reviews1.Grant.CreatedAt = types.StringValue(reviewsItem.Grant.CreatedAt.Format(time.RFC3339))
+				reviews1.Grant.CreatedAt = types.StringValue(reviewsItem.Grant.CreatedAt.Format(time.RFC3339Nano))
 				reviews1.Grant.Deleted = types.BoolValue(reviewsItem.Grant.Deleted)
 				reviews1.Grant.GrantKitID = types.StringValue(reviewsItem.Grant.GrantKitID)
 				reviews1.Grant.GrantKitVersionID = types.StringValue(reviewsItem.Grant.GrantKitVersionID)
 				reviews1.Grant.ID = types.StringValue(reviewsItem.Grant.ID)
 				reviews1.Grant.OrganizationID = types.StringValue(reviewsItem.Grant.OrganizationID)
 				reviews1.Grant.RequestID = types.StringValue(reviewsItem.Grant.RequestID)
-				reviews1.Grant.UpdatedAt = types.StringValue(reviewsItem.Grant.UpdatedAt.Format(time.RFC3339))
+				reviews1.Grant.UpdatedAt = types.StringValue(reviewsItem.Grant.UpdatedAt.Format(time.RFC3339Nano))
 				reviews1.Grant.UserID = types.StringValue(reviewsItem.Grant.UserID)
 			}
 			reviews1.GrantID = types.StringValue(reviewsItem.GrantID)
@@ -303,7 +303,7 @@ func (r *GrantKitResourceModel) RefreshFromGetResponse(resp *shared.GrantKit) {
 			reviews1.RequestID = types.StringValue(reviewsItem.RequestID)
 			reviews1.RequestReason = types.StringValue(reviewsItem.RequestReason)
 			reviews1.Status = types.StringValue(string(reviewsItem.Status))
-			reviews1.UpdatedAt = types.StringValue(reviewsItem.UpdatedAt.Format(time.RFC3339))
+			reviews1.UpdatedAt = types.StringValue(reviewsItem.UpdatedAt.Format(time.RFC3339Nano))
 			if reviewsItem.UserEmail != nil {
 				reviews1.UserEmail = types.StringValue(*reviewsItem.UserEmail)
 			} else {
@@ -313,11 +313,11 @@ func (r *GrantKitResourceModel) RefreshFromGetResponse(resp *shared.GrantKit) {
 			requests1.Reviews = append(requests1.Reviews, reviews1)
 		}
 		requests1.Status = types.StringValue(string(requestsItem.Status))
-		requests1.UpdatedAt = types.StringValue(requestsItem.UpdatedAt.Format(time.RFC3339))
+		requests1.UpdatedAt = types.StringValue(requestsItem.UpdatedAt.Format(time.RFC3339Nano))
 		requests1.UserID = types.StringValue(requestsItem.UserID)
 		r.Requests = append(r.Requests, requests1)
 	}
-	r.UpdatedAt = types.StringValue(resp.UpdatedAt.Format(time.RFC3339))
+	r.UpdatedAt = types.StringValue(resp.UpdatedAt.Format(time.RFC3339Nano))
 	if r.Workflow == nil {
 		r.Workflow = &GrantWorkflow{}
 	}

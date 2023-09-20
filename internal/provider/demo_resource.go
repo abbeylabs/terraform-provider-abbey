@@ -69,7 +69,7 @@ func (r *DemoResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
-				Required: true,
+				Optional: true,
 				Validators: []validator.String{
 					stringvalidator.OneOf(
 						"read_write",

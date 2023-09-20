@@ -10,9 +10,9 @@ import (
 
 func (r *IdentityDataSourceModel) RefreshFromGetResponse(resp *shared.Identity) {
 	r.AbbeyAccount = types.StringValue(resp.AbbeyAccount)
-	r.CreatedAt = types.StringValue(resp.CreatedAt.Format(time.RFC3339))
+	r.CreatedAt = types.StringValue(resp.CreatedAt.Format(time.RFC3339Nano))
 	r.ID = types.StringValue(resp.ID)
 	r.Metadata = types.StringValue(resp.Metadata)
 	r.Source = types.StringValue(resp.Source)
-	r.UpdatedAt = types.StringValue(resp.UpdatedAt.Format(time.RFC3339))
+	r.UpdatedAt = types.StringValue(resp.UpdatedAt.Format(time.RFC3339Nano))
 }

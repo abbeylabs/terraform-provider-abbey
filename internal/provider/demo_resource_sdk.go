@@ -10,7 +10,12 @@ import (
 
 func (r *DemoResourceModel) ToCreateSDKType() *shared.DemoParams {
 	email := r.Email.ValueString()
-	permission := shared.DemoParamsPermission(r.Permission.ValueString())
+	permission := new(shared.DemoParamsPermission)
+	if !r.Permission.IsUnknown() && !r.Permission.IsNull() {
+		*permission = shared.DemoParamsPermission(r.Permission.ValueString())
+	} else {
+		permission = nil
+	}
 	out := shared.DemoParams{
 		Email:      email,
 		Permission: permission,
@@ -25,7 +30,7 @@ func (r *DemoResourceModel) ToDeleteSDKType() *shared.DemoParams {
 
 func (r *DemoResourceModel) RefreshFromCreateResponse(resp *shared.Demo) {
 	if resp.CreatedAt != nil {
-		r.CreatedAt = types.StringValue(resp.CreatedAt.Format(time.RFC3339))
+		r.CreatedAt = types.StringValue(resp.CreatedAt.Format(time.RFC3339Nano))
 	} else {
 		r.CreatedAt = types.StringNull()
 	}
@@ -35,7 +40,7 @@ func (r *DemoResourceModel) RefreshFromCreateResponse(resp *shared.Demo) {
 		r.ID = types.Int64Null()
 	}
 	if resp.UpdatedAt != nil {
-		r.UpdatedAt = types.StringValue(resp.UpdatedAt.Format(time.RFC3339))
+		r.UpdatedAt = types.StringValue(resp.UpdatedAt.Format(time.RFC3339Nano))
 	} else {
 		r.UpdatedAt = types.StringNull()
 	}
