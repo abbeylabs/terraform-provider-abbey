@@ -168,6 +168,7 @@ internal/sdk/pkg/models/shared/oauthlisting.go
 internal/sdk/pkg/models/shared/oauth.go
 internal/sdk/pkg/models/shared/requestcancelparams.go
 internal/sdk/pkg/models/shared/requestparams.go
+internal/sdk/pkg/models/shared/userinput.go
 internal/sdk/pkg/models/shared/reviewupdateparams.go
 internal/sdk/pkg/models/shared/samlconnection.go
 internal/sdk/pkg/models/shared/samlconnectionparams.go
