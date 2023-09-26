@@ -14,11 +14,14 @@ type UpdateGrantKitRequest struct {
 }
 
 type UpdateGrantKitResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Request Failed
 	Error *shared.Error
 	// Success
-	GrantKit    *shared.GrantKit
-	StatusCode  int
+	GrantKit *shared.GrantKit
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
 	RawResponse *http.Response
 }

@@ -13,11 +13,14 @@ type GetReviewByIDRequest struct {
 }
 
 type GetReviewByIDResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Authentication Failed
 	Error *shared.Error
 	// Success
-	Review      *shared.Review
-	StatusCode  int
+	Review *shared.Review
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
 	RawResponse *http.Response
 }

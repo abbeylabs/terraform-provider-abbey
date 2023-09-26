@@ -13,11 +13,14 @@ type GetGrantByIDRequest struct {
 }
 
 type GetGrantByIDResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Authentication Failed
 	Error *shared.Error
 	// Success
-	Grant       *shared.Grant
-	StatusCode  int
+	Grant *shared.Grant
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
 	RawResponse *http.Response
 }
