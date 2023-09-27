@@ -3,10 +3,13 @@
 package shared
 
 type SamlConnection struct {
-	AcsURL     string `json:"acs_url"`
-	Active     bool   `json:"active"`
-	ID         string `json:"id"`
-	Name       string `json:"name"`
-	Provider   string `json:"provider"`
-	SpEntityID string `json:"sp_entity_id"`
+	AcsURL         string  `json:"acs_url"`
+	Active         bool    `json:"active"`
+	ID             string  `json:"id"`
+	IdpCertificate *string `json:"idp_certificate,omitempty"`
+	IdpEntityID    *string `json:"idp_entity_id,omitempty"`
+	IdpSsoURL      *string `json:"idp_sso_url,omitempty"`
+	Name           string  `json:"name"`
+	Provider       string  `json:"provider"`
+	SpEntityID     string  `json:"sp_entity_id"`
 }

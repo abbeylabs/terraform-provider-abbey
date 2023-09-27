@@ -45,8 +45,6 @@ This project is licensed under the MPL 2.0 license. See [LICENSE](LICENSE) for m
 
 <!-- Start Dev Containers -->
 
-
-
 <!-- End Dev Containers -->
 
 <!-- Placeholder for Future Speakeasy SDK Sections -->

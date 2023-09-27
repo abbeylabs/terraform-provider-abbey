@@ -3,9 +3,9 @@
 package shared
 
 type SamlConnectionParams struct {
-	Domain         string `json:"domain"`
-	IdpCertificate string `json:"idp_certificate"`
-	IdpEntityID    string `json:"idp_entity_id"`
-	IdpSsoURL      string `json:"idp_sso_url"`
-	Name           string `json:"name"`
+	Domain         string  `json:"domain"`
+	IdpCertificate *string `json:"idp_certificate,omitempty"`
+	IdpEntityID    *string `json:"idp_entity_id,omitempty"`
+	IdpSsoURL      *string `json:"idp_sso_url,omitempty"`
+	Name           string  `json:"name"`
 }
