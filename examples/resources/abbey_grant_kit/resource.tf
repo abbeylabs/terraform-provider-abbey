@@ -1,6 +1,6 @@
 resource "abbey_grant_kit" "my_grantkit" {
   description = "...my_description..."
-  name        = "Dallas Kassulke"
+  name        = "Jaime Kunde"
   output = {
     append    = "...my_append..."
     location  = "...my_location..."
