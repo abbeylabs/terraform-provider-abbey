@@ -190,9 +190,9 @@ func New(opts ...SDKOption) *SDK {
 		sdkConfiguration: sdkConfiguration{
 			Language:          "terraform",
 			OpenAPIDocVersion: "v1",
-			SDKVersion:        "2.12.0",
-			GenVersion:        "2.139.1",
-			UserAgent:         "speakeasy-sdk/terraform 2.12.0 2.139.1 v1 abbey",
+			SDKVersion:        "2.13.0",
+			GenVersion:        "2.142.2",
+			UserAgent:         "speakeasy-sdk/terraform 2.13.0 2.142.2 v1 abbey",
 		},
 	}
 	for _, opt := range opts {
