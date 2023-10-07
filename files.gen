@@ -74,9 +74,14 @@ internal/sdk/pkg/models/operations/getapikeys.go
 internal/sdk/pkg/models/operations/deleteapikey.go
 internal/sdk/pkg/models/operations/listconnectionspecs.go
 internal/sdk/pkg/models/operations/createconnection.go
+internal/sdk/pkg/models/operations/creategheapp.go
+internal/sdk/pkg/models/operations/deletegheapp.go
 internal/sdk/pkg/models/operations/getconnection.go
+internal/sdk/pkg/models/operations/getgheapp.go
 internal/sdk/pkg/models/operations/listconnections.go
+internal/sdk/pkg/models/operations/listgheapp.go
 internal/sdk/pkg/models/operations/updateconnection.go
+internal/sdk/pkg/models/operations/updategheapp.go
 internal/sdk/pkg/models/operations/createdemo.go
 internal/sdk/pkg/models/operations/deletedemo.go
 internal/sdk/pkg/models/operations/getdemo.go
@@ -126,7 +131,6 @@ internal/sdk/pkg/models/shared/connectionspeclisting.go
 internal/sdk/pkg/models/shared/connectionspec.go
 internal/sdk/pkg/models/shared/connectionrequestspec.go
 internal/sdk/pkg/models/shared/connectionauth.go
-internal/sdk/pkg/models/shared/oauth2flow.go
 internal/sdk/pkg/models/shared/keyvaluepair.go
 internal/sdk/pkg/models/shared/oauth2flowpkce.go
 internal/sdk/pkg/models/shared/pkcemethod.go
@@ -138,10 +142,10 @@ internal/sdk/pkg/models/shared/connectionauthtypeenum.go
 internal/sdk/pkg/models/shared/connection.go
 internal/sdk/pkg/models/shared/connectiontype.go
 internal/sdk/pkg/models/shared/connectionparams.go
-internal/sdk/pkg/models/shared/connectionparamsgithubvariant.go
 internal/sdk/pkg/models/shared/connectionparamsgithub.go
-internal/sdk/pkg/models/shared/pagerdutyconnectionvalue.go
 internal/sdk/pkg/models/shared/pagerdutyconnection.go
+internal/sdk/pkg/models/shared/githubenterpriseapp.go
+internal/sdk/pkg/models/shared/githubenterpriseappparams.go
 internal/sdk/pkg/models/shared/connectionlisting.go
 internal/sdk/pkg/models/shared/connectionupdateparams.go
 internal/sdk/pkg/models/shared/demo.go

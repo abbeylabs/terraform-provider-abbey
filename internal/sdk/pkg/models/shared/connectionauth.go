@@ -9,6 +9,17 @@ import (
 	"fmt"
 )
 
+type ConnectionAuthOauth2Flow struct {
+	CallbackQueryParams    []string                `json:"callback_query_params,omitempty"`
+	ConnectionAuthTypeEnum *ConnectionAuthTypeEnum `json:"type,omitempty"`
+	// Describes how the client should conduct the authorization code exchange.
+	//
+	Exchange    *Oauth2FlowExchange `json:"exchange,omitempty"`
+	Pkce        *Oauth2FlowPkce     `json:"pkce,omitempty"`
+	QueryParams []KeyValuePair      `json:"query_params,omitempty"`
+	URL         string              `json:"url"`
+}
+
 type ConnectionAuthType string
 
 const (
@@ -16,19 +27,19 @@ const (
 )
 
 type ConnectionAuth struct {
-	Oauth2Flow *Oauth2Flow
+	ConnectionAuthOauth2Flow *ConnectionAuthOauth2Flow
 
 	Type ConnectionAuthType
 }
 
-func CreateConnectionAuthOauth2(oauth2 Oauth2Flow) ConnectionAuth {
+func CreateConnectionAuthOauth2(oauth2 ConnectionAuthOauth2Flow) ConnectionAuth {
 	typ := ConnectionAuthTypeOauth2
 	typStr := ConnectionAuthTypeEnum(typ)
 	oauth2.ConnectionAuthTypeEnum = &typStr
 
 	return ConnectionAuth{
-		Oauth2Flow: &oauth2,
-		Type:       typ,
+		ConnectionAuthOauth2Flow: &oauth2,
+		Type:                     typ,
 	}
 }
 
@@ -47,12 +58,12 @@ func (u *ConnectionAuth) UnmarshalJSON(data []byte) error {
 	switch dis.ConnectionAuthTypeEnum {
 	case "Oauth2":
 		d = json.NewDecoder(bytes.NewReader(data))
-		oauth2Flow := new(Oauth2Flow)
-		if err := d.Decode(&oauth2Flow); err != nil {
+		connectionAuthOauth2Flow := new(ConnectionAuthOauth2Flow)
+		if err := d.Decode(&connectionAuthOauth2Flow); err != nil {
 			return fmt.Errorf("could not unmarshal expected type: %w", err)
 		}
 
-		u.Oauth2Flow = oauth2Flow
+		u.ConnectionAuthOauth2Flow = connectionAuthOauth2Flow
 		u.Type = ConnectionAuthTypeOauth2
 		return nil
 	}
@@ -61,8 +72,8 @@ func (u *ConnectionAuth) UnmarshalJSON(data []byte) error {
 }
 
 func (u ConnectionAuth) MarshalJSON() ([]byte, error) {
-	if u.Oauth2Flow != nil {
-		return json.Marshal(u.Oauth2Flow)
+	if u.ConnectionAuthOauth2Flow != nil {
+		return json.Marshal(u.ConnectionAuthOauth2Flow)
 	}
 
 	return nil, nil

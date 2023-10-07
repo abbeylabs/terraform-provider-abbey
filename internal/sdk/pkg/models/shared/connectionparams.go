@@ -9,6 +9,18 @@ import (
 	"fmt"
 )
 
+type ConnectionParamsPagerdutyConnectionValue struct {
+	Name  *string             `json:"name,omitempty"`
+	Type  ConnectionType      `json:"type"`
+	Value PagerdutyConnection `json:"value"`
+}
+
+type ConnectionParamsConnectionParamsGithubVariant struct {
+	Name  *string                `json:"name,omitempty"`
+	Type  ConnectionType         `json:"type"`
+	Value ConnectionParamsGithub `json:"value"`
+}
+
 type ConnectionParamsType string
 
 const (
@@ -17,31 +29,31 @@ const (
 )
 
 type ConnectionParams struct {
-	ConnectionParamsGithubVariant *ConnectionParamsGithubVariant
-	PagerdutyConnectionValue      *PagerdutyConnectionValue
+	ConnectionParamsConnectionParamsGithubVariant *ConnectionParamsConnectionParamsGithubVariant
+	ConnectionParamsPagerdutyConnectionValue      *ConnectionParamsPagerdutyConnectionValue
 
 	Type ConnectionParamsType
 }
 
-func CreateConnectionParamsGithub(github ConnectionParamsGithubVariant) ConnectionParams {
+func CreateConnectionParamsGithub(github ConnectionParamsConnectionParamsGithubVariant) ConnectionParams {
 	typ := ConnectionParamsTypeGithub
 	typStr := ConnectionType(typ)
 	github.Type = typStr
 
 	return ConnectionParams{
-		ConnectionParamsGithubVariant: &github,
-		Type:                          typ,
+		ConnectionParamsConnectionParamsGithubVariant: &github,
+		Type: typ,
 	}
 }
 
-func CreateConnectionParamsPagerduty(pagerduty PagerdutyConnectionValue) ConnectionParams {
+func CreateConnectionParamsPagerduty(pagerduty ConnectionParamsPagerdutyConnectionValue) ConnectionParams {
 	typ := ConnectionParamsTypePagerduty
 	typStr := ConnectionType(typ)
 	pagerduty.Type = typStr
 
 	return ConnectionParams{
-		PagerdutyConnectionValue: &pagerduty,
-		Type:                     typ,
+		ConnectionParamsPagerdutyConnectionValue: &pagerduty,
+		Type:                                     typ,
 	}
 }
 
@@ -60,22 +72,22 @@ func (u *ConnectionParams) UnmarshalJSON(data []byte) error {
 	switch dis.Type {
 	case "Github":
 		d = json.NewDecoder(bytes.NewReader(data))
-		connectionParamsGithubVariant := new(ConnectionParamsGithubVariant)
-		if err := d.Decode(&connectionParamsGithubVariant); err != nil {
+		connectionParamsConnectionParamsGithubVariant := new(ConnectionParamsConnectionParamsGithubVariant)
+		if err := d.Decode(&connectionParamsConnectionParamsGithubVariant); err != nil {
 			return fmt.Errorf("could not unmarshal expected type: %w", err)
 		}
 
-		u.ConnectionParamsGithubVariant = connectionParamsGithubVariant
+		u.ConnectionParamsConnectionParamsGithubVariant = connectionParamsConnectionParamsGithubVariant
 		u.Type = ConnectionParamsTypeGithub
 		return nil
 	case "Pagerduty":
 		d = json.NewDecoder(bytes.NewReader(data))
-		pagerdutyConnectionValue := new(PagerdutyConnectionValue)
-		if err := d.Decode(&pagerdutyConnectionValue); err != nil {
+		connectionParamsPagerdutyConnectionValue := new(ConnectionParamsPagerdutyConnectionValue)
+		if err := d.Decode(&connectionParamsPagerdutyConnectionValue); err != nil {
 			return fmt.Errorf("could not unmarshal expected type: %w", err)
 		}
 
-		u.PagerdutyConnectionValue = pagerdutyConnectionValue
+		u.ConnectionParamsPagerdutyConnectionValue = connectionParamsPagerdutyConnectionValue
 		u.Type = ConnectionParamsTypePagerduty
 		return nil
 	}
@@ -84,12 +96,12 @@ func (u *ConnectionParams) UnmarshalJSON(data []byte) error {
 }
 
 func (u ConnectionParams) MarshalJSON() ([]byte, error) {
-	if u.ConnectionParamsGithubVariant != nil {
-		return json.Marshal(u.ConnectionParamsGithubVariant)
+	if u.ConnectionParamsConnectionParamsGithubVariant != nil {
+		return json.Marshal(u.ConnectionParamsConnectionParamsGithubVariant)
 	}
 
-	if u.PagerdutyConnectionValue != nil {
-		return json.Marshal(u.PagerdutyConnectionValue)
+	if u.ConnectionParamsPagerdutyConnectionValue != nil {
+		return json.Marshal(u.ConnectionParamsPagerdutyConnectionValue)
 	}
 
 	return nil, nil
