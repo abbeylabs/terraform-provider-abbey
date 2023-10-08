@@ -10,8 +10,9 @@ import (
 type ConnectionType string
 
 const (
-	ConnectionTypeGithub    ConnectionType = "Github"
-	ConnectionTypePagerduty ConnectionType = "Pagerduty"
+	ConnectionTypeGithub           ConnectionType = "Github"
+	ConnectionTypePagerduty        ConnectionType = "Pagerduty"
+	ConnectionTypeGithubEnterprise ConnectionType = "GithubEnterprise"
 )
 
 func (e ConnectionType) ToPointer() *ConnectionType {
@@ -27,6 +28,8 @@ func (e *ConnectionType) UnmarshalJSON(data []byte) error {
 	case "Github":
 		fallthrough
 	case "Pagerduty":
+		fallthrough
+	case "GithubEnterprise":
 		*e = ConnectionType(v)
 		return nil
 	default:

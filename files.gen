@@ -1,4 +1,5 @@
 internal/sdk/apikeys.go
+internal/sdk/analytics.go
 internal/sdk/connectionspecs.go
 internal/sdk/connections.go
 internal/sdk/demo.go
@@ -72,6 +73,9 @@ tools/tools.go
 internal/sdk/pkg/models/operations/createapikey.go
 internal/sdk/pkg/models/operations/getapikeys.go
 internal/sdk/pkg/models/operations/deleteapikey.go
+internal/sdk/pkg/models/operations/countapprovalsbyuser.go
+internal/sdk/pkg/models/operations/countgrantkitsfororganization.go
+internal/sdk/pkg/models/operations/countrequestsbyresourcefororg.go
 internal/sdk/pkg/models/operations/listconnectionspecs.go
 internal/sdk/pkg/models/operations/createconnection.go
 internal/sdk/pkg/models/operations/creategheapp.go
@@ -127,6 +131,12 @@ internal/sdk/pkg/models/shared/error.go
 internal/sdk/pkg/models/shared/apikey.go
 internal/sdk/pkg/models/shared/apikeyscreateparams.go
 internal/sdk/pkg/models/shared/apikeys.go
+internal/sdk/pkg/models/shared/userapprovalanalytics.go
+internal/sdk/pkg/models/shared/userapprovalcount.go
+internal/sdk/pkg/models/shared/organizationgrantkitcounts.go
+internal/sdk/pkg/models/shared/organizationgrantkitcount.go
+internal/sdk/pkg/models/shared/resourcerequestcounts.go
+internal/sdk/pkg/models/shared/resourcerequestcount.go
 internal/sdk/pkg/models/shared/connectionspeclisting.go
 internal/sdk/pkg/models/shared/connectionspec.go
 internal/sdk/pkg/models/shared/connectionrequestspec.go
@@ -144,6 +154,7 @@ internal/sdk/pkg/models/shared/connectiontype.go
 internal/sdk/pkg/models/shared/connectionparams.go
 internal/sdk/pkg/models/shared/connectionparamsgithub.go
 internal/sdk/pkg/models/shared/pagerdutyconnection.go
+internal/sdk/pkg/models/shared/githubenterpriseconnection.go
 internal/sdk/pkg/models/shared/githubenterpriseapp.go
 internal/sdk/pkg/models/shared/githubenterpriseappparams.go
 internal/sdk/pkg/models/shared/connectionlisting.go

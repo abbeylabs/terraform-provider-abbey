@@ -78,6 +78,8 @@ type SDK struct {
 	//
 	// https://docs.abbey.io/product/managing-api-keys
 	APIKeys *apiKeys
+	// Analytics - Analytics endpoints for use in the console
+	Analytics *analytics
 	// ConnectionSpecs - Connection Specs are the templates for creating connections.
 	// They are used to validate connection parameters and to provide a UI for creating connections.
 	//
@@ -190,9 +192,9 @@ func New(opts ...SDKOption) *SDK {
 		sdkConfiguration: sdkConfiguration{
 			Language:          "terraform",
 			OpenAPIDocVersion: "v1",
-			SDKVersion:        "2.14.1",
+			SDKVersion:        "2.14.2",
 			GenVersion:        "2.150.0",
-			UserAgent:         "speakeasy-sdk/terraform 2.14.1 2.150.0 v1 abbey",
+			UserAgent:         "speakeasy-sdk/terraform 2.14.2 2.150.0 v1 abbey",
 		},
 	}
 	for _, opt := range opts {
@@ -212,6 +214,8 @@ func New(opts ...SDKOption) *SDK {
 	}
 
 	sdk.APIKeys = newAPIKeys(sdk.sdkConfiguration)
+
+	sdk.Analytics = newAnalytics(sdk.sdkConfiguration)
 
 	sdk.ConnectionSpecs = newConnectionSpecs(sdk.sdkConfiguration)
 

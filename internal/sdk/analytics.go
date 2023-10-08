@@ -14,42 +14,29 @@ import (
 	"strings"
 )
 
-// workOS - WorkOS Webhook endpoints
-type workOS struct {
+// analytics - Analytics endpoints for use in the console
+type analytics struct {
 	sdkConfiguration sdkConfiguration
 }
 
-func newWorkOS(sdkConfig sdkConfiguration) *workOS {
-	return &workOS{
+func newAnalytics(sdkConfig sdkConfiguration) *analytics {
+	return &analytics{
 		sdkConfiguration: sdkConfig,
 	}
 }
 
-// WorkOSDirectoriesWebhook - Receive Directories Webhook
-// Receives Directories Webhook Update
-func (s *workOS) WorkOSDirectoriesWebhook(ctx context.Context, request shared.WorkOSDirectoryEvent) (*operations.WorkOSDirectoriesWebhookResponse, error) {
+// CountApprovalsByUser - outputs the number of access requests approvals and denials for a user
+// Returns the number of access requests approvals and denials for a user
+func (s *analytics) CountApprovalsByUser(ctx context.Context) (*operations.CountApprovalsByUserResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url := strings.TrimSuffix(baseURL, "/") + "/webhooks/workos/directories"
+	url := strings.TrimSuffix(baseURL, "/") + "/analytics/approval-counts-by-user"
 
-	bodyReader, reqContentType, err := utils.SerializeRequestBody(ctx, request, "Request", "json")
-	if err != nil {
-		return nil, fmt.Errorf("error serializing request body: %w", err)
-	}
-	if bodyReader == nil {
-		return nil, fmt.Errorf("request body is required")
-	}
-
-	debugBody := bytes.NewBuffer([]byte{})
-	debugReader := io.TeeReader(bodyReader, debugBody)
-
-	req, err := http.NewRequestWithContext(ctx, "POST", url, debugReader)
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
 	}
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("user-agent", s.sdkConfiguration.UserAgent)
-
-	req.Header.Set("Content-Type", reqContentType)
 
 	client := s.sdkConfiguration.SecurityClient
 
@@ -65,19 +52,27 @@ func (s *workOS) WorkOSDirectoriesWebhook(ctx context.Context, request shared.Wo
 	if err != nil {
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
-	httpRes.Request.Body = io.NopCloser(debugBody)
 	httpRes.Body.Close()
 	httpRes.Body = io.NopCloser(bytes.NewBuffer(rawBody))
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.WorkOSDirectoriesWebhookResponse{
+	res := &operations.CountApprovalsByUserResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
 	}
 	switch {
 	case httpRes.StatusCode == 200:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *shared.UserApprovalAnalytics
+			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
+				return res, err
+			}
+
+			res.UserApprovalAnalytics = out
+		}
 	case httpRes.StatusCode == 400:
 		fallthrough
 	case httpRes.StatusCode == 401:
@@ -99,31 +94,18 @@ func (s *workOS) WorkOSDirectoriesWebhook(ctx context.Context, request shared.Wo
 	return res, nil
 }
 
-// WorkOSGroupsWebhook - Receive Groups Webhook
-// Receives Groups Webhook Update
-func (s *workOS) WorkOSGroupsWebhook(ctx context.Context, request shared.WorkOSGroupEvent) (*operations.WorkOSGroupsWebhookResponse, error) {
+// CountGrantKitsForOrganization - outputs the number of grant kits a user's organizations
+// Returns the number of grant kits owned by all the organizations a user is in
+func (s *analytics) CountGrantKitsForOrganization(ctx context.Context) (*operations.CountGrantKitsForOrganizationResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url := strings.TrimSuffix(baseURL, "/") + "/webhooks/workos/groups"
+	url := strings.TrimSuffix(baseURL, "/") + "/analytics/num-grant-kits"
 
-	bodyReader, reqContentType, err := utils.SerializeRequestBody(ctx, request, "Request", "json")
-	if err != nil {
-		return nil, fmt.Errorf("error serializing request body: %w", err)
-	}
-	if bodyReader == nil {
-		return nil, fmt.Errorf("request body is required")
-	}
-
-	debugBody := bytes.NewBuffer([]byte{})
-	debugReader := io.TeeReader(bodyReader, debugBody)
-
-	req, err := http.NewRequestWithContext(ctx, "POST", url, debugReader)
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
 	}
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("user-agent", s.sdkConfiguration.UserAgent)
-
-	req.Header.Set("Content-Type", reqContentType)
 
 	client := s.sdkConfiguration.SecurityClient
 
@@ -139,21 +121,27 @@ func (s *workOS) WorkOSGroupsWebhook(ctx context.Context, request shared.WorkOSG
 	if err != nil {
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
-	httpRes.Request.Body = io.NopCloser(debugBody)
 	httpRes.Body.Close()
 	httpRes.Body = io.NopCloser(bytes.NewBuffer(rawBody))
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.WorkOSGroupsWebhookResponse{
+	res := &operations.CountGrantKitsForOrganizationResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
 	}
 	switch {
 	case httpRes.StatusCode == 200:
-		fallthrough
-	case httpRes.StatusCode == 204:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *shared.OrganizationGrantKitCounts
+			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
+				return res, err
+			}
+
+			res.OrganizationGrantKitCounts = out
+		}
 	case httpRes.StatusCode == 400:
 		fallthrough
 	case httpRes.StatusCode == 401:
@@ -175,31 +163,18 @@ func (s *workOS) WorkOSGroupsWebhook(ctx context.Context, request shared.WorkOSG
 	return res, nil
 }
 
-// WorkOSUsersWebhook - Receive Users Webhook
-// Receives Users Webhook Update
-func (s *workOS) WorkOSUsersWebhook(ctx context.Context, request shared.WorkOSUserEvent) (*operations.WorkOSUsersWebhookResponse, error) {
+// CountRequestsByResourceForOrg - outputs the number of resource requests for each resource owned by a user's org
+// Returns the number of resource requests each resource in a user's org has
+func (s *analytics) CountRequestsByResourceForOrg(ctx context.Context) (*operations.CountRequestsByResourceForOrgResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
-	url := strings.TrimSuffix(baseURL, "/") + "/webhooks/workos/users"
+	url := strings.TrimSuffix(baseURL, "/") + "/analytics/resource-request-counts-for-org"
 
-	bodyReader, reqContentType, err := utils.SerializeRequestBody(ctx, request, "Request", "json")
-	if err != nil {
-		return nil, fmt.Errorf("error serializing request body: %w", err)
-	}
-	if bodyReader == nil {
-		return nil, fmt.Errorf("request body is required")
-	}
-
-	debugBody := bytes.NewBuffer([]byte{})
-	debugReader := io.TeeReader(bodyReader, debugBody)
-
-	req, err := http.NewRequestWithContext(ctx, "POST", url, debugReader)
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
 	}
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("user-agent", s.sdkConfiguration.UserAgent)
-
-	req.Header.Set("Content-Type", reqContentType)
 
 	client := s.sdkConfiguration.SecurityClient
 
@@ -215,21 +190,27 @@ func (s *workOS) WorkOSUsersWebhook(ctx context.Context, request shared.WorkOSUs
 	if err != nil {
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
-	httpRes.Request.Body = io.NopCloser(debugBody)
 	httpRes.Body.Close()
 	httpRes.Body = io.NopCloser(bytes.NewBuffer(rawBody))
 
 	contentType := httpRes.Header.Get("Content-Type")
 
-	res := &operations.WorkOSUsersWebhookResponse{
+	res := &operations.CountRequestsByResourceForOrgResponse{
 		StatusCode:  httpRes.StatusCode,
 		ContentType: contentType,
 		RawResponse: httpRes,
 	}
 	switch {
 	case httpRes.StatusCode == 200:
-		fallthrough
-	case httpRes.StatusCode == 204:
+		switch {
+		case utils.MatchContentType(contentType, `application/json`):
+			var out *shared.ResourceRequestCounts
+			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out); err != nil {
+				return res, err
+			}
+
+			res.ResourceRequestCounts = out
+		}
 	case httpRes.StatusCode == 400:
 		fallthrough
 	case httpRes.StatusCode == 401:
