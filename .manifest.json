@@ -1,0 +1,174 @@
+{
+  "liblabVersion": "2.0.17",
+  "date": "2024-02-26T21:35:56.915Z",
+  "config": {
+    "usesFormData": false,
+    "authentication": {
+      "access": {
+        "prefix": "Bearer"
+      }
+    },
+    "environmentVariables": [],
+    "inferServiceNames": false,
+    "httpLibrary": {
+      "name": "axios",
+      "packages": {
+        "axios": "^1.6.7"
+      },
+      "languages": ["typescript"]
+    },
+    "auth": ["bearer"],
+    "baseUrl": "https://api.abbey.io/v1",
+    "sdkName": "client",
+    "sdkVersion": "1.0.0",
+    "retry": {
+      "enabled": true,
+      "maxAttempts": 3,
+      "retryDelay": 150
+    },
+    "multiTenant": true,
+    "customQueries": {
+      "paths": [],
+      "rawQueries": [],
+      "queriesData": []
+    },
+    "generateEnv": true,
+    "injectedModels": [],
+    "license": {
+      "type": "MIT"
+    },
+    "deliveryMethod": "zip",
+    "apiId": 485,
+    "liblabVersion": "1",
+    "deliveryMethods": ["zip"],
+    "languages": ["terraform"],
+    "apiName": "edge-api",
+    "apiVersion": "1.0.0",
+    "createDocs": false,
+    "languageOptions": {
+      "terraform": {
+        "hideComputedDiff": false,
+        "mockAcceptance": true,
+        "providerGoModuleName": "abbey/v2",
+        "providerName": "abbey",
+        "providerVersion": "0.2.7",
+        "githubRepoName": "terraform-provider-abbey"
+      }
+    },
+    "publishing": {
+      "githubOrg": "abbeylabs"
+    },
+    "specFilePath": "api/openapi.yaml",
+    "validationsToIgnore": [],
+    "devContainer": false,
+    "responseHeaders": false,
+    "specUrl": "https://prod-liblab-api-stack-specs.s3.us-east-1.amazonaws.com/485/open-api-spec.yaml?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIA5P3QKKDKGVNIJ2H7%2F20240226%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240226T213551Z&X-Amz-Expires=43200&X-Amz-Signature=7743f7be6fbf5fd0b09783fdcc6f3787d6a68ced349226d9e35d3e4bd078f962&X-Amz-SignedHeaders=host&x-id=GetObject",
+    "language": "terraform",
+    "goModuleName": "github.com/go-provider-sdk",
+    "hooks": {
+      "enabled": false,
+      "sourceDir": ""
+    },
+    "planModifiers": {
+      "resources": {
+        "enabled": false
+      },
+      "attributes": {
+        "enabled": false
+      }
+    },
+    "providerGoModuleName": "abbey/v2",
+    "providerName": "abbey",
+    "providerVersion": "0.2.7",
+    "mockAcceptance": true,
+    "hideComputedDiff": false
+  },
+  "files": [
+    ".github/dependabot.yml",
+    "examples/provider/main.tf",
+    "go.mod",
+    ".goreleaser.yml",
+    "main.go",
+    "GNUmakefile",
+    "internal/shared/models/grant_workflow/grant_workflow.go",
+    "internal/shared/models/policy/policy.go",
+    "internal/shared/models/output/output.go",
+    "internal/shared/models/grant/grant.go",
+    "internal/shared/models/request/request.go",
+    "internal/shared/models/step/step.go",
+    "internal/shared/models/reviewers/reviewers.go",
+    "internal/shared/models/request_status/request_status.go",
+    "internal/shared/models/review/review.go",
+    "internal/shared/models/review_status/review_status.go",
+    "internal/shared/models/permission/permission.go",
+    ".github/workflows/pull-request-checks.yml",
+    "README.md",
+    ".github/workflows/publish-provider.yml",
+    "terraform-registry-manifest.json",
+    "internal/provider/grantkit/resource_test.go",
+    "internal/provider/identity/resource_test.go",
+    "internal/provider/demo/resource_test.go",
+    "tools/tools.go",
+    "internal/utils/utils.go",
+    "internal/provider/provider.go",
+    "examples/resources/demo/main.tf",
+    "examples/resources/identity/main.tf",
+    "internal/provider/demo/acceptance/resource_e2e_test.go",
+    "internal/provider/identity/acceptance/resource_e2e_test.go",
+    "examples/resources/grantkit/main.tf",
+    "internal/provider/grantkit/acceptance/resource_e2e_test.go",
+    "internal/provider/demo/resource.go",
+    "internal/provider/identity/resource.go",
+    "internal/provider/grantkit/resource.go",
+    "internal/client/.gitignore",
+    "internal/client/cmd/examples/example.go",
+    "internal/client/go.mod",
+    "internal/client/internal/clients/rest/client.go",
+    "internal/client/internal/clients/rest/handlers/bearer_token_handler.go",
+    "internal/client/internal/clients/rest/handlers/default_headers_handler.go",
+    "internal/client/internal/clients/rest/handlers/handler_chain.go",
+    "internal/client/internal/clients/rest/handlers/hook_handler.go",
+    "internal/client/internal/clients/rest/handlers/request_validation_handler.go",
+    "internal/client/internal/clients/rest/handlers/retry_handler.go",
+    "internal/client/internal/clients/rest/handlers/terminating_handler.go",
+    "internal/client/internal/clients/rest/hooks/default_hook.go",
+    "internal/client/internal/clients/rest/hooks/hook.go",
+    "internal/client/internal/clients/rest/httptransport/error_response.go",
+    "internal/client/internal/clients/rest/httptransport/request.go",
+    "internal/client/internal/clients/rest/httptransport/response.go",
+    "internal/client/internal/configmanager/config_manager.go",
+    "internal/client/internal/marshal/from_complex_object.go",
+    "internal/client/internal/unmarshal/to_array.go",
+    "internal/client/internal/unmarshal/to_complex_object.go",
+    "internal/client/internal/unmarshal/to_object.go",
+    "internal/client/internal/unmarshal/to_primitive.go",
+    "internal/client/internal/utils/utils.go",
+    "internal/client/internal/validation/validate_required.go",
+    "internal/client/internal/validation/validation.go",
+    "internal/client/pkg/client/client.go",
+    "internal/client/pkg/clientconfig/config.go",
+    "internal/client/pkg/demo/demo_params.go",
+    "internal/client/pkg/demo/demo_service.go",
+    "internal/client/pkg/demo/demo.go",
+    "internal/client/pkg/demo/request_params.go",
+    "internal/client/pkg/grantkits/grant_kit_create_params.go",
+    "internal/client/pkg/grantkits/grant_kit_update_params.go",
+    "internal/client/pkg/grantkits/grant_kit.go",
+    "internal/client/pkg/grantkits/grant_kits_service.go",
+    "internal/client/pkg/grantkits/grant_workflow.go",
+    "internal/client/pkg/grantkits/grant.go",
+    "internal/client/pkg/grantkits/output.go",
+    "internal/client/pkg/grantkits/policy.go",
+    "internal/client/pkg/grantkits/request_status.go",
+    "internal/client/pkg/grantkits/request.go",
+    "internal/client/pkg/grantkits/review_status.go",
+    "internal/client/pkg/grantkits/review.go",
+    "internal/client/pkg/grantkits/reviewers.go",
+    "internal/client/pkg/grantkits/step.go",
+    "internal/client/pkg/identities/identities_service.go",
+    "internal/client/pkg/identities/identity_params.go",
+    "internal/client/pkg/identities/identity.go",
+    "internal/client/pkg/shared/client_response.go",
+    "internal/client/README.md"
+  ]
+}
