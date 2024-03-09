@@ -1,10 +1,10 @@
 package demo
 
 import (
+	"context"
 	restClient "github.com/go-provider-sdk/internal/clients/rest"
 	"github.com/go-provider-sdk/internal/clients/rest/httptransport"
 	"github.com/go-provider-sdk/internal/configmanager"
-	"github.com/go-provider-sdk/internal/unmarshal"
 	"github.com/go-provider-sdk/pkg/clientconfig"
 	"github.com/go-provider-sdk/pkg/shared"
 )
@@ -34,81 +34,55 @@ func (api *DemoService) SetAccessToken(accessToken string) {
 }
 
 // Get the demo response
-func (api *DemoService) GetDemo(params GetDemoRequestParams) (*shared.ClientResponse[Demo], error) {
+func (api *DemoService) GetDemo(ctx context.Context, params GetDemoRequestParams) (*shared.ClientResponse[Demo], *shared.ClientError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[Demo](config)
 
-	request := httptransport.NewRequest("GET", "/demo", config)
+	request := httptransport.NewRequest(ctx, "GET", "/demo", config)
 
 	request.Options = params
 
-	httpResponse, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return nil, err.GetError()
+		return nil, shared.NewClientError[Demo](err)
 	}
 
-	data, unmarshalError := unmarshal.ToObject[Demo](httpResponse)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	response := shared.ClientResponse[Demo]{
-		Data: *data,
-		Metadata: shared.ClientResponseMetadata{
-			Headers:    httpResponse.Headers,
-			StatusCode: httpResponse.StatusCode,
-		},
-	}
-
-	return &response, nil
+	return shared.NewClientResponse[Demo](resp), nil
 }
 
 // Creates a new Demo access
-func (api *DemoService) CreateDemo(demoParams DemoParams) (*shared.ClientResponse[Demo], error) {
+func (api *DemoService) CreateDemo(ctx context.Context, demoParams DemoParams) (*shared.ClientResponse[Demo], *shared.ClientError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[Demo](config)
 
-	request := httptransport.NewRequest("POST", "/demo", config)
+	request := httptransport.NewRequest(ctx, "POST", "/demo", config)
 
 	request.Body = demoParams
 
-	httpResponse, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return nil, err.GetError()
+		return nil, shared.NewClientError[Demo](err)
 	}
 
-	data, unmarshalError := unmarshal.ToObject[Demo](httpResponse)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	response := shared.ClientResponse[Demo]{
-		Data: *data,
-		Metadata: shared.ClientResponseMetadata{
-			Headers:    httpResponse.Headers,
-			StatusCode: httpResponse.StatusCode,
-		},
-	}
-
-	return &response, nil
+	return shared.NewClientResponse[Demo](resp), nil
 }
 
 // Deletes the Demo access
-func (api *DemoService) DeleteDemo(demoParams DemoParams) error {
+func (api *DemoService) DeleteDemo(ctx context.Context, demoParams DemoParams) (*shared.ClientResponse[any], *shared.ClientError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[any](config)
 
-	request := httptransport.NewRequest("DELETE", "/demo", config)
+	request := httptransport.NewRequest(ctx, "DELETE", "/demo", config)
 
 	request.Body = demoParams
 
-	_, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return err.GetError()
+		return nil, shared.NewClientError[any](err)
 	}
 
-	return nil
+	return shared.NewClientResponse[any](resp), nil
 }

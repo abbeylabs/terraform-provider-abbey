@@ -2,16 +2,12 @@ package unmarshal
 
 import (
 	"encoding/json"
-
-	"github.com/go-provider-sdk/internal/clients/rest/httptransport"
 )
 
-func ToObject[T any](r *httptransport.Response) (*T, error) {
-	result := new(T)
-	err := json.Unmarshal(r.Body, result)
+func ToObject(source []byte, target any) error {
+	err := json.Unmarshal(source, target)
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	return result, nil
+	return nil
 }

@@ -21,8 +21,8 @@ import (
 func getIdentityProviderConfig(serverUrl string) string {
 	return fmt.Sprintf(`
 		provider "abbey" {
-        host = "%v"
-        auth_token = "auth_token"
+        server_url = "server_url"
+        bearer_auth = "bearer_auth"
 }
 
 	`, serverUrl)

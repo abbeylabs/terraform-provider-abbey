@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/go-provider-sdk/pkg/client"
@@ -12,7 +13,7 @@ func main() {
 
 	client := client.NewClient(config)
 
-	res, err := client.GrantKits.ListGrantKits()
+	res, err := client.GrantKits.ListGrantKits(context.Background())
 	if err != nil {
 		panic(err)
 	}

@@ -479,7 +479,7 @@ func (r *GrantKitResource) Read(ctx context.Context, req resource.ReadRequest, r
 
 	GrantKitIdOrName := dataModel.Id.ValueString()
 
-	clientResponse, err := r.client.GrantKits.GetGrantKitById(GrantKitIdOrName)
+	clientResponse, err := r.client.GrantKits.GetGrantKitById(ctx, GrantKitIdOrName)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unexpected error calling GrantKits.GetGrantKitById",
@@ -701,7 +701,7 @@ func (r *GrantKitResource) Create(ctx context.Context, req resource.CreateReques
 		}),
 	}
 
-	clientResponse, err := r.client.GrantKits.CreateGrantKit(requestBody)
+	clientResponse, err := r.client.GrantKits.CreateGrantKit(ctx, requestBody)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -884,7 +884,7 @@ func (r *GrantKitResource) Delete(ctx context.Context, req resource.DeleteReques
 
 	GrantKitIdOrName := dataModel.Id.ValueString()
 
-	_, err := r.client.GrantKits.DeleteGrantKit(GrantKitIdOrName)
+	_, err := r.client.GrantKits.DeleteGrantKit(ctx, GrantKitIdOrName)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -947,7 +947,7 @@ func (r *GrantKitResource) Update(ctx context.Context, req resource.UpdateReques
 		}),
 	}
 
-	clientResponse, err := r.client.GrantKits.UpdateGrantKit(GrantKitIdOrName, requestBody)
+	clientResponse, err := r.client.GrantKits.UpdateGrantKit(ctx, GrantKitIdOrName, requestBody)
 
 	if err != nil {
 		resp.Diagnostics.AddError(

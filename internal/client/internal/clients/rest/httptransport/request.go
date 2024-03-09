@@ -2,6 +2,7 @@ package httptransport
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -19,6 +20,7 @@ type paramMap struct {
 }
 
 type Request struct {
+	Context     context.Context
 	Method      string
 	Path        string
 	Headers     map[string]string
@@ -29,8 +31,9 @@ type Request struct {
 	Config      clientconfig.Config
 }
 
-func NewRequest(method string, path string, config clientconfig.Config) Request {
+func NewRequest(ctx context.Context, method string, path string, config clientconfig.Config) Request {
 	return Request{
+		Context:     ctx,
 		Method:      method,
 		Path:        path,
 		Headers:     make(map[string]string),
@@ -121,6 +124,14 @@ func (r *Request) SetBody(body any) {
 	r.Body = body
 }
 
+func (r *Request) GetContext() context.Context {
+	return r.Context
+}
+
+func (r *Request) SetContext(ctx context.Context) {
+	r.Context = ctx
+}
+
 func (r *Request) CreateHttpRequest() (*http.Request, error) {
 	requestUrl := r.getRequestUrl()
 
@@ -131,9 +142,9 @@ func (r *Request) CreateHttpRequest() (*http.Request, error) {
 
 	var httpRequest *http.Request
 	if requestBody == nil {
-		httpRequest, err = http.NewRequest(r.Method, requestUrl, nil)
+		httpRequest, err = http.NewRequestWithContext(r.Context, r.Method, requestUrl, nil)
 	} else {
-		httpRequest, err = http.NewRequest(r.Method, requestUrl, requestBody)
+		httpRequest, err = http.NewRequestWithContext(r.Context, r.Method, requestUrl, requestBody)
 	}
 
 	httpRequest.Header = r.getRequestHeaders()

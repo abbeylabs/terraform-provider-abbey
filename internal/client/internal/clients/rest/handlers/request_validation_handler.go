@@ -7,35 +7,35 @@ import (
 	"github.com/go-provider-sdk/internal/validation"
 )
 
-type RequestValidationHandler struct {
-	nextHandler Handler
+type RequestValidationHandler[T any] struct {
+	nextHandler Handler[T]
 }
 
-func NewRequestValidationHandler() *RequestValidationHandler {
-	return &RequestValidationHandler{
+func NewRequestValidationHandler[T any]() *RequestValidationHandler[T] {
+	return &RequestValidationHandler[T]{
 		nextHandler: nil,
 	}
 }
 
-func (h *RequestValidationHandler) Handle(request httptransport.Request) (*httptransport.Response, *httptransport.ErrorResponse) {
+func (h *RequestValidationHandler[T]) Handle(request httptransport.Request) (*httptransport.Response[T], *httptransport.ErrorResponse[T]) {
 	if h.nextHandler == nil {
 		err := errors.New("Handler chain terminated without terminating handler")
-		return nil, httptransport.NewErrorResponse(err, nil)
+		return nil, httptransport.NewErrorResponse[T](err, nil)
 	}
 
 	err := validation.ValidateData(request.Body)
 	if err != nil {
-		return nil, httptransport.NewErrorResponse(err, nil)
+		return nil, httptransport.NewErrorResponse[T](err, nil)
 	}
 
 	err = validation.ValidateData(request.Options)
 	if err != nil {
-		return nil, httptransport.NewErrorResponse(err, nil)
+		return nil, httptransport.NewErrorResponse[T](err, nil)
 	}
 
 	return h.nextHandler.Handle(request)
 }
 
-func (h *RequestValidationHandler) SetNext(handler Handler) {
+func (h *RequestValidationHandler[T]) SetNext(handler Handler[T]) {
 	h.nextHandler = handler
 }

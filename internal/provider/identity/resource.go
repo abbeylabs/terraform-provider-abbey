@@ -108,7 +108,7 @@ func (r *IdentityResource) Read(ctx context.Context, req resource.ReadRequest, r
 
 	IdentityId := dataModel.Id.ValueString()
 
-	clientResponse, err := r.client.Identities.GetIdentity(IdentityId)
+	clientResponse, err := r.client.Identities.GetIdentity(ctx, IdentityId)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unexpected error calling Identities.GetIdentity",
@@ -153,7 +153,7 @@ func (r *IdentityResource) Create(ctx context.Context, req resource.CreateReques
 		Metadata:     dataModel.Metadata.ValueStringPointer(),
 	}
 
-	clientResponse, err := r.client.Identities.CreateIdentity(requestBody)
+	clientResponse, err := r.client.Identities.CreateIdentity(ctx, requestBody)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -194,7 +194,7 @@ func (r *IdentityResource) Delete(ctx context.Context, req resource.DeleteReques
 
 	IdentityId := dataModel.Id.ValueString()
 
-	err := r.client.Identities.DeleteIdentity(IdentityId)
+	_, err := r.client.Identities.DeleteIdentity(ctx, IdentityId)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -222,7 +222,7 @@ func (r *IdentityResource) Update(ctx context.Context, req resource.UpdateReques
 		Metadata:     dataModel.Metadata.ValueStringPointer(),
 	}
 
-	clientResponse, err := r.client.Identities.UpdateIdentity(IdentityId, requestBody)
+	clientResponse, err := r.client.Identities.UpdateIdentity(ctx, IdentityId, requestBody)
 
 	if err != nil {
 		resp.Diagnostics.AddError(

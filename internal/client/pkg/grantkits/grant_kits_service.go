@@ -1,10 +1,10 @@
 package grantkits
 
 import (
+	"context"
 	restClient "github.com/go-provider-sdk/internal/clients/rest"
 	"github.com/go-provider-sdk/internal/clients/rest/httptransport"
 	"github.com/go-provider-sdk/internal/configmanager"
-	"github.com/go-provider-sdk/internal/unmarshal"
 	"github.com/go-provider-sdk/pkg/clientconfig"
 	"github.com/go-provider-sdk/pkg/shared"
 )
@@ -36,156 +36,91 @@ func (api *GrantKitsService) SetAccessToken(accessToken string) {
 // Returns a list of the latest versions of each grant kit in the organization.
 //
 // Grant Kits are sorted by creation date, descending.
-func (api *GrantKitsService) ListGrantKits() (*shared.ClientResponse[[]GrantKit], error) {
+func (api *GrantKitsService) ListGrantKits(ctx context.Context) (*shared.ClientResponse[[]GrantKit], *shared.ClientError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[[]GrantKit](config)
 
-	request := httptransport.NewRequest("GET", "/grant-kits", config)
+	request := httptransport.NewRequest(ctx, "GET", "/grant-kits", config)
 
-	httpResponse, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return nil, err.GetError()
+		return nil, shared.NewClientError[[]GrantKit](err)
 	}
 
-	data, unmarshalError := unmarshal.ToArray[[]GrantKit](httpResponse)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	response := shared.ClientResponse[[]GrantKit]{
-		Data: data,
-		Metadata: shared.ClientResponseMetadata{
-			Headers:    httpResponse.Headers,
-			StatusCode: httpResponse.StatusCode,
-		},
-	}
-
-	return &response, nil
+	return shared.NewClientResponse[[]GrantKit](resp), nil
 }
 
 // Creates a new Grant Kit
-func (api *GrantKitsService) CreateGrantKit(grantKitCreateParams GrantKitCreateParams) (*shared.ClientResponse[GrantKit], error) {
+func (api *GrantKitsService) CreateGrantKit(ctx context.Context, grantKitCreateParams GrantKitCreateParams) (*shared.ClientResponse[GrantKit], *shared.ClientError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[GrantKit](config)
 
-	request := httptransport.NewRequest("POST", "/grant-kits", config)
+	request := httptransport.NewRequest(ctx, "POST", "/grant-kits", config)
 
 	request.Body = grantKitCreateParams
 
-	httpResponse, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return nil, err.GetError()
+		return nil, shared.NewClientError[GrantKit](err)
 	}
 
-	data, unmarshalError := unmarshal.ToObject[GrantKit](httpResponse)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	response := shared.ClientResponse[GrantKit]{
-		Data: *data,
-		Metadata: shared.ClientResponseMetadata{
-			Headers:    httpResponse.Headers,
-			StatusCode: httpResponse.StatusCode,
-		},
-	}
-
-	return &response, nil
+	return shared.NewClientResponse[GrantKit](resp), nil
 }
 
 // Returns the details of a Grant Kit.
-func (api *GrantKitsService) GetGrantKitById(grantKitIdOrName string) (*shared.ClientResponse[GrantKit], error) {
+func (api *GrantKitsService) GetGrantKitById(ctx context.Context, grantKitIdOrName string) (*shared.ClientResponse[GrantKit], *shared.ClientError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[GrantKit](config)
 
-	request := httptransport.NewRequest("GET", "/grant-kits/{grant_kit_id_or_name}", config)
+	request := httptransport.NewRequest(ctx, "GET", "/grant-kits/{grant_kit_id_or_name}", config)
 
 	request.SetPathParam("grant_kit_id_or_name", grantKitIdOrName)
 
-	httpResponse, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return nil, err.GetError()
+		return nil, shared.NewClientError[GrantKit](err)
 	}
 
-	data, unmarshalError := unmarshal.ToObject[GrantKit](httpResponse)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	response := shared.ClientResponse[GrantKit]{
-		Data: *data,
-		Metadata: shared.ClientResponseMetadata{
-			Headers:    httpResponse.Headers,
-			StatusCode: httpResponse.StatusCode,
-		},
-	}
-
-	return &response, nil
+	return shared.NewClientResponse[GrantKit](resp), nil
 }
 
 // Updates the specified grant kit.
-func (api *GrantKitsService) UpdateGrantKit(grantKitIdOrName string, grantKitUpdateParams GrantKitUpdateParams) (*shared.ClientResponse[GrantKit], error) {
+func (api *GrantKitsService) UpdateGrantKit(ctx context.Context, grantKitIdOrName string, grantKitUpdateParams GrantKitUpdateParams) (*shared.ClientResponse[GrantKit], *shared.ClientError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[GrantKit](config)
 
-	request := httptransport.NewRequest("PUT", "/grant-kits/{grant_kit_id_or_name}", config)
+	request := httptransport.NewRequest(ctx, "PUT", "/grant-kits/{grant_kit_id_or_name}", config)
 
 	request.Body = grantKitUpdateParams
 
 	request.SetPathParam("grant_kit_id_or_name", grantKitIdOrName)
 
-	httpResponse, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return nil, err.GetError()
+		return nil, shared.NewClientError[GrantKit](err)
 	}
 
-	data, unmarshalError := unmarshal.ToObject[GrantKit](httpResponse)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	response := shared.ClientResponse[GrantKit]{
-		Data: *data,
-		Metadata: shared.ClientResponseMetadata{
-			Headers:    httpResponse.Headers,
-			StatusCode: httpResponse.StatusCode,
-		},
-	}
-
-	return &response, nil
+	return shared.NewClientResponse[GrantKit](resp), nil
 }
 
 // Deletes the specified grant kit.
-func (api *GrantKitsService) DeleteGrantKit(grantKitIdOrName string) (*shared.ClientResponse[GrantKit], error) {
+func (api *GrantKitsService) DeleteGrantKit(ctx context.Context, grantKitIdOrName string) (*shared.ClientResponse[GrantKit], *shared.ClientError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[GrantKit](config)
 
-	request := httptransport.NewRequest("DELETE", "/grant-kits/{grant_kit_id_or_name}", config)
+	request := httptransport.NewRequest(ctx, "DELETE", "/grant-kits/{grant_kit_id_or_name}", config)
 
 	request.SetPathParam("grant_kit_id_or_name", grantKitIdOrName)
 
-	httpResponse, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return nil, err.GetError()
+		return nil, shared.NewClientError[GrantKit](err)
 	}
 
-	data, unmarshalError := unmarshal.ToObject[GrantKit](httpResponse)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	response := shared.ClientResponse[GrantKit]{
-		Data: *data,
-		Metadata: shared.ClientResponseMetadata{
-			Headers:    httpResponse.Headers,
-			StatusCode: httpResponse.StatusCode,
-		},
-	}
-
-	return &response, nil
+	return shared.NewClientResponse[GrantKit](resp), nil
 }

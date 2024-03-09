@@ -4,21 +4,21 @@ import (
 	"github.com/go-provider-sdk/internal/clients/rest/httptransport"
 )
 
-type Handler interface {
-	Handle(req httptransport.Request) (*httptransport.Response, *httptransport.ErrorResponse)
-	SetNext(handler Handler)
+type Handler[T any] interface {
+	Handle(req httptransport.Request) (*httptransport.Response[T], *httptransport.ErrorResponse[T])
+	SetNext(handler Handler[T])
 }
 
-type HandlerChain struct {
-	head Handler
-	tail Handler
+type HandlerChain[T any] struct {
+	head Handler[T]
+	tail Handler[T]
 }
 
-func BuildHandlerChain() *HandlerChain {
-	return &HandlerChain{}
+func BuildHandlerChain[T any]() *HandlerChain[T] {
+	return &HandlerChain[T]{}
 }
 
-func (chain *HandlerChain) AddHandler(handler Handler) *HandlerChain {
+func (chain *HandlerChain[T]) AddHandler(handler Handler[T]) *HandlerChain[T] {
 	if chain.head == nil {
 		chain.head = handler
 		chain.tail = handler
@@ -31,6 +31,6 @@ func (chain *HandlerChain) AddHandler(handler Handler) *HandlerChain {
 	return chain
 }
 
-func (chain *HandlerChain) CallApi(request httptransport.Request) (*httptransport.Response, *httptransport.ErrorResponse) {
+func (chain *HandlerChain[T]) CallApi(request httptransport.Request) (*httptransport.Response[T], *httptransport.ErrorResponse[T]) {
 	return chain.head.Handle(request)
 }

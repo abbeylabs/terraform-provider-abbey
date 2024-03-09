@@ -13,5 +13,5 @@ description: |-
 
 ### Required
 
-- `auth_token` (String, Sensitive) The authentication token.
-- `host` (String) The API host.
+- `bearer_auth` (String, Sensitive) The authentication token.
+- `server_url` (String) The API host.

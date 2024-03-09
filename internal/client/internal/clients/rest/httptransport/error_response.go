@@ -2,30 +2,30 @@ package httptransport
 
 import "fmt"
 
-type ErrorResponse struct {
+type ErrorResponse[T any] struct {
 	Err         error
 	IsHttpError bool
-	Response
+	Response[T]
 }
 
-func NewErrorResponse(err error, resp *Response) *ErrorResponse {
+func NewErrorResponse[T any](err error, resp *Response[T]) *ErrorResponse[T] {
 	if resp == nil {
-		return &ErrorResponse{
+		return &ErrorResponse[T]{
 			Err:         err,
 			IsHttpError: false,
 		}
 	}
 
-	return &ErrorResponse{
+	return &ErrorResponse[T]{
 		Err:         err,
 		IsHttpError: true,
 		Response:    *resp,
 	}
 }
 
-func (r *ErrorResponse) Clone() ErrorResponse {
+func (r *ErrorResponse[T]) Clone() ErrorResponse[T] {
 	if r == nil {
-		return ErrorResponse{}
+		return ErrorResponse[T]{}
 	}
 
 	clone := *r
@@ -36,10 +36,10 @@ func (r *ErrorResponse) Clone() ErrorResponse {
 	return clone
 }
 
-func (r *ErrorResponse) Error() string {
+func (r *ErrorResponse[T]) Error() string {
 	return fmt.Sprintf("%s", r.Err)
 }
 
-func (r *ErrorResponse) GetError() error {
+func (r *ErrorResponse[T]) GetError() error {
 	return r.Err
 }

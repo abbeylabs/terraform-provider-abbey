@@ -26,9 +26,8 @@ type Provider struct {
 }
 
 type abbeyProviderModel struct {
-	Host types.String `tfsdk:"host"`
-
-	AuthToken types.String `tfsdk:"auth_token"`
+	ServerUrl  types.String `tfsdk:"server_url"`
+	BearerAuth types.String `tfsdk:"bearer_auth"`
 }
 
 func (p *Provider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -39,12 +38,12 @@ func (p *Provider) Metadata(ctx context.Context, req provider.MetadataRequest, r
 func (p *Provider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"host": schema.StringAttribute{
+			"server_url": schema.StringAttribute{
 				Required:    true,
 				Sensitive:   false,
 				Description: "The API host.",
 			},
-			"auth_token": schema.StringAttribute{
+			"bearer_auth": schema.StringAttribute{
 				Required:    true,
 				Sensitive:   true,
 				Description: "The authentication token.",
@@ -62,27 +61,27 @@ func (p *Provider) Configure(ctx context.Context, req provider.ConfigureRequest,
 		return
 	}
 
-	if dataModel.Host.IsUnknown() {
+	if dataModel.ServerUrl.IsUnknown() {
 		resp.Diagnostics.AddAttributeError(
-			path.Root("host"),
-			"Unknown Host",
-			"Cannot create API client with unknown host.",
+			path.Root("server_url"),
+			"Unknown ServerUrl",
+			"Cannot create API client without server_url.",
 		)
 		return
 	}
 
-	if dataModel.AuthToken.IsUnknown() {
+	if dataModel.BearerAuth.IsUnknown() {
 		resp.Diagnostics.AddAttributeError(
-			path.Root("auth_token"),
-			"Missing Auth Token",
-			"Cannot create API client with missing auth token.",
+			path.Root("bearer_auth"),
+			"Unknown BearerAuth",
+			"Cannot create API client without bearer_auth.",
 		)
 		return
 	}
 
 	config := clientconfig.NewConfig()
-	config.SetBaseUrl(dataModel.Host.ValueString())
-	config.SetAccessToken(dataModel.AuthToken.ValueString())
+	config.SetBaseUrl(dataModel.ServerUrl.ValueString())
+	config.SetAccessToken(dataModel.BearerAuth.ValueString())
 	apiClient := client.NewClient(config)
 
 	// Example of setting the client in resp

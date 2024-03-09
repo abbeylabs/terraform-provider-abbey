@@ -9,8 +9,8 @@ terraform {
 
 provider "abbey" {
 
-  host = "https://api.abbey.io/v1"
+  server_url = "https://api.abbey.io/v1"
 
-  auth_token = "MY_TOKEN"
+  bearer_auth = "MY_TOKEN"
 
 }

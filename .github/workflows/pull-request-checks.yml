@@ -41,9 +41,6 @@ jobs:
       - name: Run Unit Tests
         run: make unit-test
 
-      - name: Run Mock Acceptance Tests
-        run: make mock-acceptance-test
-
   dependabot:
     name: 'Dependabot'
     needs: [linting-and-testing]

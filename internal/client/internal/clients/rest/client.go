@@ -7,31 +7,31 @@ import (
 	"github.com/go-provider-sdk/pkg/clientconfig"
 )
 
-type RestClient struct {
-	handlers *handlers.HandlerChain
+type RestClient[T any] struct {
+	handlers *handlers.HandlerChain[T]
 }
 
-func NewRestClient(config clientconfig.Config) *RestClient {
-	defaultHeadersHandler := handlers.NewDefaultHeadersHandler()
-	retryHandler := handlers.NewRetryHandler()
-	bearerTokenHandler := handlers.NewAccessTokenHandler()
-	hookHandler := handlers.NewHookHandler(hooks.NewDefaultHook())
-	requestValidationHandler := handlers.NewRequestValidationHandler()
-	terminatingHandler := handlers.NewTerminatingHandler()
+func NewRestClient[T any](config clientconfig.Config) *RestClient[T] {
+	defaultHeadersHandler := handlers.NewDefaultHeadersHandler[T]()
+	retryHandler := handlers.NewRetryHandler[T]()
+	bearerTokenHandler := handlers.NewAccessTokenHandler[T]()
+	unmarshalHandler := handlers.NewUnmarshalHandler[T]()
+	hookHandler := handlers.NewHookHandler[T](hooks.NewDefaultHook())
+	terminatingHandler := handlers.NewTerminatingHandler[T]()
 
-	handlers := handlers.BuildHandlerChain().
+	handlers := handlers.BuildHandlerChain[T]().
 		AddHandler(defaultHeadersHandler).
 		AddHandler(retryHandler).
 		AddHandler(bearerTokenHandler).
+		AddHandler(unmarshalHandler).
 		AddHandler(hookHandler).
-		AddHandler(requestValidationHandler).
 		AddHandler(terminatingHandler)
 
-	return &RestClient{
+	return &RestClient[T]{
 		handlers: handlers,
 	}
 }
 
-func (client *RestClient) Call(request httptransport.Request) (*httptransport.Response, *httptransport.ErrorResponse) {
+func (client *RestClient[T]) Call(request httptransport.Request) (*httptransport.Response[T], *httptransport.ErrorResponse[T]) {
 	return client.handlers.CallApi(request)
 }

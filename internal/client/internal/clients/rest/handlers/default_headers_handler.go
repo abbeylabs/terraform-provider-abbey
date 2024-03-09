@@ -6,27 +6,27 @@ import (
 	"github.com/go-provider-sdk/internal/clients/rest/httptransport"
 )
 
-type DefaultHeadersHandler struct {
+type DefaultHeadersHandler[T any] struct {
 	defaultHeaders map[string]string
-	nextHandler    Handler
+	nextHandler    Handler[T]
 }
 
-func NewDefaultHeadersHandler() *DefaultHeadersHandler {
+func NewDefaultHeadersHandler[T any]() *DefaultHeadersHandler[T] {
 	defaultHeaders := map[string]string{
-		"User-Agent":   "liblab/2.0.17 go/1.18",
+		"User-Agent":   "liblab/2.0.18 go/1.18",
 		"Content-type": "application/json",
 	}
 
-	return &DefaultHeadersHandler{
+	return &DefaultHeadersHandler[T]{
 		defaultHeaders: defaultHeaders,
 		nextHandler:    nil,
 	}
 }
 
-func (h *DefaultHeadersHandler) Handle(request httptransport.Request) (*httptransport.Response, *httptransport.ErrorResponse) {
+func (h *DefaultHeadersHandler[T]) Handle(request httptransport.Request) (*httptransport.Response[T], *httptransport.ErrorResponse[T]) {
 	if h.nextHandler == nil {
 		err := errors.New("Handler chain terminated without terminating handler")
-		return nil, httptransport.NewErrorResponse(err, nil)
+		return nil, httptransport.NewErrorResponse[T](err, nil)
 	}
 
 	nextRequest := request.Clone()
@@ -35,14 +35,9 @@ func (h *DefaultHeadersHandler) Handle(request httptransport.Request) (*httptran
 		nextRequest.SetHeader(key, value)
 	}
 
-	if h.nextHandler == nil {
-		err := errors.New("Handler chain terminated without terminating handler")
-		return nil, httptransport.NewErrorResponse(err, nil)
-	}
-
 	return h.nextHandler.Handle(nextRequest)
 }
 
-func (h *DefaultHeadersHandler) SetNext(handler Handler) {
+func (h *DefaultHeadersHandler[T]) SetNext(handler Handler[T]) {
 	h.nextHandler = handler
 }

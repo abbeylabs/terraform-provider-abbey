@@ -1,10 +1,10 @@
 package identities
 
 import (
+	"context"
 	restClient "github.com/go-provider-sdk/internal/clients/rest"
 	"github.com/go-provider-sdk/internal/clients/rest/httptransport"
 	"github.com/go-provider-sdk/internal/configmanager"
-	"github.com/go-provider-sdk/internal/unmarshal"
 	"github.com/go-provider-sdk/pkg/clientconfig"
 	"github.com/go-provider-sdk/pkg/shared"
 )
@@ -34,145 +34,93 @@ func (api *IdentitiesService) SetAccessToken(accessToken string) {
 }
 
 // Returns all Identities with enriched metadata in the org
-func (api *IdentitiesService) ListEnrichedIdentities() (*shared.ClientResponse[[]Identity], error) {
+func (api *IdentitiesService) ListEnrichedIdentities(ctx context.Context) (*shared.ClientResponse[[]Identity], *shared.ClientError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[[]Identity](config)
 
-	request := httptransport.NewRequest("GET", "/identities", config)
+	request := httptransport.NewRequest(ctx, "GET", "/identities", config)
 
-	httpResponse, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return nil, err.GetError()
+		return nil, shared.NewClientError[[]Identity](err)
 	}
 
-	data, unmarshalError := unmarshal.ToArray[[]Identity](httpResponse)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	response := shared.ClientResponse[[]Identity]{
-		Data: data,
-		Metadata: shared.ClientResponseMetadata{
-			Headers:    httpResponse.Headers,
-			StatusCode: httpResponse.StatusCode,
-		},
-	}
-
-	return &response, nil
+	return shared.NewClientResponse[[]Identity](resp), nil
 }
 
 // Creates a new identity.
 //
 // An identity represents a human, service, or workload.
-func (api *IdentitiesService) CreateIdentity(identityParams IdentityParams) (*shared.ClientResponse[Identity], error) {
+func (api *IdentitiesService) CreateIdentity(ctx context.Context, identityParams IdentityParams) (*shared.ClientResponse[Identity], *shared.ClientError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[Identity](config)
 
-	request := httptransport.NewRequest("POST", "/identities", config)
+	request := httptransport.NewRequest(ctx, "POST", "/identities", config)
 
 	request.Body = identityParams
 
-	httpResponse, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return nil, err.GetError()
+		return nil, shared.NewClientError[Identity](err)
 	}
 
-	data, unmarshalError := unmarshal.ToObject[Identity](httpResponse)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	response := shared.ClientResponse[Identity]{
-		Data: *data,
-		Metadata: shared.ClientResponseMetadata{
-			Headers:    httpResponse.Headers,
-			StatusCode: httpResponse.StatusCode,
-		},
-	}
-
-	return &response, nil
+	return shared.NewClientResponse[Identity](resp), nil
 }
 
 // Returns the details of an identity.
-func (api *IdentitiesService) GetIdentity(identityId string) (*shared.ClientResponse[Identity], error) {
+func (api *IdentitiesService) GetIdentity(ctx context.Context, identityId string) (*shared.ClientResponse[Identity], *shared.ClientError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[Identity](config)
 
-	request := httptransport.NewRequest("GET", "/identities/{identity_id}", config)
+	request := httptransport.NewRequest(ctx, "GET", "/identities/{identity_id}", config)
 
 	request.SetPathParam("identity_id", identityId)
 
-	httpResponse, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return nil, err.GetError()
+		return nil, shared.NewClientError[Identity](err)
 	}
 
-	data, unmarshalError := unmarshal.ToObject[Identity](httpResponse)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	response := shared.ClientResponse[Identity]{
-		Data: *data,
-		Metadata: shared.ClientResponseMetadata{
-			Headers:    httpResponse.Headers,
-			StatusCode: httpResponse.StatusCode,
-		},
-	}
-
-	return &response, nil
+	return shared.NewClientResponse[Identity](resp), nil
 }
 
 // Updates an identity.
-func (api *IdentitiesService) UpdateIdentity(identityId string, identityParams IdentityParams) (*shared.ClientResponse[Identity], error) {
+func (api *IdentitiesService) UpdateIdentity(ctx context.Context, identityId string, identityParams IdentityParams) (*shared.ClientResponse[Identity], *shared.ClientError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[Identity](config)
 
-	request := httptransport.NewRequest("PUT", "/identities/{identity_id}", config)
+	request := httptransport.NewRequest(ctx, "PUT", "/identities/{identity_id}", config)
 
 	request.Body = identityParams
 
 	request.SetPathParam("identity_id", identityId)
 
-	httpResponse, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return nil, err.GetError()
+		return nil, shared.NewClientError[Identity](err)
 	}
 
-	data, unmarshalError := unmarshal.ToObject[Identity](httpResponse)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	response := shared.ClientResponse[Identity]{
-		Data: *data,
-		Metadata: shared.ClientResponseMetadata{
-			Headers:    httpResponse.Headers,
-			StatusCode: httpResponse.StatusCode,
-		},
-	}
-
-	return &response, nil
+	return shared.NewClientResponse[Identity](resp), nil
 }
 
 // Deletes the specified identity.
-func (api *IdentitiesService) DeleteIdentity(identityId string) error {
+func (api *IdentitiesService) DeleteIdentity(ctx context.Context, identityId string) (*shared.ClientResponse[any], *shared.ClientError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[any](config)
 
-	request := httptransport.NewRequest("DELETE", "/identities/{identity_id}", config)
+	request := httptransport.NewRequest(ctx, "DELETE", "/identities/{identity_id}", config)
 
 	request.SetPathParam("identity_id", identityId)
 
-	_, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return err.GetError()
+		return nil, shared.NewClientError[any](err)
 	}
 
-	return nil
+	return shared.NewClientResponse[any](resp), nil
 }

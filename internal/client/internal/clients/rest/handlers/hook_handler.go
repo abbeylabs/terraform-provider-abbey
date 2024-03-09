@@ -7,41 +7,41 @@ import (
 	"github.com/go-provider-sdk/internal/clients/rest/httptransport"
 )
 
-type HookHandler struct {
-	nextHandler Handler
+type HookHandler[T any] struct {
+	nextHandler Handler[T]
 	hook        hooks.Hook
 }
 
-func NewHookHandler(hook hooks.Hook) *HookHandler {
-	return &HookHandler{
+func NewHookHandler[T any](hook hooks.Hook) *HookHandler[T] {
+	return &HookHandler[T]{
 		hook:        hook,
 		nextHandler: nil,
 	}
 }
 
-func (h *HookHandler) Handle(request httptransport.Request) (*httptransport.Response, *httptransport.ErrorResponse) {
-	clonedReq := request.Clone()
-	hookReq := h.hook.BeforeRequest(&clonedReq)
-
+func (h *HookHandler[T]) Handle(request httptransport.Request) (*httptransport.Response[T], *httptransport.ErrorResponse[T]) {
 	if h.nextHandler == nil {
 		err := errors.New("Handler chain terminated without terminating handler")
-		return nil, httptransport.NewErrorResponse(err, nil)
+		return nil, httptransport.NewErrorResponse[T](err, nil)
 	}
+
+	clonedReq := request.Clone()
+	hookReq := h.hook.BeforeRequest(&clonedReq)
 
 	nextRequest, ok := hookReq.(*httptransport.Request)
 	if !ok {
 		err := errors.New("hook returned invalid request")
-		return nil, httptransport.NewErrorResponse(err, nil)
+		return nil, httptransport.NewErrorResponse[T](err, nil)
 	}
 
 	response, err := h.nextHandler.Handle(*nextRequest)
 	if err != nil && err.IsHttpError {
 		clonedError := err.Clone()
 		hookError := h.hook.OnError(hookReq, &clonedError)
-		nextError, ok := hookError.(*httptransport.ErrorResponse)
+		nextError, ok := hookError.(*httptransport.ErrorResponse[T])
 		if !ok {
 			err := errors.New("hook returned invalid error")
-			return nil, httptransport.NewErrorResponse(err, nil)
+			return nil, httptransport.NewErrorResponse[T](err, nil)
 		}
 
 		return nil, nextError
@@ -51,15 +51,15 @@ func (h *HookHandler) Handle(request httptransport.Request) (*httptransport.Resp
 
 	clonedResp := response.Clone()
 	hookResp := h.hook.AfterResponse(hookReq, &clonedResp)
-	nextResponse, ok := hookResp.(*httptransport.Response)
+	nextResponse, ok := hookResp.(*httptransport.Response[T])
 	if !ok {
 		err := errors.New("hook returned invalid response")
-		return nil, httptransport.NewErrorResponse(err, nil)
+		return nil, httptransport.NewErrorResponse[T](err, nil)
 	}
 
 	return nextResponse, nil
 }
 
-func (h *HookHandler) SetNext(handler Handler) {
+func (h *HookHandler[T]) SetNext(handler Handler[T]) {
 	h.nextHandler = handler
 }

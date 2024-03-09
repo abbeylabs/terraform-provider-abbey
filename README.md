@@ -1,8 +1,6 @@
 # abbey Terraform Provider 0.2.7
 
-The public Abbey API. Used for integrating with Abbey and building interfaces to extend the Abbey platform.
-See https://docs.abbey.io for more information.
-
+The public Abbey API. Used for integrating with Abbey and building interfaces to extend the Abbey platform. See https://docs.abbey.io for more information.
 This repository contains a Terraform provider that allows you to manage resources through the abbey API.
 
 ## Prerequisites

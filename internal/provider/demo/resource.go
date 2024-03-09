@@ -135,7 +135,7 @@ func (r *DemoResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		return
 	}
 
-	clientResponse, err := r.client.Demo.GetDemo(params)
+	clientResponse, err := r.client.Demo.GetDemo(ctx, params)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unexpected error calling Demo.GetDemo",
@@ -175,7 +175,7 @@ func (r *DemoResource) Create(ctx context.Context, req resource.CreateRequest, r
 		Email:      dataModel.Email.ValueStringPointer(),
 	}
 
-	clientResponse, err := r.client.Demo.CreateDemo(requestBody)
+	clientResponse, err := r.client.Demo.CreateDemo(ctx, requestBody)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -215,7 +215,7 @@ func (r *DemoResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 		Email:      dataModel.Email.ValueStringPointer(),
 	}
 
-	err := r.client.Demo.DeleteDemo(requestBody)
+	_, err := r.client.Demo.DeleteDemo(ctx, requestBody)
 
 	if err != nil {
 		resp.Diagnostics.AddError(
