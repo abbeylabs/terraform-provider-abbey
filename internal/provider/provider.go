@@ -22,6 +22,9 @@ import (
 var _ provider.Provider = &Provider{}
 
 type Provider struct {
+	// version is set to the provider version on release, "dev" when the
+	// provider is built and ran locally, and "test" when running acceptance
+	// testing.
 	version string
 }
 
@@ -32,7 +35,7 @@ type abbeyProviderModel struct {
 
 func (p *Provider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
 	resp.TypeName = "abbey"
-	resp.Version = "0.2.7"
+	resp.Version = p.version
 }
 
 func (p *Provider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {

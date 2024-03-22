@@ -2,7 +2,7 @@ terraform {
   required_providers {
     abbey = {
       source  = "hashicorp.com/edu/abbey"
-      version = "0.2.7"
+      version = "0.2.8"
     }
   }
 }

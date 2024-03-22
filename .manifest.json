@@ -50,7 +50,7 @@
         "mockAcceptance": true,
         "providerGoModuleName": "abbey/v2",
         "providerName": "abbey",
-        "providerVersion": "0.2.7",
+        "providerVersion": "0.2.8",
         "githubRepoName": "terraform-provider-abbey"
       }
     },
@@ -78,7 +78,7 @@
     },
     "providerGoModuleName": "abbey/v2",
     "providerName": "abbey",
-    "providerVersion": "0.2.7",
+    "providerVersion": "0.2.8",
     "mockAcceptance": true,
     "hideComputedDiff": false
   },

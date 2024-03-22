@@ -1,4 +1,4 @@
-# abbey Terraform Provider 0.2.7
+# abbey Terraform Provider 0.2.8
 
 The public Abbey API. Used for integrating with Abbey and building interfaces to extend the Abbey platform. See https://docs.abbey.io for more information.
 This repository contains a Terraform provider that allows you to manage resources through the abbey API.
@@ -40,11 +40,11 @@ go build -o terraform-provider-abbey
 5. Move the provider to your plugins directory:
 
 ```bash
-mkdir -p ~/.terraform.d/plugins/example.com/user/abbey/0.2.7/<distribution>
-mv terraform-provider-abbey ~/.terraform.d/plugins/example.com/user/abbey/0.2.7/<distribution>
+mkdir -p ~/.terraform.d/plugins/example.com/user/abbey/0.2.8/<distribution>
+mv terraform-provider-abbey ~/.terraform.d/plugins/example.com/user/abbey/0.2.8/<distribution>
 ```
 
-Note: The directory structure is important. The provider must be located at `~/.terraform.d/plugins/example.com/user/abbey/0.2.7/<distribution>/terraform-provider-abbey`
+Note: The directory structure is important. The provider must be located at `~/.terraform.d/plugins/example.com/user/abbey/0.2.8/<distribution>/terraform-provider-abbey`
 Also please change `example.com/user` and `<distribution>` to match your real values.
 To get the <distribution> run `terraform version`, possible values: `linux_amd64`, `darwin_arm64`, `windows_amd64`, etc.
 
@@ -120,7 +120,7 @@ make acceptance-test
 1. Tag your release:
 
 ```bash
-git tag v0.2.7
+git tag v0.2.8
 git push --tags
 ```
 
