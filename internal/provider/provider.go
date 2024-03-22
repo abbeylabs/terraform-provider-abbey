@@ -39,7 +39,8 @@ func (p *Provider) Schema(ctx context.Context, req provider.SchemaRequest, resp 
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"server_url": schema.StringAttribute{
-				Required:    true,
+				Optional:    true,
+				Required:    false,
 				Sensitive:   false,
 				Description: "The API host.",
 			},
@@ -61,13 +62,9 @@ func (p *Provider) Configure(ctx context.Context, req provider.ConfigureRequest,
 		return
 	}
 
-	if dataModel.ServerUrl.IsUnknown() {
-		resp.Diagnostics.AddAttributeError(
-			path.Root("server_url"),
-			"Unknown ServerUrl",
-			"Cannot create API client without server_url.",
-		)
-		return
+	serverUrl := dataModel.ServerUrl.ValueString()
+	if serverUrl == "" {
+		serverUrl = "https://api.abbey.io/v1"
 	}
 
 	if dataModel.BearerAuth.IsUnknown() {
@@ -80,7 +77,7 @@ func (p *Provider) Configure(ctx context.Context, req provider.ConfigureRequest,
 	}
 
 	config := clientconfig.NewConfig()
-	config.SetBaseUrl(dataModel.ServerUrl.ValueString())
+	config.SetBaseUrl(serverUrl)
 	config.SetAccessToken(dataModel.BearerAuth.ValueString())
 	apiClient := client.NewClient(config)
 
