@@ -69,6 +69,24 @@ func (api *GrantKitsService) CreateGrantKit(ctx context.Context, grantKitCreateP
 	return shared.NewClientResponse[GrantKit](resp), nil
 }
 
+// Validate a Grant Kit
+func (api *GrantKitsService) ValidateGrantKit(ctx context.Context, validateGrantKitRequest ValidateGrantKitRequest) (*shared.ClientResponse[any], *shared.ClientError) {
+	config := *api.getConfig()
+
+	client := restClient.NewRestClient[any](config)
+
+	request := httptransport.NewRequest(ctx, "POST", "/grant-kit/validate", config)
+
+	request.Body = validateGrantKitRequest
+
+	resp, err := client.Call(request)
+	if err != nil {
+		return nil, shared.NewClientError[any](err)
+	}
+
+	return shared.NewClientResponse[any](resp), nil
+}
+
 // Returns the details of a Grant Kit.
 func (api *GrantKitsService) GetGrantKitById(ctx context.Context, grantKitIdOrName string) (*shared.ClientResponse[GrantKit], *shared.ClientError) {
 	config := *api.getConfig()

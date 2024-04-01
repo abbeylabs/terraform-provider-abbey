@@ -13,7 +13,7 @@ type DefaultHeadersHandler[T any] struct {
 
 func NewDefaultHeadersHandler[T any]() *DefaultHeadersHandler[T] {
 	defaultHeaders := map[string]string{
-		"User-Agent":   "liblab/2.0.18 go/1.18",
+		"User-Agent":   "liblab/2.0.20 go/1.18",
 		"Content-type": "application/json",
 	}
 

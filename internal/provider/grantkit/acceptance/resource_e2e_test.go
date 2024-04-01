@@ -37,7 +37,7 @@ func getGrantKitProviderConfig(serverUrl string) string {
 }
 
 func setupGrantKitMockServer() *httptest.Server {
-	db := make(map[string]*grantkit.GrantKit)
+	db := make(map[string]*grant_kit.GrantKit)
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		if req.Method == http.MethodGet {
 			Id := path.Base(req.URL.Path)
@@ -50,7 +50,7 @@ func setupGrantKitMockServer() *httptest.Server {
 		if req.Method == http.MethodPost {
 			id := "id"
 
-			grant_kit := grantkit.GrantKit{}
+			grant_kit := grant_kit.GrantKit{}
 
 			bodyBytes, _ := io.ReadAll(req.Body)
 			json.Unmarshal(bodyBytes, &grant_kit)
@@ -71,7 +71,7 @@ func setupGrantKitMockServer() *httptest.Server {
 				return
 			}
 
-			grant_kit := grantkit.GrantKit{}
+			grant_kit := grant_kit.GrantKit{}
 
 			bodyBytes, _ := io.ReadAll(req.Body)
 			json.Unmarshal(bodyBytes, &grant_kit)

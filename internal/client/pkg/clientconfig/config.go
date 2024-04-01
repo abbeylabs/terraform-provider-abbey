@@ -6,7 +6,7 @@ type Config struct {
 }
 
 func NewConfig() Config {
-	baseUrl := "https://api.abbey.io/v1"
+	baseUrl := DEFAULT_ENVIRONMENT
 	newConfig := Config{
 		BaseUrl: &baseUrl,
 	}

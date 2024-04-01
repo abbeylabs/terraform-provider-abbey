@@ -36,30 +36,60 @@ Or at a later stage:
 
 #### ListGrantKits
 
+List Grant Kits
+
 #### CreateGrantKit
+
+Create a Grant Kit
+
+#### ValidateGrantKit
+
+Validate a Grant Kit
 
 #### GetGrantKitById
 
+Retrieve a Grant Kit by ID
+
 #### UpdateGrantKit
 
+Update a Grant Kit
+
 #### DeleteGrantKit
+
+Delete a Grant Kit
 
 ### IdentitiesService
 
 #### ListEnrichedIdentities
 
+List all Identities with enriched metadata
+
 #### CreateIdentity
+
+Create an Identity
 
 #### GetIdentity
 
+Retrieve an Identity
+
 #### UpdateIdentity
 
+Update an Identity
+
 #### DeleteIdentity
+
+Delete an Identity
 
 ### DemoService
 
 #### GetDemo
 
+Get Demo
+
 #### CreateDemo
 
+Create Demo Access
+
 #### DeleteDemo
+
+Delete Demo Access
